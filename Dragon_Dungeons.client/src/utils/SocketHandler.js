@@ -26,6 +26,7 @@ function getSocketConnection(url) {
 function registerGlobalSocketMessages(socket) {
   socket.on(SOCKET_EVENTS.error, onSocketError)
 }
+
 function onSocketError(error) {
   logger.error('⚡[SOCKET_ERROR]', error)
 }
@@ -84,7 +85,7 @@ export class SocketHandler {
 
   playback() {
     if (!this.queue.length) { return }
-    logger.log(`📽️[${this.constructor.name}]`,)
+    logger.log(`📽️[${this.constructor.name}]`)
     const playback = [...this.queue]
     this.queue = []
     playback.forEach(e => {
@@ -96,6 +97,7 @@ export class SocketHandler {
     if (this.requiresAuth && !this.authenticated) {
       return this.enqueue(action, payload)
     }
+
     if (!this.connected) {
       return this.enqueue(action, payload)
     }

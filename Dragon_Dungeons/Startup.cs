@@ -40,15 +40,15 @@ public class Startup
     services.AddCors(options =>
     {
       options.AddPolicy("CorsDevPolicy", builder =>
-            {
-              builder
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials()
-                .WithOrigins(new string[]{
-                "http://localhost:8080", "http://localhost:8081"
-            });
-            });
+      {
+        builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithOrigins(new string[]{
+          "http://localhost:8080", "http://localhost:8081"
+        });
+      });
     });
   }
 
@@ -72,7 +72,6 @@ public class Startup
     return new MySqlConnection(connectionString);
   }
 
-
   // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
   public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
   {
@@ -95,11 +94,9 @@ public class Startup
 
     app.UseAuthorization();
 
-
     app.UseEndpoints(endpoints =>
     {
       endpoints.MapControllers();
     });
   }
 }
-

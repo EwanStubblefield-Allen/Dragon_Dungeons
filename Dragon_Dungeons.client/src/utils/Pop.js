@@ -24,6 +24,7 @@ export default class Pop {
         confirmButtonColor: 'var(--bs-primary)',
         cancelButtonColor: 'var(--bs-secondary)'
       })
+
       if (res.isConfirmed) {
         return true
       }
@@ -65,6 +66,7 @@ export default class Pop {
     if (error.isAxiosError) {
       const { response } = error
       const errorObj = (response.data ? response.data.error : response.data) || { message: 'Invalid Request ' + response.status }
+
       if (!errorObj) {
         return this.toast(error.message)
       }

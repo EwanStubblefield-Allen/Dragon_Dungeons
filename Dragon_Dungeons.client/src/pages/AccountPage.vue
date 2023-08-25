@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { AppState } from '../AppState';
+import { computed } from 'vue'
+import { AppState } from '../AppState'
+
 export default {
   setup() {
     return {
@@ -19,7 +20,7 @@ export default {
 </script>
 
 <style scoped>
-img {
-  max-width: 100px;
-}
+  img {
+    max-width: 100px;
+  }
 </style>
