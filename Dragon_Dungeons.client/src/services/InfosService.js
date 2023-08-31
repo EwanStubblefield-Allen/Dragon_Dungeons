@@ -30,7 +30,6 @@ class InfosService {
     AppState.infoDetails = this.handleObj(infoDetails).filter(i => i)
     logger.log(AppState.infoDetails)
     AppState.infoHtml = this.handleHtml(AppState.infoDetails)
-    logger.log(AppState.infoHtml)
   }
 
   handleObj(arr) {
@@ -41,8 +40,12 @@ class InfosService {
 
         if (!this.checkIfLink(d)) {
           d = this.handleObj(Object.entries(d))
+        } else {
+          logger.log('what')
         }
       } else if (d[0] == 'from') {
+        logger.log('4', d)
+
         if (d[1].options) {
           d = d[1].options
         } else {
@@ -94,9 +97,12 @@ class InfosService {
   }
 
   checkIfLink(obj) {
+    if (typeof obj == 'string') {
+      return false
+    }
     return Object.values(obj).find(o => {
       if (typeof o == 'string') {
-        return o.includes('api')
+        return o.includes('api/')
       }
       return false
     })
@@ -104,6 +110,7 @@ class InfosService {
 
   handleHtml(arr, size = 1, list = 0) {
     let template = ''
+    logger.log(arr)
     arr.forEach((a, index) => {
       if (typeof a == 'object') {
         if (Object.getPrototypeOf(a) == Object.prototype) {
@@ -113,76 +120,86 @@ class InfosService {
             if (index == 0) {
               template += /*HTML*/`<ul>`
             }
+            logger.log('1')
             template += /*HTML*/`
               <li>
-                <a href="#/info/${a.url.replace('/api/', '')}" class="selectable">${a.name}</a>
-                </li>`
+                <a href="#/info/${a.url.replace('/api/', '')}" class="selectable px-2">${a.name}</a>
+              </li>`
 
             if (index == arr.length - 1) {
               template += /*HTML*/`</ul>`
               list = 0
             }
           } else {
+            logger.log('2')
+
             template += /*HTML*/`
-                <a href="#/info/${a.url.replace('/api/', '')}" class="selectable">${a.name}</a>`
+              <a href="#/info/${a.url.replace('/api/', '')}" class="selectable px-2">${a.name}</a>`
           }
         } else {
           logger.log('should be array', a)
+          // debugger
 
           if (typeof a[0] == 'string') {
-            a[0] = a[0].split('')
-            a[0].push(':')
-            a[0] = a[0].join('')
+            a[0] += ':'
           }
 
           if (list > 1) {
-            a.forEach((item, i) => {
-              debugger
+            if (!Array.isArray(a[0])) {
+              template += this.handleHtml(a, size + 1, list)
+            } else {
+              a.forEach((item, i) => {
+                // debugger
 
-              if (!Array.isArray(item)) {
-                return template += this.handleHtml(a, size + 1, list)
-              } else {
-                // FIXME when is array runs into error
-                item.forEach(it => {
-                  if (typeof it[1] != 'string') {
-                    template += this.handleHtml(a[1], size + 1, list)
-                  }
-                })
-              }
+                if (typeof item[0] != 'string') {
+                  template += this.handleHtml(item, size + 1, false)
+                } else {
+                  item[0] = item[0].replaceAll(/[_\-$]/g, ' ').replaceAll(/(?<=[-\s]).|^./gm, String.call.bind(item[0].toUpperCase))
 
-              if (i == 0) {
-                template += /*HTML*/`<ul>`
-              }
-              item[0] = item[0].replaceAll(/[_\-$]/g, ' ').replaceAll(/(?<=[-\s]).|^./gm, String.call.bind(item[0].toUpperCase))
+                  // if (i == 0) {
+                  //   template += /*HTML*/`<ul>`
+                  // }
 
-              if (typeof item[1] == 'object') {
-                template += /*HTML*/`
+                  if (typeof item[1] == 'object') {
+                    logger.log('3')
+
+                    if (Array.isArray(item[1])) {
+                      template += this.handleHtml(item, size + 1, list)
+                    } else {
+                      template += /*HTML*/`
+                      <li>
+                        <p>${item[0]}:</p>
+                        <a href="#/info/${item[1].url.replace('/api/', '')}" class="selectable px-2">${item[1].name}</a>
+                      </li>`
+                    }
+                  } else {
+                    item[1] = item[1].toString()
+                    logger.log('4')
+
+                    template += /*HTML*/`
                   <li>
-                    <p>${item[0]}:</p>
-                    <a href="#/info/${item[1].url.replace('/api/', '')}" class="selectable">${item[1].name}</a>
+                    <p>${item[0]}: ${item[1].replace(/^./gm, String.call.bind(item[1].toUpperCase))}</p>
                   </li>`
-              } else {
-                item[1] = item[1].toString()
-                template += /*HTML*/`
-                <li>
-                  <p>${item[0]}: ${item[1].replace(/^./gm, String.call.bind(item[1].toUpperCase))}</p>
-                </li>`
-              }
+                  }
 
-              if (i == arr.length - 1) {
-                template += /*HTML*/`</ul>`
-                list = 0
-              }
-            })
+                  // if (i == arr.length - 1) {
+                  //   template += /*HTML*/`</ul>`
+                  //   list = 0
+                  // }
+                }
+              })
+            }
           } else {
             let itemType
 
-            if (Array.isArray(a[1])) {
+            if (typeof a[0] == 'object') {
+              itemType = 2
+            } else if (Array.isArray(a[1])) {
               itemType = typeof a[1][0]
 
               for (let i = 1; i < a[1].length; i++) {
                 if (itemType != typeof a[1][i]) {
-                  return itemType == 0
+                  itemType == 0
                 }
               }
 
@@ -203,10 +220,14 @@ class InfosService {
         if (list > 1) {
           if (index == 0) {
             template += /*HTML*/`<ul>`
+
+            if (Object.getPrototypeOf(arr[1]) == Object.prototype) {
+              a += ':'
+            }
           }
           template += /*HTML*/`
               <li>
-                <p>${a}</p>
+                <p>${a.replaceAll(/[_\-$]/g, ' ').replaceAll(/(?<=[-\s]).|^./gm, String.call.bind(a.toUpperCase))}</p>
               </li>`
 
           if (index == arr.length - 1) {
@@ -214,13 +235,17 @@ class InfosService {
             list = 0
           }
         } else if (index == 0) {
+          logger.log('5')
+
           a = a.replace('desc', 'Description').replaceAll(/[_\-$]/g, ' ').replaceAll(/(?<=[-\s]).|^./gm, String.call.bind(a.toUpperCase))
           template += /*HTML*/`
             <div class="px-${size - 1}">
               <p class="fs-${size} fw-bold">${a}</p>`
         } else {
+          logger.log('6')
+
           template += /*HTML*/`
-              <p>${a}</p>
+              <p class="px-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- )./g, String.call.bind(a.toUpperCase))}</p>
             </div>`
         }
         logger.log('should be string', a)
@@ -230,14 +255,11 @@ class InfosService {
         list++
       }
     })
-    logger.log('template', template)
-
     template = template.trim()
 
     if (template.startsWith('<div') && !template.endsWith('</div>')) {
       template += '</div>'
     }
-    size--
     return template
   }
 }
