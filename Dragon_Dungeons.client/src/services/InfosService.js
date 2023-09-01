@@ -1,10 +1,11 @@
 import { AppState } from "../AppState.js"
-import { logger } from "../utils/Logger.js"
 import { dndApi } from "./AxiosService.js"
 
 class InfosService {
   async getInfo() {
-    AppState.info = (await dndApi.get('api')).data
+    const res = await dndApi.get('api')
+    delete res.data.backgrounds
+    AppState.info = res.data
   }
 
   async getInfoById(infoId) {
@@ -28,7 +29,6 @@ class InfosService {
     })
     AppState.infoDetails = this.handleObj(infoDetails).filter(i => i)
     AppState.infoHtml = this.handleHtml(AppState.infoDetails)
-    logger.log(AppState.infoHtml)
   }
 
   handleObj(arr) {
@@ -110,22 +110,14 @@ class InfosService {
           size++
           template += this.objHtml(arr, a, size)
         }
+      } else if (!a) {
+        return
       } else {
         size++
         template += this.strHtml(a, index, size)
       }
     })
     template += '</div>'
-
-    // let temp = template.trim()
-
-    // if (temp.startsWith('<ul') || temp.endsWith('</ul>')) {
-    //   temp = temp.replace(/^<ul.*?>|<\/ul>$/g, '').trim()
-    // }
-
-    // if (temp.startsWith('<li') && !temp.endsWith('</li>')) {
-    //   template += `</li>`
-    // }
 
     return template
   }

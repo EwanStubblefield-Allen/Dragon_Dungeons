@@ -2,13 +2,15 @@
   <section class="row">
     <div class="col-12 col-md-3 col-lg-2 overflow-auto infoBar">
       <section class="row p-3">
+        <p class="fs-3 text-capitalize pb-2">{{ route.params.infoId.replace('-', ' ') }}:</p>
+        <hr>
         <div v-for="(i, index) in infoArr" :key="i" class="col-12 col-sm-6 col-md-12">
           <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }" class="text-light selectable py-2">{{ i.name }}</router-link>
           <hr v-if="index + 1 < infoArr.length" class="my-2">
         </div>
       </section>
     </div>
-    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10">
+    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 py-3">
     </div>
   </section>
 </template>
