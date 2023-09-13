@@ -5,7 +5,7 @@
         <p class="fs-3 text-capitalize pb-2">{{ route.params.infoId.replace('-', ' ') }}:</p>
         <hr>
         <div v-for="(i, index) in infoArr" :key="i" class="col-12 col-sm-6 col-md-12">
-          <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }" class="text-light selectable py-2">{{ i.name }}</router-link>
+          <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }" class="text-light selectable rounded p-2">{{ i.name }}</router-link>
           <hr v-if="index + 1 < infoArr.length" class="my-2">
         </div>
       </section>
@@ -27,6 +27,9 @@ export default {
     const route = useRoute()
 
     watchEffect(() => {
+      if (!route.params.infoId) {
+        return
+      }
       getInfoById(route.params.infoId)
     })
 
@@ -65,7 +68,7 @@ export default {
 
 <style lang="scss" scoped>
   .infoBar {
-    background-color: red;
+    background-color: var(--oxford);
     color: white;
     height: var(--main-height);
   }

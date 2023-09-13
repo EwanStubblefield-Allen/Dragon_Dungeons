@@ -23,6 +23,21 @@ const routes = [
     beforeEnter: authGuard
   },
   {
+    path: '/help',
+    name: 'Help',
+    component: loadPage('HelpPage')
+  },
+  {
+    path: '/character',
+    name: 'Character',
+    component: loadPage('CharacterPage')
+  },
+  {
+    path: '/campaign',
+    name: 'Campaign',
+    component: loadPage('CampaignPage')
+  },
+  {
     path: '/info/:infoId/:infoDetails',
     name: 'Info',
     component: loadPage('InfoPage')
