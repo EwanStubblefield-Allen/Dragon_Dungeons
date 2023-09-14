@@ -39,7 +39,7 @@
         </li>
 
         <li class="col-6 col-md-4 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Character' }" class="btn text-success lighten-30 selectable text-uppercase">
+          <router-link :to="{ name: 'Character', params: { characterId: 'basics' } }" :class="{ route: route.fullPath.includes('character') }" class="btn text-success lighten-30 selectable text-uppercase">
             Build Character
           </router-link>
         </li>

@@ -28,7 +28,7 @@ const routes = [
     component: loadPage('HelpPage')
   },
   {
-    path: '/character',
+    path: '/character/:characterId',
     name: 'Character',
     component: loadPage('CharacterPage')
   },
