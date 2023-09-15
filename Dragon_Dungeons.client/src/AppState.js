@@ -8,5 +8,7 @@ export const AppState = reactive({
   info: {},
   infoArr: [],
   infoDetails: {},
-  infoHtml: ''
+  infoHtml: '',
+  /** @type {import('./models/Character.js').Character.js} */
+  tempCharacter: {}
 })
