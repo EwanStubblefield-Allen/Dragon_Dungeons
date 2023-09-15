@@ -7,12 +7,14 @@
           <hr class="mt-0">
         </div>
         <div v-for="(i, index) in infoArr" :key="i" class="col-12 col-sm-6 col-md-12">
-          <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }" class="text-light selectable rounded p-2">{{ i.name }}</router-link>
+          <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }">
+            <p class="text-light selectable rounded p-2">{{ i.name }}</p>
+          </router-link>
           <hr v-if="index + 1 < infoArr.length" class="my-2">
         </div>
       </section>
     </div>
-    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 py-3">
+    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 py-3">
     </div>
   </section>
 </template>
@@ -72,12 +74,13 @@ export default {
   .infoBar {
     background-color: var(--oxford);
     color: white;
-    height: var(--main-height);
+    height: 25vh;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (min-width: 768px) {
     .infoBar {
-      height: 25vh;
+      height: var(--main-height);
+      position: fixed;
     }
   }
 </style>

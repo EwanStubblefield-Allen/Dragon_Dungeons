@@ -1,7 +1,7 @@
 <template>
   <p class="fs-1 fw-bold m-3 py-2">Basics</p>
 
-  <form @submit.prevent="" class="row g-3 bg-dark text-dark m-3 p-3 rounded elevation-5">
+  <form @submit.prevent="changeCharPage()" class="row g-3 bg-dark text-dark m-3 p-3 rounded elevation-5">
     <div class="col-md-12 form-floating">
       <input v-model="editable.name" type="text" class="form-control" id="name" minlength="3" maxlength="100" placeholder="Name..." required>
       <label for="name">Character Name:</label>
@@ -34,27 +34,40 @@
       </select>
     </div>
     <div class="col-12 text-end">
-      <router-link :to="{ name: 'Character', params: { characterId: 'features' } }">
-        <button type="submit" class="btn btn-primary">Save</button>
-      </router-link>
+      <button type="submit" class="btn btn-primary">Save</button>
     </div>
   </form>
 </template>
 
 <script>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
+import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
+    const router = useRouter()
     const editable = ref({})
     const dndClass = ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
     const race = ['Dragonborn', 'Dwarf', 'Elf', 'Gnome', 'Half-Elf', 'Half-Orc', 'Halfling', 'Human', 'Tiefling']
     const alignment = ['Chaotic Evil', 'Chaotic Good', 'Chaotic Neutral', 'Lawful Evil', 'Lawful Good', 'Lawful Neutral', 'Neutral', 'Neutral Evil', 'Neutral Good']
 
     onBeforeUnmount(() => {
+      handleSave()
+    })
+
+    onMounted(() => {
+      editable.value = { ...AppState.tempCharacter }
+    })
+
+    async function handleSave() {
+      if (editable.value.race) {
+        await getRace()
+      }
+
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
       } else if (editable.value.id) {
@@ -62,11 +75,17 @@ export default {
       } else {
         createCharacter()
       }
-    })
+    }
 
-    onMounted(() => {
-      editable.value = { ...AppState.tempCharacter }
-    })
+    async function getRace() {
+      try {
+        const race = await infosService.getInfoDetails(`api/races/${editable.value.race.toLowerCase().replaceAll(' ', '-')}`, false)
+        editable.value.bonus = {}
+        race.ability_bonuses.forEach(b => editable.value.bonus[b.ability_score.index] = b.bonus)
+      } catch (error) {
+        Pop.error(error.message, '[GETTING RACE]')
+      }
+    }
 
     function createCharacter() {
       try {
@@ -88,7 +107,12 @@ export default {
       editable,
       dndClass,
       race,
-      alignment
+      alignment,
+
+      changeCharPage() {
+        charactersService.changeCharPage(0)
+        router.push({ name: 'Character', params: { characterId: 'features' } })
+      }
     }
   }
 }

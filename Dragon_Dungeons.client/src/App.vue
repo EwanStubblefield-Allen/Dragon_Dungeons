@@ -1,5 +1,5 @@
 <template>
-  <header class="container-fluid">
+  <header class="container-fluid sticky-top">
     <Navbar />
   </header>
   <main class="container-fluid bg-wheat">

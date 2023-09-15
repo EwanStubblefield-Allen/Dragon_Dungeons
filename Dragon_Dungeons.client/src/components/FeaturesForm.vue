@@ -49,15 +49,13 @@
         </div>
       </form>
 
-      <form v-else @submit.prevent="" class="row g-3">
+      <form v-else @submit.prevent="changeCharPage()" class="row g-3">
         <div class="col-12 form-group">
           <label for="features">Features:</label>
           <textarea v-model="editable.features" class="form-control" id="features" rows="10" minlength="1" maxlength="1000" placeholder="Features..." required></textarea>
         </div>
         <div class="col-12 text-end">
-          <router-link :to="{ name: 'Character', params: { characterId: 'background' } }">
-            <button type="submit" class="btn btn-primary">Save</button>
-          </router-link>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>
@@ -66,12 +64,14 @@
 
 <script>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
+    const router = useRouter()
     const editable = ref({})
     const selectable = ref(1)
 
@@ -118,6 +118,11 @@ export default {
           textElement.focus()
           textElement.setSelectionRange(textElement.value.length, textElement.value.length)
         }, 1)
+      },
+
+      changeCharPage() {
+        charactersService.changeCharPage(1)
+        router.push({ name: 'Character', params: { characterId: 'background' } })
       }
     }
   }

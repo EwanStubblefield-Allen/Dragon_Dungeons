@@ -26,5 +26,8 @@ export class Character {
     this.intelligence = data.intelligence
     this.wisdom = data.wisdom
     this.charisma = data.charisma
+    this.bonus = data.bonus
+    this.skills = data.skills
+    this.other = data.other
   }
 }

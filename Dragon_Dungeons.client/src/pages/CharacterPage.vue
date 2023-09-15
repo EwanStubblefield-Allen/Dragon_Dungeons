@@ -7,53 +7,79 @@
           <hr class="mt-0">
         </div>
         <div v-for="(l, index) in list" :key="l" class="col-12 col-sm-6 col-md-12">
-          <router-link :to="{ name: 'Character', params: { characterId: l.toLowerCase().replaceAll(' ', '-') } }" class="text-light selectable rounded p-2">{{ l }}</router-link>
+          <router-link :to="{ name: 'Character', params: { characterId: l.toLowerCase().replaceAll(' ', '-') } }" v-if="charPage >= index">
+            <p class="text-light selectable rounded px-2 py-1">{{ l }}</p>
+          </router-link>
+          <p v-else class="text-secondary rounded px-2 py-1">{{ l }}</p>
           <hr v-if="index != list.length - 1" class="my-2">
         </div>
       </section>
     </div>
 
-    <div v-if="route.params.characterId == 'basics'" class="col-12 col-md-9 col-lg-10">
-      <BasicsForm />
-    </div>
+    <div class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2">
+      <div v-if="route.params.characterId == 'basics'">
+        <BasicsForm />
+      </div>
 
-    <div v-if="route.params.characterId == 'features'" class="col-12 col-md-9 col-lg-10">
-      <FeaturesForm />
-    </div>
+      <div v-else-if="route.params.characterId == 'features'">
+        <FeaturesForm />
+      </div>
 
-    <div v-if="route.params.characterId == 'background'" class="col-12 col-md-9 col-lg-10">
-      <BackgroundForm />
-    </div>
+      <div v-else-if="route.params.characterId == 'background'">
+        <BackgroundForm />
+      </div>
 
-    <div v-if="route.params.characterId == 'personality-traits'" class="col-12 col-md-9 col-lg-10">
-      <PersonalityTraitsForm />
-    </div>
+      <div v-else-if="route.params.characterId == 'personality-traits'">
+        <PersonalityTraitsForm />
+      </div>
 
-    <div v-if="route.params.characterId == 'attributes'" class="col-12 col-md-9 col-lg-10">
-      <AttributesForm />
+      <div v-else-if="route.params.characterId == 'attributes'">
+        <AttributesForm />
+      </div>
+
+      <div v-else-if="route.params.characterId == 'proficiencies'">
+        <ProficienciesForm />
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
+import { computed, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { AppState } from "../AppState.js"
 import BasicsForm from '../components/BasicsForm.vue'
 import FeaturesForm from '../components/FeaturesForm.vue'
 import BackgroundForm from '../components/BackgroundForm.vue'
 import PersonalityTraitsForm from '../components/PersonalityTraitsForm.vue'
 import AttributesForm from '../components/AttributesForm.vue'
+import ProficienciesForm from '../components/ProficienciesForm.vue'
 
 export default {
   setup() {
     const route = useRoute()
-    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Saving Throws', 'Skills', 'Levels', 'Attacks', 'Spells', 'Equipment']
+    const router = useRouter()
+    const editable = ref()
+    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Levels', 'Attacks', 'Spells', 'Equipment']
+
+    watchEffect(() => {
+      let charPage = AppState.charPage
+
+      for (let i = list.length - 1; i > charPage; i--) {
+        if (list[i].toLowerCase().replace(' ', '-') == route.params.characterId) {
+          router.push({ name: 'Character', params: { characterId: list[charPage].toLowerCase().replace(' ', '-') } })
+        }
+      }
+    })
 
     return {
       route,
-      list
+      editable,
+      list,
+      charPage: computed(() => AppState.charPage)
     }
   },
-  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm }
+  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm }
 }
 </script>
 
@@ -61,12 +87,13 @@ export default {
   .infoBar {
     background-color: var(--oxford);
     color: white;
-    height: var(--main-height);
+    height: 25vh;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (min-width: 768px) {
     .infoBar {
-      height: 25vh;
+      height: var(--main-height);
+      position: fixed;
     }
   }
 </style>

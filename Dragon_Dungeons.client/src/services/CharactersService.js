@@ -3,6 +3,12 @@ import { Character } from "../models/Character.js"
 import { api } from "./AxiosService.js"
 
 class CharactersService {
+  changeCharPage(current) {
+    if (current == AppState.charPage) {
+      AppState.charPage++
+    }
+  }
+
   async createTempCharacter(characterData) {
     // const res = await api.post('api/character', characterData)
     // AppState.tempCharacter = new Character(res.data)

@@ -13,8 +13,12 @@ class InfosService {
     AppState.infoArr = (await dndApi.get(url)).data.results
   }
 
-  async getInfoDetails(i) {
+  async getInfoDetails(i, arr = true) {
     let res = await dndApi.get(i)
+
+    if (!arr) {
+      return res.data
+    }
 
     if (res.data.reference) {
       res = await dndApi.get(res.data.reference.url)
@@ -101,7 +105,7 @@ class InfosService {
 
   handleHtml(arr, size = 0) {
     let template = ''
-    template += `<div class="px-${size - 1}">`
+    template += `<div class="px-${size}">`
     arr.forEach((a, index) => {
       if (typeof a == 'object') {
         if (Array.isArray(a)) {
@@ -152,7 +156,7 @@ class InfosService {
 
     if (index == 0 && a.length < 30) {
       template += /*HTML*/`
-        <p class="fs-${size} fw-bold text-capitalize">${a.replace('desc', 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
+        <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
     } else {
       template += /*HTML*/`
         <p class="px-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- )./g, String.call.bind(a.toUpperCase))}</p>`
