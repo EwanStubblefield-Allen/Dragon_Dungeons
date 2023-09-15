@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
@@ -50,6 +50,35 @@ export default {
     onMounted(() => {
       getOptions()
     })
+
+    onBeforeUnmount(() => {
+      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
+        return
+      } else if (editable.value.id) {
+        updateCharacter()
+      }
+      else {
+        createCharacter()
+      }
+    })
+
+    function createCharacter() {
+      try {
+        charactersService.createTempCharacter(editable.value)
+      }
+      catch (error) {
+        Pop.error(error.message, '[CREATING CHARACTER]')
+      }
+    }
+
+    function updateCharacter() {
+      try {
+        charactersService.updateTempCharacter(editable.value)
+      }
+      catch (error) {
+        Pop.error(error.message, '[UPDATING CHARACTER]')
+      }
+    }
 
     async function getOptions() {
       try {
@@ -70,7 +99,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(5)
-        router.push({ name: 'Character', params: { characterId: 'levels' } })
+        router.push({ name: 'Character', params: { characterId: 'spells' } })
       },
 
       addPro(item, length) {

@@ -40,6 +40,10 @@
       <div v-else-if="route.params.characterId == 'proficiencies'">
         <ProficienciesForm />
       </div>
+
+      <div v-else-if="route.params.characterId == 'spells'">
+        <SpellsForm />
+      </div>
     </div>
   </section>
 </template>
@@ -54,13 +58,14 @@ import BackgroundForm from '../components/BackgroundForm.vue'
 import PersonalityTraitsForm from '../components/PersonalityTraitsForm.vue'
 import AttributesForm from '../components/AttributesForm.vue'
 import ProficienciesForm from '../components/ProficienciesForm.vue'
+import SpellsForm from '../components/SpellsForm.vue'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
     const editable = ref()
-    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Levels', 'Attacks', 'Spells', 'Equipment']
+    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Spells', 'Equipment']
 
     watchEffect(() => {
       let charPage = AppState.charPage
@@ -79,7 +84,7 @@ export default {
       charPage: computed(() => AppState.charPage)
     }
   },
-  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm }
+  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm, SpellsForm }
 }
 </script>
 

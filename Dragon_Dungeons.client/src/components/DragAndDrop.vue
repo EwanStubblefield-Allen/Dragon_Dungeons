@@ -73,7 +73,9 @@ export default defineComponent({
       }
       temp.manual = true
 
-      if (temp.id) {
+      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
+        return
+      } else if (temp.id) {
         updateCharacter(temp)
       }
       else {

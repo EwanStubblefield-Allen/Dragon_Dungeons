@@ -72,7 +72,9 @@ export default {
         return
       }
 
-      if (editable.value.id) {
+      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
+        return
+      } else if (editable.value.id) {
         updateCharacter()
       }
       else {
