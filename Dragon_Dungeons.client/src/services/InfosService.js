@@ -23,15 +23,18 @@ class InfosService {
     if (res.data.reference) {
       res = await dndApi.get(res.data.reference.url)
     }
-    delete res.data.url
-    delete res.data.index
-    const infoDetails = Object.entries(res.data).map(d => {
-      if (typeof d[1] == 'string' && this.checkIfLink({ url: d[1] })) {
-        return { name: d[0], url: d[1] }
-      }
-      return d
-    })
-    AppState.infoDetails = this.handleObj(infoDetails).filter(i => i)
+
+    if (Object.getPrototypeOf(res.data) == Object.prototype) {
+      delete res.data.url
+      delete res.data.index
+      res.data = Object.entries(res.data).map(d => {
+        if (typeof d[1] == 'string' && this.checkIfLink({ url: d[1] })) {
+          return { name: d[0], url: d[1] }
+        }
+        return d
+      })
+    }
+    AppState.infoDetails = this.handleObj(res.data).filter(i => i)
     AppState.infoHtml = this.handleHtml(AppState.infoDetails)
   }
 
@@ -95,30 +98,33 @@ class InfosService {
     if (typeof obj == 'string') {
       return false
     }
+
     return Object.values(obj).find(o => {
-      if (typeof o == 'string') {
-        return o.includes('api/')
+      if (typeof o == 'string' && o.includes('api/')) {
+        if (!obj.name && obj.level) {
+          obj.name = `Level ${obj.level}`
+        }
+        return true
+      } else {
+        return false
       }
-      return false
     })
   }
 
   handleHtml(arr, size = 0) {
     let template = ''
-    template += `<div class="px-${size}">`
+    template += `<div class="px-2">`
     arr.forEach((a, index) => {
       if (typeof a == 'object') {
         if (Array.isArray(a)) {
           template += this.arrHtml(a, size)
         } else {
-          size++
-          template += this.objHtml(arr, a, size)
+          template += this.objHtml(arr, a, size + 1)
         }
-      } else if (!a) {
+      } else if (a == null) {
         return
       } else {
-        size++
-        template += this.strHtml(a, index, size)
+        template += this.strHtml(arr, a, index, size + 1)
       }
     })
     template += '</div>'
@@ -145,21 +151,21 @@ class InfosService {
         <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
     } else {
       template += /*HTML*/`
-        <a href="#/info/${a.url.replace('/api/', '')}" class="text-decoration text-dark px-2"><u>${a.name}</u></a>`
+        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark px-2"><u>${a.name}</u></a>`
     }
     return template
   }
 
-  strHtml(a, index, size) {
+  strHtml(arr, a, index, size) {
     let template = ''
     a = a.toString()
 
-    if (index == 0 && a.length < 30) {
+    if (index == 0 && arr.length == 2 && a.length < 30) {
       template += /*HTML*/`
         <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
     } else {
       template += /*HTML*/`
-        <p class="px-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- )./g, String.call.bind(a.toUpperCase))}</p>`
+        <p class="fs-${size + 3} px-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
     }
     return template
   }

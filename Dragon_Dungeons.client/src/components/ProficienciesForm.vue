@@ -14,7 +14,7 @@
     <div class="bg-dark p-3 rounded-bottom elevation-5">
       <div v-for="(opt, index) in options" :key="opt">
         <form v-if="selectable[0] == index" @submit.prevent="!options[1] || selectable[0] ? changeCharPage() : selectable = [1, 'proficiencies']" class="row g-3">
-          <div>
+          <div class="col-12">
             <p class="fs-3 fw-bold">Choose {{ opt.choose }} {{ selectable[1] }}
               <router-link :to="{ name: 'Info', params: { infoId: selectable[1], infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
             </p>

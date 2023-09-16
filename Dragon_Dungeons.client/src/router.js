@@ -38,7 +38,7 @@ const routes = [
     component: loadPage('CampaignPage')
   },
   {
-    path: '/info/:infoId/:infoDetails',
+    path: '/info/:infoId/:infoDetails/:infoSpec?/:infoMore?',
     name: 'Info',
     component: loadPage('InfoPage')
   }

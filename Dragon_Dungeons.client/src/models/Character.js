@@ -29,5 +29,7 @@ export class Character {
     this.bonus = data.bonus
     this.skills = data.skills
     this.other = data.other
+    this.level = data.level
+    this.spells = data.spells
   }
 }

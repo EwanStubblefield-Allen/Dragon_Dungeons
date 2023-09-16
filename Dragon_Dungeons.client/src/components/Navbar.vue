@@ -61,7 +61,7 @@
   <section id="infoCollapse" class="row collapse bg-dark">
     <div v-for="(i, index) in info" :key="index" class="col-12 col-sm-4 col-md-3 py-2">
       <hr class="m-0 py-2">
-      <router-link :to="`/info/${i[1].replace('/api/', '').replace(/'/g, '')}/search`" @click="clearInfoHtml(); dismissInfo()" class="text-light fw-bold selectable text-uppercase p-2">
+      <router-link :to="`/info/${i[1].replace('/api/', '').replace(/'/g, '')}/search`" @click="clearInfoHtml(); dismissInfo()" class="text-light fw-bold selectable text-uppercase rounded p-2">
         {{ i[0].replace('-', ' ') }}
       </router-link>
     </div>
