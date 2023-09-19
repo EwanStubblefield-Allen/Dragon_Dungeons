@@ -44,12 +44,16 @@
       <div v-else-if="route.params.characterId == 'spells'">
         <SpellsForm />
       </div>
+
+      <div v-else-if="route.params.characterId == 'equipment'">
+        <EquipmentForm />
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import { computed, ref, watchEffect } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from "../AppState.js"
 import BasicsForm from '../components/BasicsForm.vue'
@@ -59,19 +63,19 @@ import PersonalityTraitsForm from '../components/PersonalityTraitsForm.vue'
 import AttributesForm from '../components/AttributesForm.vue'
 import ProficienciesForm from '../components/ProficienciesForm.vue'
 import SpellsForm from '../components/SpellsForm.vue'
+import EquipmentForm from '../components/EquipmentForm.vue'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const editable = ref()
     const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Spells', 'Equipment']
 
     watchEffect(() => {
       let charPage = AppState.charPage
 
       for (let i = list.length - 1; i > charPage; i--) {
-        if (list[i].toLowerCase().replace(' ', '-') == route.params.characterId) {
+        if (list[i].toLowerCase().replace(' ', '-') == route.params.characterId && AppState.tempCharacter) {
           router.push({ name: 'Character', params: { characterId: list[charPage].toLowerCase().replace(' ', '-') } })
         }
       }
@@ -79,12 +83,11 @@ export default {
 
     return {
       route,
-      editable,
       list,
       charPage: computed(() => AppState.charPage)
     }
   },
-  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm, SpellsForm }
+  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm, SpellsForm, EquipmentForm }
 }
 </script>
 

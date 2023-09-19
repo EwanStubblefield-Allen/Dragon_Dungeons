@@ -11,7 +11,7 @@
         Class:
         <router-link :to="{ name: 'Info', params: { infoId: 'classes', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
       </label>
-      <select v-model="editable.class" @change="checkSpells(editable.class)" id="class" class="form-select" required>
+      <select v-model="editable.class" id="class" class="form-select" required>
         <option v-for="c in dndClass" :key="c">{{ c }}</option>
       </select>
     </div>
@@ -37,30 +37,6 @@
       <button type="submit" class="btn btn-primary">Save</button>
     </div>
   </form>
-
-  <div v-if="options.length" class="m-3">
-    <ul class="nav nav-tabs">
-      <li v-if="cantrips.length" class="nav-item">
-        <p @click="selectable = [0, 'cantrips']" :class="{ 'active elevation-5': !selectable[0] }" class="nav-link selectable text-dark fw-bold">Cantrips</p>
-      </li>
-      <li v-if="spells.length" class="nav-item">
-        <p @click="selectable = [1, 'spells']" :class="{ 'active elevation-5': selectable[0] }" class="nav-link selectable text-dark fw-bold">Spells</p>
-      </li>
-    </ul>
-
-    <div class="bg-dark p-3 rounded-bottom elevation-5">
-      <div v-for="(opt, index) in options" :key="opt">
-        <div v-if="selectable[0] == index" class="g-3">
-          <p class="fs-3 fw-bold">Choose {{ opt.choose }} {{ selectable[1] }}
-            <router-link :to="{ name: 'Info', params: { infoId: selectable[1], infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
-          </p>
-          <section class="row p-2">
-            <p @click="addPro(o.item.name, opt.choose)" v-for="o in opt.from.options" :key="o.item.index" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name }}</p>
-          </section>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -70,14 +46,11 @@ import { AppState } from '../AppState.js'
 import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import Pop from '../utils/Pop.js'
-import { logger } from '../utils/Logger.js'
 
 export default {
   setup() {
     const router = useRouter()
     const editable = ref({})
-    const cantrips = ref([])
-    const spells = ref([])
     const dndClass = ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
     const race = ['Dragonborn', 'Dwarf', 'Elf', 'Gnome', 'Half-Elf', 'Half-Orc', 'Halfling', 'Human', 'Tiefling']
     const alignment = ['Chaotic Evil', 'Chaotic Good', 'Chaotic Neutral', 'Lawful Evil', 'Lawful Good', 'Lawful Neutral', 'Neutral', 'Neutral Evil', 'Neutral Good']
@@ -135,16 +108,6 @@ export default {
       dndClass,
       race,
       alignment,
-      spells,
-      cantrips,
-
-      async checkSpells(selectedClass) {
-        const level = await infosService.getInfoDetails(`api/classes/${selectedClass.toLowerCase().replaceAll(' ', '-')}/levels/1`, false)
-
-        // if (level.spellcasting) {
-
-        // }
-      },
 
       changeCharPage() {
         charactersService.changeCharPage(0)

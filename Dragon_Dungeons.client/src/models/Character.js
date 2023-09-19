@@ -20,16 +20,18 @@ export class Character {
     this.bonds = data.bonds
     this.flaws = data.flaws
     this.manual = data.manual
-    this.strength = data.strength
-    this.dexterity = data.dexterity
-    this.constitution = data.constitution
-    this.intelligence = data.intelligence
-    this.wisdom = data.wisdom
-    this.charisma = data.charisma
+    this.str = data.str
+    this.dex = data.dex
+    this.con = data.con
+    this.int = data.int
+    this.wis = data.wis
+    this.cha = data.cha
     this.bonus = data.bonus
     this.skills = data.skills
     this.other = data.other
     this.level = data.level
     this.spells = data.spells
+    this.cantrips = data.cantrips
+    this.equipment = data.equipment
   }
 }

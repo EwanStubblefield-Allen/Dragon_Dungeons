@@ -6,6 +6,8 @@ class CharactersService {
   changeCharPage(current) {
     if (current == AppState.charPage) {
       AppState.charPage++
+    } else if (current == 0) {
+      AppState.tempCharacter = {}
     }
   }
 

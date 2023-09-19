@@ -1,47 +1,82 @@
 <template>
-  <p class="fs-1 fw-bold m-3 py-2">Spells</p>
+  <div class="m-3">
+    <p class="fs-1 fw-bold py-2">Spells</p>
 
-  <form @submit.prevent="changeCharPage()" class="row g-3 bg-dark m-3 p-3 rounded elevation-5">
-    <div class="col-6 form-group">
-      <label for="personalityTraits">Personality Traits:</label>
-      <textarea v-model="editable.personalityTraits" class="form-control" id="personalityTraits" rows="5" minlength="1" maxlength="500" placeholder="Personality Traits..." required></textarea>
+    <ul class="nav nav-tabs">
+      <li class="nav-item" v-if="cantrips">
+        <p @click="selectable = [0, 'cantrips']" :class="{ 'active elevation-5': !selectable[0] }" class="nav-link selectable text-dark fw-bold">Cantrips</p>
+      </li>
+      <li class="nav-item" v-if="spells">
+        <p @click="selectable = [1, 'spells']" :class="{ 'active elevation-5': selectable[0] }" class="nav-link selectable text-dark fw-bold">Spells</p>
+      </li>
+    </ul>
+
+    <div class="bg-dark p-3 rounded-bottom elevation-5">
+      <form @submit.prevent="selectable = [1, 'spells']" v-if="selectable[0] == 0" class="row g-3">
+        <div class="col-12">
+          <p class="fs-3 fw-bold">Choose {{ cantrips.count }}
+            <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
+          </p>
+          <section class="row p-2">
+            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.includes(c) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ c.name }}</p>
+          </section>
+        </div>
+
+        <div class="col-12 text-end">
+          <button type="submit" :class="{ 'btn-secondary disabled': editable[selectable[1]]?.length != cantrips.count }" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+
+      <form @submit.prevent="changeCharPage()" v-else class="row g-3">
+        <div class="col-12">
+          <p class="fs-3 fw-bold">Choose {{ spells.count }}
+            <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
+          </p>
+          <section class="row align-items-center p-2">
+            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.includes(s) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ s.name }}</p>
+          </section>
+        </div>
+
+        <div class="col-12 text-end">
+          <button type="submit" :class="{ 'btn-secondary disabled': editable[selectable[1]]?.length != spells.count }" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
-    <div class="col-6 form-group">
-      <label for="ideals">Ideals:</label>
-      <textarea v-model="editable.ideals" class="form-control" id="ideals" rows="5" minlength="1" maxlength="500" placeholder="Ideals..." required></textarea>
-    </div>
-    <div class="col-6 form-group">
-      <label for="bonds">Bonds:</label>
-      <textarea v-model="editable.bonds" class="form-control" id="bonds" rows="5" minlength="1" maxlength="500" placeholder="Bonds..." required></textarea>
-    </div>
-    <div class="col-6 form-group">
-      <label for="flaws">Flaws:</label>
-      <textarea v-model="editable.flaws" class="form-control" id="flaws" rows="5" minlength="1" maxlength="500" placeholder="Flaws..." required></textarea>
-    </div>
-    <div class="col-12 text-end">
-      <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-  </form>
+  </div>
 </template>
 
 <script>
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
+import { infosService } from '../services/InfosService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const router = useRouter()
     const editable = ref({})
+    const selectable = ref([0, 'cantrips'])
+    const cantrips = ref({})
+    const spells = ref({})
+
+    onMounted(() => {
+      editable.value = { ...AppState.tempCharacter }
+
+      if (!AppState.tempCharacter.class) {
+        return
+      }
+      getInfo()
+    })
 
     onBeforeUnmount(() => {
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
       } else if (editable.value.id) {
         updateCharacter()
-      } else {
+      }
+      else {
         createCharacter()
       }
     })
@@ -49,7 +84,8 @@ export default {
     function createCharacter() {
       try {
         charactersService.createTempCharacter(editable.value)
-      } catch (error) {
+      }
+      catch (error) {
         Pop.error(error.message, '[CREATING CHARACTER]')
       }
     }
@@ -57,17 +93,77 @@ export default {
     function updateCharacter() {
       try {
         charactersService.updateTempCharacter(editable.value)
-      } catch (error) {
+      }
+      catch (error) {
         Pop.error(error.message, '[UPDATING CHARACTER]')
       }
     }
 
+    async function getInfo() {
+      try {
+        const selectedClass = AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')
+        const casting = (await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)).spellcasting
+
+        if (!casting || !Object.values(casting).find(c => c > 0)) {
+          return changeCharPage()
+        }
+        cantrips.value = await infosService.getInfoDetails('api/spells?level=0', false)
+        cantrips.value.count = casting.cantrips_known
+        spells.value = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1/spells`, false)
+
+        if (casting.spells_known) {
+          spells.value.count = casting.spells_known
+        } else {
+          switch (selectedClass) {
+            case 'wizard':
+              spells.value.count = Math.floor((AppState.tempCharacter.int - 10) / 2) + 1
+              break
+            case 'cleric':
+            case 'druid':
+              spells.value.count = Math.floor((AppState.tempCharacter.wis - 10) / 2) + 1
+
+              break
+            default:
+              Pop.error('Needs a case for spells')
+              break
+          }
+
+          if (spells.value.count < 1) {
+            spells.value.count = 1
+          }
+        }
+      } catch (error) {
+        Pop.error(error.message, '[GETTING SPELLS]')
+      }
+    }
+
+    function changeCharPage() {
+      charactersService.changeCharPage(6)
+      router.push({ name: 'Character', params: { characterId: 'equipment' } })
+    }
+
     return {
       editable,
+      selectable,
+      cantrips,
+      spells,
+      changeCharPage,
 
-      changeCharPage() {
-        charactersService.changeCharPage(6)
-        router.push({ name: 'Character', params: { characterId: 'attacks' } })
+      addPro(item, length) {
+        let type = selectable.value[1]
+
+        if (!editable.value[type]) {
+          editable.value[type] = []
+        }
+
+        if (editable.value[type].includes(item)) {
+          return
+        }
+        editable.value[type].push(item)
+
+        if (editable.value[type].length > length) {
+          editable.value[type].shift()
+        }
       }
     }
   }
