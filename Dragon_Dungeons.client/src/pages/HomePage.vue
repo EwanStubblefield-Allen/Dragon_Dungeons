@@ -12,6 +12,7 @@ export default {
   setup() {
     onMounted(() => {
       AppState.charPage = 0
+      AppState.tempCharacter = {}
     })
 
     return {}

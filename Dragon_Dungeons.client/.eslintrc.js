@@ -31,7 +31,7 @@ module.exports = {
     'padded-blocks': ['warn', { 'blocks': 'never' }],
     'semi': ['warn', 'never'],
     'space-before-blocks': 'warn',
-    'space-before-function-paren': [1, 'never'],
+    'space-before-function-paren': ['error', { 'anonymous': 'never', 'named': 'never', 'asyncArrow': 'always' }],
     'space-infix-ops': 'warn',
     'vue/html-self-closing': 0,
     'vue/multi-word-component-names': 'off',

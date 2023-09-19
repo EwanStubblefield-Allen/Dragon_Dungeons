@@ -16,7 +16,7 @@ export class Character {
     this.background = data.background
     this.backstory = data.backstory
     this.personalityTraits = data.personalityTraits
-    this.morals = data.morals
+    this.ideals = data.ideals
     this.bonds = data.bonds
     this.flaws = data.flaws
     this.manual = data.manual
@@ -28,6 +28,7 @@ export class Character {
     this.cha = data.cha
     this.bonus = data.bonus
     this.skills = data.skills
+    this.proficiencies = data.proficiencies
     this.other = data.other
     this.level = data.level
     this.spells = data.spells

@@ -11,7 +11,7 @@
         Class:
         <router-link :to="{ name: 'Info', params: { infoId: 'classes', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
       </label>
-      <select v-model="editable.class" id="class" class="form-select" required>
+      <select @change="areYouSure('class')" v-model="editable.class" id="class" class="form-select" required>
         <option v-for="c in dndClass" :key="c">{{ c }}</option>
       </select>
     </div>
@@ -20,7 +20,7 @@
         Race:
         <router-link :to="{ name: 'Info', params: { infoId: 'races', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
       </label>
-      <select v-model="editable.race" id="race" class="form-select" required>
+      <select @change="areYouSure('race')" v-model="editable.race" id="race" class="form-select" required>
         <option v-for="r in race" :key="r">{{ r }}</option>
       </select>
     </div>
@@ -108,6 +108,23 @@ export default {
       dndClass,
       race,
       alignment,
+
+      async areYouSure(type) {
+        if (!AppState.tempCharacter[type]) {
+          return
+        }
+        const isSure = await Pop.confirm('If you change this all progress will be reset!! Continue?')
+
+        if (!isSure) {
+          editable.value[type] = AppState.tempCharacter[type]
+          return
+        }
+        const temp = editable.value[type]
+        AppState.charPage = 0
+        editable.value = {}
+        AppState.tempCharacter = {}
+        editable.value[type] = temp
+      },
 
       changeCharPage() {
         charactersService.changeCharPage(0)

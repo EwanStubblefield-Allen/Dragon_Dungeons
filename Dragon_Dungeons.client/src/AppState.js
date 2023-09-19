@@ -11,5 +11,5 @@ export const AppState = reactive({
   infoHtml: '',
   /** @type {import('./models/Character.js').Character.js} */
   tempCharacter: {},
-  charPage: 10
+  charPage: 0
 })

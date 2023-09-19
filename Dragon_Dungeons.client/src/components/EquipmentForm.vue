@@ -3,18 +3,28 @@
 
   <form @submit.prevent="finishCreation()" class="row g-3 bg-dark text-dark m-3 p-3 rounded elevation-5">
     <div v-for="(start, index) in starting" :key="start" class="col-12 form-group">
-      <label class="text-light text-capitalize" for="equipment">
+      <label class="text-light text-capitalize" :for="`equipment${index}`">
         {{ start.desc.replaceAll(/\(.\)/g, '') }}
         <router-link :to="{ name: 'Info', params: { infoId: 'equipment', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
       </label>
-      <div class="input-group">
-        <select v-model="editable.equipment[index]" @change="checkOptions(index)" id="equipment" class="form-select text-capitalize">
-          <option v-for="s in start.from" :key="s" :value="s">{{ s.count ?? s.choose }} {{ s.name }}</option>
+      <div>
+        <select v-model="editable.equipment[index]" @change="checkOptions(index)" :id="`equipment${index}`" class="form-select text-capitalize" required>
+          <option v-for="s in start.from" :key="s.index" :value="s">
+            <p v-if="Array.isArray(s)">
+              <span v-for="equip in s" :key="equip.index">
+                {{ equip.choose ?? equip.count }} {{ `${equip.name} ` }}
+              </span>
+            </p>
+            <p v-else>{{ s.count ?? s.choose }} {{ s.name }}</p>
+          </option>
         </select>
-        <div v-if="list[index]?.length" class="input-group">
-          <select v-for="i in editable.equipment[index].choose" :key="i" v-model="selectable[index]" id="class1" class="form-select" required>
-            <option v-for="sel in list[index]" :key="sel" :value="sel">{{ sel.name }}</option>
-          </select>
+        <div v-if="list[index]?.length">
+          <section v-if="!Array.isArray(editable.equipment[index])" class="row pt-3">
+            <p @click="addPro(sel, editable.equipment[index].choose, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-light text-center selectable rounded">{{ sel.name }}</p>
+          </section>
+          <section v-else class="row pt-3">
+            <p @click="addPro(sel, false, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-light text-center selectable rounded">{{ sel.name }}</p>
+          </section>
         </div>
       </div>
     </div>
@@ -31,7 +41,6 @@ import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
 import Pop from '../utils/Pop.js'
-import { logger } from '../utils/Logger.js'
 
 export default {
   setup() {
@@ -55,14 +64,16 @@ export default {
     })
 
     onBeforeUnmount(() => {
-      if (selectable.value.length) {
-        selectable.value.forEach((s, i) => {
-          if (s.name) {
-            s.choose = 1
-            editable.value.equipment[i] = s
+      selectable.value.forEach((select, index) => {
+        if (select.length) {
+          if (Array.isArray(editable.value.equipment[index])) {
+            editable.value.equipment[index] = editable.value.equipment[index].filter(e => !e.choose)
+            editable.value.equipment[index].push(select)
+          } else {
+            editable.value.equipment[index] = select
           }
-        })
-      }
+        }
+      })
 
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
@@ -94,39 +105,60 @@ export default {
 
     async function getInfo() {
       try {
-        // FIXME Fighter and other classes with multiple options
         let selectedClass = await infosService.getInfoDetails(`api/classes/${AppState.tempCharacter.class.toLowerCase()}`, false)
         starting.value = await Promise.all(selectedClass.starting_equipment_options.map(async s => {
           if (!Array.isArray(s.from.options)) {
             s.from = (await infosService.getInfoDetails(s.from.equipment_category.url, false)).equipment
             s.from.forEach(o => o.count ? o.count : o.count = 1)
           } else {
-            s.from = s.from.options.map(o => {
-              if (o.choice) {
-                o.choice.from.equipment_category.choose = o.choice.choose
-                o = o.choice.from.equipment_category
+            s.from = s.from.options.map(option => {
+              if (option.choice) {
+                option.choice.from.equipment_category.choose = option.choice.choose
+                option = option.choice.from.equipment_category
               } else {
-                if (o.items) {
-                  o = o.items[0]
-                }
-
-                if (o.of) {
-                  o.of.count = o?.count
-                  o = o.of
+                if (option.items) {
+                  option = option.items.map(item => {
+                    if (item.choice) {
+                      item.choice.from.equipment_category.choose = item.choice.choose
+                      return item.choice.from.equipment_category
+                    } else {
+                      item.of.count = item.count
+                      return item.of
+                    }
+                  })
+                } else if (option.of) {
+                  option.of.count = option.count
+                  option = option.of
                 }
               }
-              return o
+              return option
             })
           }
           return s
         }))
-        logger.log(starting.value)
-        editable.value.equipment.forEach(async (e, i) => {
-          if (e.choose) {
-            editable.value.equipment[i] = starting.value[i].from[starting.value[i].from.length - 1]
+        editable.value.equipment.forEach(async (equip, i) => {
+          if (Array.isArray(equip)) {
+            const foundIndex = starting.value[i].from.findIndex(fro => {
+              if (Array.isArray(fro)) {
+                let isSomewhatEqual = fro.findIndex(f => equip.find(e => JSON.stringify(e) == JSON.stringify(f)))
+
+                if (isSomewhatEqual >= 0) {
+                  equip = equip[isSomewhatEqual]
+                  return true
+                }
+              } else {
+                if (fro.choose == equip.length) {
+                  return true
+                }
+              }
+            })
+
+            if (foundIndex == -1) {
+              return
+            }
+            editable.value.equipment[i] = starting.value[i].from[foundIndex]
             await checkOptions(i)
-            delete e.choose
-            selectable.value[i] = e
+            selectable.value[i] = equip
           }
         })
       } catch (error) {
@@ -137,7 +169,18 @@ export default {
     async function checkOptions(index) {
       let option = editable.value.equipment[index]
 
+      if (Array.isArray(option)) {
+        option.forEach(o => {
+          getOptions(o, index)
+        })
+      } else {
+        getOptions(option, index)
+      }
+    }
+
+    async function getOptions(option, index) {
       if (!option.choose) {
+        selectable.value[index] = []
         return list.value[index] = []
       }
       let choose = await infosService.getInfoDetails(option.url, false)
@@ -151,6 +194,30 @@ export default {
       list,
       checkOptions,
 
+      addPro(item, length, index) {
+        if (!length) {
+          length = 0
+          editable.value.equipment[index].forEach(e => {
+            if (e.choose) {
+              length += e.choose
+            }
+          })
+        }
+
+        if (!selectable.value[index]) {
+          selectable.value[index] = []
+        }
+
+        if (selectable.value[index].includes(item)) {
+          return
+        }
+        selectable.value[index].push(item)
+
+        if (selectable.value[index].length > length) {
+          selectable.value[index].shift()
+        }
+      },
+
       async finishCreation() {
         const isSure = await Pop.confirm('Are you sure you are finished creating this character?')
 
@@ -158,7 +225,6 @@ export default {
           return
         }
         router.push({ name: 'Home' })
-        charactersService.changeCharPage(0)
       }
     }
   }

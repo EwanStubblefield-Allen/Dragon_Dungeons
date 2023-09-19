@@ -19,7 +19,7 @@
               <router-link :to="{ name: 'Info', params: { infoId: selectable[1], infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
             </p>
             <section class="row p-2">
-              <p @click="addPro(o.item.name.replace('Skill:', ''), opt.choose)" v-for="o in opt.from.options" :key="o.item.index" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name.replace('Skill:', '')) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name.replace('Skill:', '') }}</p>
+              <p @click="addPro(o.item.name.replace('Skill:', ''), opt.choose)" v-for="o in opt.from.options" :key="o.item.name" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name.replace('Skill:', '')) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name.replace('Skill:', '') }}</p>
             </section>
           </div>
 
@@ -48,6 +48,7 @@ export default {
     const options = ref([])
 
     onMounted(() => {
+      editable.value = { ...AppState.tempCharacter }
       getOptions()
     })
 
@@ -82,11 +83,17 @@ export default {
 
     async function getOptions() {
       try {
-        if (!AppState.tempCharacter.class) {
-          return
-        }
-        const dndClass = await infosService.getInfoDetails(`api/classes/${AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')}`, false)
-        options.value = dndClass.proficiency_choices
+        const selectedClass = await infosService.getInfoDetails(`api/classes/${AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')}`, false)
+        selectedClass.proficiency_choices.forEach(choice => {
+          if (!choice.from.options[0].item) {
+            let template = []
+            choice.from.options.forEach(option => {
+              template = template.concat(option.choice.from.options)
+            })
+            choice.from.options = template
+          }
+        })
+        options.value = selectedClass.proficiency_choices
       } catch (error) {
         Pop.error(error.message, '[GETTING OPTIONS]')
       }

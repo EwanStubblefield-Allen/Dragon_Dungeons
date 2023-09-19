@@ -19,10 +19,10 @@
           <input v-model="editable.age" type="number" class="form-control" id="age" min="1" placeholder="Age..." required>
         </div>
         <div class="col-md-4 form-group">
-          <label for="height">Height:</label>
+          <label for="inch">Height:</label>
           <div class="input-group">
-            <input v-model="editable.feet" type="number" class="form-control" id="height" min="1" max="10" placeholder="Feet..." required>
-            <input v-model="editable.inches" type="number" class="form-control" id="height" min="0" max="11" placeholder="Inches..." required>
+            <input v-model="editable.feet" type="number" class="form-control" id="inch" min="1" max="10" placeholder="Feet..." required>
+            <input v-model="editable.inches" type="number" class="form-control" id="feet" min="0" max="11" placeholder="Inches..." required>
           </div>
         </div>
         <div class="col-md-4 form-group">
@@ -51,7 +51,7 @@
 
       <form v-else @submit.prevent="changeCharPage()" class="row g-3">
         <div class="col-12 form-group">
-          <label for="features">Features:</label>
+          <label for="features">Character Description:</label>
           <textarea v-model="editable.features" class="form-control" id="features" rows="10" minlength="1" maxlength="1000" placeholder="Features..." required></textarea>
         </div>
         <div class="col-12 text-end">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
@@ -86,9 +86,12 @@ export default {
     })
 
     onMounted(() => {
-      editable.value = { ...AppState.tempCharacter }
       let textElement = document.getElementById('age')
       textElement.focus()
+    })
+
+    watchEffect(() => {
+      editable.value = { ...AppState.tempCharacter }
     })
 
     function createCharacter() {

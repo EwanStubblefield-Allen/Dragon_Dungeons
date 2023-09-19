@@ -18,7 +18,7 @@
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
           <section class="row p-2">
-            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.includes(c) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ c.name }}</p>
+            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.find(cantrip => cantrip.name == c.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ c.name }}</p>
           </section>
         </div>
 
@@ -33,7 +33,7 @@
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
           <section class="row align-items-center p-2">
-            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.includes(s) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ s.name }}</p>
+            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.find(spell => spell.name == s.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ s.name }}</p>
           </section>
         </div>
 
@@ -63,10 +63,6 @@ export default {
 
     onMounted(() => {
       editable.value = { ...AppState.tempCharacter }
-
-      if (!AppState.tempCharacter.class) {
-        return
-      }
       getInfo()
     })
 

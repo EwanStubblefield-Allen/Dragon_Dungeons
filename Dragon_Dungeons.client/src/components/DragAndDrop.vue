@@ -13,7 +13,8 @@
           </div>
 
           <div class="d-flex justify-content-around align-items-center p-2">
-            <input v-model="editable[i]" type="number" class="form-control fs-4" style="width: 66.66% !important;" min="1" max="20" required>
+            <label :for="a"></label>
+            <input v-model="editable[i]" type="number" :id="a" class="form-control fs-4" style="width: 66.66% !important;" min="1" max="20" required>
             <p class="fs-3 text-center">{{ Math.floor((editable[i] - 10) / 2) }}</p>
           </div>
 
