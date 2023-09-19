@@ -53,7 +53,7 @@ export default {
         }
         let temp = AppState.tempCharacter
         temp.manual = bool
-        temp.strength, temp.dexterity, temp.constitution, temp.intelligence, temp.wisdom, temp.charisma = 8
+        temp.str = temp.dex = temp.con = temp.int = temp.wis = temp.cha = 8
       }
     }
   },

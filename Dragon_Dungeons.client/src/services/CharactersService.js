@@ -13,6 +13,7 @@ class CharactersService {
     // const res = await api.post('api/character', characterData)
     // AppState.tempCharacter = new Character(res.data)
     // FIXME Temp
+    characterData.intelligence = characterData.int
     AppState.tempCharacter = new Character(characterData)
   }
 

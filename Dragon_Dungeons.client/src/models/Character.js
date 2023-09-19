@@ -1,7 +1,10 @@
-export class Character {
+import { RepoItem } from "./RepoItem.js"
+
+export class Character extends RepoItem {
   constructor(data) {
-    this.id = data.id
+    super(data)
     this.name = data.name
+    this.level = data.level
     this.class = data.class
     this.race = data.race
     this.alignment = data.alignment
@@ -23,16 +26,14 @@ export class Character {
     this.str = data.str
     this.dex = data.dex
     this.con = data.con
-    this.int = data.int
+    this.int = data.intelligence
     this.wis = data.wis
     this.cha = data.cha
     this.bonus = data.bonus
     this.skills = data.skills
     this.proficiencies = data.proficiencies
-    this.other = data.other
-    this.level = data.level
-    this.spells = data.spells
     this.cantrips = data.cantrips
+    this.spells = data.spells
     this.equipment = data.equipment
   }
 }

@@ -6,10 +6,12 @@
       <input v-model="editable.background" type="text" class="form-control" id="background" minlength="3" maxlength="100" placeholder="Background..." required>
       <label class="text-dark" for="background">Background:</label>
     </div>
+
     <div class="col-12 form-group">
       <label for="backstory">Backstory:</label>
       <textarea v-model="editable.backstory" class="form-control" id="backstory" rows="10" minlength="1" maxlength="1000" placeholder="Backstory..." required></textarea>
     </div>
+
     <div class="col-12 text-end">
       <button type="submit" class="btn btn-primary">Save</button>
     </div>

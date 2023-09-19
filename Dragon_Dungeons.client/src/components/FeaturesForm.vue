@@ -16,15 +16,17 @@
       <form @submit.prevent="changeTab()" v-if="selectable == 1" class="row g-3">
         <div class="col-md-4 form-group">
           <label for="age">Age:</label>
-          <input v-model="editable.age" type="number" class="form-control" id="age" min="1" placeholder="Age..." required>
+          <input v-model="editable.age" type="number" class="form-control" id="age" min="1" max="1000" placeholder="Age..." required>
         </div>
+
         <div class="col-md-4 form-group">
           <label for="inch">Height:</label>
           <div class="input-group">
-            <input v-model="editable.feet" type="number" class="form-control" id="inch" min="1" max="10" placeholder="Feet..." required>
+            <input v-model="editable.feet" type="number" class="form-control" id="inch" min="1" max="100" placeholder="Feet..." required>
             <input v-model="editable.inches" type="number" class="form-control" id="feet" min="0" max="11" placeholder="Inches..." required>
           </div>
         </div>
+
         <div class="col-md-4 form-group">
           <label for="weight">Weight:</label>
           <div class="input-group">
@@ -32,18 +34,22 @@
             <div class="input-group-text">.lb</div>
           </div>
         </div>
+
         <div class="col-md-4 form-group">
           <label for="eyes">Eyes:</label>
           <input v-model="editable.eyes" type="text" class="form-control" id="eyes" minlength="3" maxlength="30" placeholder="Eyes..." required>
         </div>
+
         <div class="col-md-4 form-group">
           <label for="skin">Skin:</label>
           <input v-model="editable.skin" type="text" class="form-control" id="skin" minlength="3" maxlength="30" placeholder="Skin..." required>
         </div>
+
         <div class="col-md-4 form-group">
           <label for="hair">Hair:</label>
           <input v-model="editable.hair" type="text" class="form-control" id="hair" minlength="3" maxlength="30" placeholder="Hair..." required>
         </div>
+
         <div class="col-12 text-end">
           <button type="submit" class="btn btn-primary">Save</button>
         </div>
@@ -54,6 +60,7 @@
           <label for="features">Character Description:</label>
           <textarea v-model="editable.features" class="form-control" id="features" rows="10" minlength="1" maxlength="1000" placeholder="Features..." required></textarea>
         </div>
+
         <div class="col-12 text-end">
           <button type="submit" class="btn btn-primary">Save</button>
         </div>

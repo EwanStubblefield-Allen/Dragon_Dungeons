@@ -6,6 +6,7 @@
       <input v-model="editable.name" type="text" class="form-control" id="name" minlength="3" maxlength="100" placeholder="Name..." required>
       <label for="name">Character Name:</label>
     </div>
+
     <div class="col-md-4 form-group">
       <label class="text-light" for="class">
         Class:
@@ -15,6 +16,7 @@
         <option v-for="c in dndClass" :key="c">{{ c }}</option>
       </select>
     </div>
+
     <div class="col-md-4 form-group">
       <label class="text-light" for="race">
         Race:
@@ -24,6 +26,7 @@
         <option v-for="r in race" :key="r">{{ r }}</option>
       </select>
     </div>
+
     <div class="col-md-4 form-group">
       <label class="text-light" for="alignment">
         Alignment:
@@ -33,6 +36,7 @@
         <option v-for="a in alignment" :key="a">{{ a }}</option>
       </select>
     </div>
+
     <div class="col-12 text-end">
       <button type="submit" class="btn btn-primary">Save</button>
     </div>
