@@ -48,7 +48,15 @@ class InfosService {
         }
       } else if (d[0] == 'from') {
         if (d[1].options) {
-          d = d[1].options
+          if (d[1].options[0].choice) {
+            let template = []
+            d[1].options.forEach(option => {
+              template = template.concat(option.choice.from.options)
+            })
+            d = template
+          } else {
+            d = d[1].options
+          }
         } else {
           d = Object.entries(d[1])
         }

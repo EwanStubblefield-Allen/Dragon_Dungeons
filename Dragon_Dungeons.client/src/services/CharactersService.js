@@ -22,6 +22,8 @@ class CharactersService {
     characterData = this.converter(characterData, true)
     const res = await api.post('api/characters', characterData)
     AppState.characters.push(new Character(this.converter(res.data)))
+    saveState('charPage', 0)
+    saveState('tempCharacter', {})
   }
 
   async updateCharacter(characterData) {
