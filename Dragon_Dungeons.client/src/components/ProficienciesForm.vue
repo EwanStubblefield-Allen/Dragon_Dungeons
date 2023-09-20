@@ -55,30 +55,13 @@ export default {
     onBeforeUnmount(() => {
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
-      } else if (editable.value.id) {
-        updateCharacter()
-      }
-      else {
-        createCharacter()
+      } else {
+        saveCharacter()
       }
     })
 
-    function createCharacter() {
-      try {
-        charactersService.createTempCharacter(editable.value)
-      }
-      catch (error) {
-        Pop.error(error.message, '[CREATING CHARACTER]')
-      }
-    }
-
-    function updateCharacter() {
-      try {
-        charactersService.updateTempCharacter(editable.value)
-      }
-      catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter() {
+      charactersService.saveCharacter(editable.value)
     }
 
     async function getOptions() {

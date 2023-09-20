@@ -74,7 +74,6 @@ import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
-import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
@@ -82,39 +81,25 @@ export default {
     const editable = ref({})
     const selectable = ref(1)
 
-    onBeforeUnmount(() => {
-      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
-        return
-      } else if (editable.value.id) {
-        updateCharacter()
-      } else {
-        createCharacter()
-      }
-    })
-
     onMounted(() => {
       let textElement = document.getElementById('age')
       textElement.focus()
+    })
+
+    onBeforeUnmount(() => {
+      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
+        return
+      } else {
+        saveCharacter()
+      }
     })
 
     watchEffect(() => {
       editable.value = { ...AppState.tempCharacter }
     })
 
-    function createCharacter() {
-      try {
-        charactersService.createTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[CREATING CHARACTER]')
-      }
-    }
-
-    function updateCharacter() {
-      try {
-        charactersService.updateTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter() {
+      charactersService.saveCharacter(editable.value)
     }
 
     return {

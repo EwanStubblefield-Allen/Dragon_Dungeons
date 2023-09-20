@@ -59,12 +59,12 @@ export default {
     const race = ['Dragonborn', 'Dwarf', 'Elf', 'Gnome', 'Half-Elf', 'Half-Orc', 'Halfling', 'Human', 'Tiefling']
     const alignment = ['Chaotic Evil', 'Chaotic Good', 'Chaotic Neutral', 'Lawful Evil', 'Lawful Good', 'Lawful Neutral', 'Neutral', 'Neutral Evil', 'Neutral Good']
 
-    onBeforeUnmount(() => {
-      handleSave()
-    })
-
     onMounted(() => {
       editable.value = { ...AppState.tempCharacter }
+    })
+
+    onBeforeUnmount(() => {
+      handleSave()
     })
 
     async function handleSave() {
@@ -74,10 +74,8 @@ export default {
 
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
-      } else if (editable.value.id) {
-        updateCharacter()
       } else {
-        createCharacter()
+        saveCharacter()
       }
     }
 
@@ -91,20 +89,9 @@ export default {
       }
     }
 
-    function createCharacter() {
-      try {
-        charactersService.createTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[CREATING CHARACTER]')
-      }
-    }
-
-    function updateCharacter() {
-      try {
-        charactersService.updateTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter() {
+      editable.value.creator = AppState.account
+      charactersService.saveCharacter(editable.value)
     }
 
     return {

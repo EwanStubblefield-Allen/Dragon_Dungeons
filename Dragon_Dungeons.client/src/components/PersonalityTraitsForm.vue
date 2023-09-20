@@ -33,22 +33,11 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
-import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const router = useRouter()
     const editable = ref({})
-
-    onBeforeUnmount(() => {
-      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
-        return
-      } else if (editable.value.id) {
-        updateCharacter()
-      } else {
-        createCharacter()
-      }
-    })
 
     onMounted(() => {
       editable.value = { ...AppState.tempCharacter }
@@ -57,20 +46,16 @@ export default {
       textElement.setSelectionRange(textElement.value.length, textElement.value.length)
     })
 
-    function createCharacter() {
-      try {
-        charactersService.createTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[CREATING CHARACTER]')
+    onBeforeUnmount(() => {
+      if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
+        return
+      } else {
+        saveCharacter()
       }
-    }
+    })
 
-    function updateCharacter() {
-      try {
-        charactersService.updateTempCharacter(editable.value)
-      } catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter() {
+      charactersService.saveCharacter(editable.value)
     }
 
     return {

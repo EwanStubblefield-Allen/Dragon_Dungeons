@@ -1,9 +1,13 @@
-namespace Dragon_Dungeons.Models;
-
-public class Account
+namespace Dragon_Dungeons.Models
 {
-  public string Id { get; set; }
-  public string Name { get; set; }
-  public string Email { get; set; }
-  public string Picture { get; set; }
+  public class Profile : RepoItem
+  {
+    public string Name { get; set; }
+    public string Picture { get; set; }
+  }
+
+  public class Account : Profile
+  {
+    public string Email { get; set; }
+  }
 }

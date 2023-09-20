@@ -49,6 +49,7 @@ export default {
     const selectable = ref([])
     const starting = ref([])
     const list = ref([])
+    let isFinished = false
 
     onMounted(() => {
       editable.value = { ...AppState.tempCharacter }
@@ -77,30 +78,23 @@ export default {
 
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
-      } else if (editable.value.id) {
-        updateCharacter()
-      }
-      else {
+      } else if (isFinished) {
         createCharacter()
+      } else {
+        saveCharacter()
       }
     })
 
-    function createCharacter() {
+    async function createCharacter() {
       try {
-        charactersService.createTempCharacter(editable.value)
-      }
-      catch (error) {
+        charactersService.createCharacter(editable.value)
+      } catch (error) {
         Pop.error(error.message, '[CREATING CHARACTER]')
       }
     }
 
-    function updateCharacter() {
-      try {
-        charactersService.updateTempCharacter(editable.value)
-      }
-      catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter() {
+      charactersService.saveCharacter(editable.value)
     }
 
     async function getInfo() {
@@ -224,6 +218,7 @@ export default {
         if (!isSure) {
           return
         }
+        isFinished = true
         router.push({ name: 'Home' })
       }
     }

@@ -39,7 +39,6 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
-import Pop from '../utils/Pop.js'
 
 export default defineComponent({
   data() {
@@ -76,30 +75,13 @@ export default defineComponent({
 
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
-      } else if (temp.id) {
-        updateCharacter(temp)
-      }
-      else {
-        createCharacter(temp)
+      } else {
+        saveCharacter(temp)
       }
     })
 
-    function createCharacter(temp) {
-      try {
-        charactersService.createTempCharacter(temp)
-      }
-      catch (error) {
-        Pop.error(error.message, '[CREATING CHARACTER]')
-      }
-    }
-
-    function updateCharacter(temp) {
-      try {
-        charactersService.updateTempCharacter(temp)
-      }
-      catch (error) {
-        Pop.error(error.message, '[UPDATING CHARACTER]')
-      }
+    function saveCharacter(temp) {
+      charactersService.saveCharacter(temp)
     }
 
     return {

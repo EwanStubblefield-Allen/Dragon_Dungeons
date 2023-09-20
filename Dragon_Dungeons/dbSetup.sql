@@ -26,38 +26,39 @@ CREATE TABLE characters(
     'Neutral Evil',
     'Neutral Good'
   ) NOT NULL,
-  age SMALLINT,
-  feet TINYINT,
-  inches TINYINT,
-  weight SMALLINT,
-  eyes VARCHAR(30),
-  skin VARCHAR(30),
-  hair VARCHAR(30),
-  features VARCHAR(1000),
-  background VARCHAR(100),
-  backstory VARCHAR(1000),
-  personalityTraits VARCHAR(500),
-  ideals VARCHAR(500),
-  bonds VARCHAR(500),
-  flaws VARCHAR(500),
+  age SMALLINT NOT NULL,
+  feet TINYINT NOT NULL,
+  inches TINYINT NOT NULL,
+  weight SMALLINT NOT NULL,
+  eyes VARCHAR(30) NOT NULL,
+  skin VARCHAR(30) NOT NULL,
+  hair VARCHAR(30) NOT NULL,
+  features VARCHAR(1000) NOT NULL,
+  background VARCHAR(100) NOT NULL,
+  backstory VARCHAR(1000) NOT NULL,
+  personalityTraits VARCHAR(500) NOT NULL,
+  ideals VARCHAR(500) NOT NULL,
+  bonds VARCHAR(500) NOT NULL,
+  flaws VARCHAR(500) NOT NULL,
   manual BOOLEAN DEFAULT false,
-  str TINYINT,
-  dex TINYINT,
-  con TINYINT,
-  intelligence TINYINT,
-  wis TINYINT,
-  cha TINYINT,
-  skills TEXT,
-  proficiencies TEXT,
-  cantrips TEXT,
-  equipment TEXT,
+  str TINYINT NOT NULL,
+  dex TINYINT NOT NULL,
+  con TINYINT NOT NULL,
+  intelligence TINYINT NOT NULL,
+  wis TINYINT NOT NULL,
+  cha TINYINT NOT NULL,
+  skills JSON,
+  proficiencies JSON,
+  cantrips JSON,
+  spells JSON,
+  equipment JSON,
   creatorId VARCHAR(255) NOT NULL,
   FOREIGN KEY (creatorId) REFERENCES accounts(id)
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE characters;
 
-CREATE TABLE bonus(
+CREATE TABLE bonuses(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
   createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
@@ -70,3 +71,5 @@ CREATE TABLE bonus(
   characterId VARCHAR(255),
   FOREIGN KEY (characterId) REFERENCES characters(id)
 ) DEFAULT CHARSET utf8 COMMENT '';
+
+DROP TABLE bonuses;
