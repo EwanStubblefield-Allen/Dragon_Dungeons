@@ -1,16 +1,29 @@
+# Use the .NET Core SDK image as the base image
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy everything
-COPY *.csproj ./
-# Restore as distinct layers
-RUN dotnet restore
-# Build and publish a release
+# Copy the dotnet project files to the container
 COPY . ./
+
+# Restore the .NET dependencies
+RUN dotnet restore
+
+# Build the application
 RUN dotnet publish -c Release -o out
 
-# Start runtime image
-FROM mcr.microsoft.com/dotnet/sdk:6.0
+# Create a new image using a lighter .NET Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+# Set the working directory inside the container
 WORKDIR /app
+
+# Copy the published output from the build-env to the new container
 COPY --from=build-env /app/out .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Dragon_Dungeons.dll
+
+# Expose the port your application listens on
+EXPOSE 7047
+
+# Set the entry point for the container
+ENTRYPOINT ["dotnet", "Dragon_Dungeons.dll"]

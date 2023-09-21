@@ -1,0 +1,56 @@
+name: Deploy to EC2 ☁️
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  EC2_IP_ADDRESS: ${{ secrets.EC2_IP_ADDRESS }}
+  EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+  EC2_PEM_KEY: ${{ secrets.EC2_PEM_KEY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_IMAGE_TAG: latest
+  ROOT: Dragon_Dungeons
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code 👀
+        uses: actions/checkout@v4
+
+      - name: Setup Node Client 🟩
+        uses: actions/setup-node@v3
+
+      - name: Build Client 🏗️
+        run: |
+            cd ./$ROOT.client && npm ci && npm run build
+
+      - name: Set up Docker Buildx 🤖
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure Env 🤐
+        env: 
+          ENV: ${{ secrets.ENV }}
+        run: |
+          echo "$ENV" > ./$ROOT/appsettings.json
+
+      - name: Build and Push Docker Image 🐳
+        run: |
+          docker buildx create --use
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          cd ./$ROOT
+          docker buildx build --platform linux/amd64 -t $DOCKER_USERNAME/dragon:$DOCKER_IMAGE_TAG --push .
+
+      - name: SSH Deploy 📔
+        run: |
+          mkdir -p ~/.ssh
+          echo "$EC2_PEM_KEY" > ~/.ssh/id_rsa.pem
+          chmod 600 ~/.ssh/id_rsa.pem
+
+          # Replace "path/to/your/docker-compose.yml" with your actual Docker Compose file path
+          scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no -r ./$ROOT/docker-compose.yml $EC2_USERNAME@$EC2_IP_ADDRESS:~/$ROOT/$ROOT/.
+          sudo ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_IP_ADDRESS "sudo docker pull $DOCKER_USERNAME/dragon:$DOCKER_IMAGE_TAG && sudo docker-compose -f ~/$ROOT/$ROOT/docker-compose.yml up -d"
