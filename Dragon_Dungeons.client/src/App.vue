@@ -1,5 +1,5 @@
 <template>
-  <header class="container-fluid sticky-top">
+  <header class="container-fluid position-fixed">
     <Navbar />
   </header>
   <main class="container-fluid bg-wheat">
@@ -31,8 +31,13 @@ export default {
     --wheat: #EFDBB5;
   }
 
+  header {
+    z-index: 1000;
+  }
+
   main {
     box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
+    margin-top: 76px;
   }
 
   p {
@@ -49,5 +54,9 @@ export default {
 
   .bg-wheat {
     background-color: var(--wheat);
+  }
+
+  .text-russian {
+    color: var(--russian);
   }
 </style>

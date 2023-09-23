@@ -1,7 +1,7 @@
 <template>
   <section class="row">
     <div class="col-12 col-md-3 col-lg-2 overflow-auto infoBar">
-      <section class="row p-3">
+      <section class="row p-2">
         <div class="col-12 p-0">
           <p class="fs-3 text-capitalize p-2">{{ route.params.infoId.replace('-', ' ') }}:</p>
           <hr class="mt-0">
@@ -22,7 +22,7 @@
 <script>
 import { useRoute } from 'vue-router'
 import { AppState } from '../AppState.js'
-import { computed, watchEffect } from 'vue'
+import { computed, onUnmounted, watchEffect } from 'vue'
 import { infosService } from '../services/InfosService.js'
 import Pop from '../utils/Pop.js'
 
@@ -30,14 +30,13 @@ export default {
   setup() {
     const route = useRoute()
 
-    watchEffect(() => {
-      if (!route.params.infoId) {
-        return
-      }
-      getInfoById(route.params.infoId)
+    onUnmounted(() => {
+      AppState.infoArr = []
+      AppState.infoHtml = ''
     })
 
     watchEffect(() => {
+      getInfoById(route.params.infoId)
       getInfoDetails(route.params.infoDetails)
     })
 
@@ -79,7 +78,7 @@ export default {
 
   @media screen and (min-width: 768px) {
     .infoBar {
-      height: var(--main-height);
+      min-height: var(--main-height);
       position: fixed;
     }
   }

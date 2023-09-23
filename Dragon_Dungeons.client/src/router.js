@@ -30,12 +30,14 @@ const routes = [
   {
     path: '/character/:characterId',
     name: 'Character',
-    component: loadPage('CharacterPage')
+    component: loadPage('CharacterPage'),
+    beforeEnter: authGuard
   },
   {
     path: '/campaign',
     name: 'Campaign',
-    component: loadPage('CampaignPage')
+    component: loadPage('CampaignPage'),
+    beforeEnter: authGuard
   },
   {
     path: '/info/:infoId/:infoDetails/:infoSpec?/:infoMore?',

@@ -38,15 +38,15 @@
           </router-link>
         </li>
 
-        <li class="col-6 col-md-4 col-lg-2 d-flex justify-content-center align-items-center">
+        <li class="col-6 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <router-link :to="{ name: 'Character', params: { characterId: 'basics' } }" :class="{ route: route.fullPath.includes('character') }" class="btn text-success lighten-30 selectable text-uppercase">
             Build Character
           </router-link>
         </li>
 
-        <li class="col-5 col-md-2 col-lg-2 d-flex justify-content-center align-items-center">
+        <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <router-link :to="{ name: 'Campaign' }" class="btn text-success lighten-30 selectable text-uppercase">
-            Campaign
+            Create Campaign
           </router-link>
         </li>
 
@@ -58,14 +58,18 @@
     </div>
   </nav>
 
-  <section id="infoCollapse" class="row collapse bg-dark">
-    <div v-for="(i, index) in info" :key="index" class="col-12 col-sm-4 col-md-3 py-2">
-      <hr class="m-0 py-2">
-      <router-link :to="`/info/${i[1].replace('/api/', '').replace(/'/g, '')}/search`" @click="clearInfoHtml(); dismissInfo()" class="text-light fw-bold selectable text-uppercase rounded p-2">
-        {{ i[0].replace('-', ' ') }}
-      </router-link>
+  <div class="row">
+    <div class="col-12 collapse-container position-absolute">
+      <section id="infoCollapse" class="row collapse bg-dark">
+        <div v-for="(i, index) in info" :key="index" class="col-12 col-sm-4 col-md-3 py-2">
+          <hr class="m-0 pt-2">
+          <router-link :to="`/info/${i[1].replace('/api/', '').replace(/'/g, '')}/search`" @click="dismissInfo()" class="d-flex align-items-center h-100">
+            <p class="text-light fw-bold text-uppercase text-center selectable rounded p-2 w-100">{{ i[0].replace('-', ' ') }}</p>
+          </router-link>
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -97,11 +101,6 @@ export default {
       route,
       info: computed(() => Object.entries(AppState.info)),
 
-      clearInfoHtml() {
-        AppState.infoHtml = ''
-        AppState.infoArr = []
-      },
-
       dismissInfo() {
         if (document.getElementById('infoCollapse').classList.contains('show')) {
           Collapse.getOrCreateInstance('#infoCollapse').hide()
@@ -126,21 +125,28 @@ export default {
     border-radius: 50% !important;
   }
 
-  .nav-link {
-    text-transform: uppercase;
-  }
-
   .navbar-nav .router-link-exact-active,
-  .collapse .router-link-exact-active,
+  .collapse .router-link-exact-active p,
   .route {
     border-bottom: 2px solid var(--bs-success);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+  .nav-link {
+    text-transform: uppercase;
   }
 
   @media screen and (min-width: 992px) {
     nav {
       height: 76px;
+    }
+  }
+
+  @media screen and (max-width: 667.99px) {
+    .collapse-container {
+      max-height: 50vh;
+      overflow-y: auto;
     }
   }
 </style>
