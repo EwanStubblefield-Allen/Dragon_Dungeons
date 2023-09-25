@@ -11,7 +11,7 @@
         <button class="masonry-item border border-dark elevation-5" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">
           <p class="fs-1 fw-bold text-russian text-center">Info</p>
         </button>
-        <router-link :to="{ name: 'Campaign' }" class="masonry-item border border-dark elevation-5">
+        <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" class="masonry-item border border-dark elevation-5">
           <p class="fs-1 fw-bold text-russian text-center">Create Campaign</p>
         </router-link>
       </section>
@@ -94,6 +94,7 @@ export default {
   @media screen and (max-width: 543px) {
     .masonry-item {
       border-radius: 5px !important;
+      margin-bottom: 1rem;
     }
   }
 </style>

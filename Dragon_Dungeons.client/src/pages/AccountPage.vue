@@ -1,26 +1,24 @@
 <template>
-  <div class="about text-center">
-    <h1>Welcome {{ account.name }}</h1>
-    <img class="rounded" :src="account.picture" alt="" />
-    <p>{{ account.email }}</p>
-  </div>
+  <section class="row">
+    <div class="col-12">
+      <ProfileDetails :profileProp="account" />
+    </div>
+  </section>
 </template>
 
 <script>
 import { computed } from 'vue'
 import { AppState } from '../AppState'
+import ProfileDetails from '../components/ProfileDetails.vue'
 
 export default {
   setup() {
     return {
       account: computed(() => AppState.account)
     }
-  }
+  },
+  components: { ProfileDetails }
 }
 </script>
 
-<style scoped>
-  img {
-    max-width: 100px;
-  }
-</style>
+<style scoped></style>

@@ -5,6 +5,13 @@
   <main class="container-fluid bg-wheat">
     <router-view />
   </main>
+
+  <ModalComponent id="accountForm">
+    <template #title>Edit Account</template>
+    <template #body>
+      <AccountForm />
+    </template>
+  </ModalComponent>
 </template>
 
 <script>

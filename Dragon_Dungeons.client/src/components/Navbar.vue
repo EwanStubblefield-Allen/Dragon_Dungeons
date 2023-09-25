@@ -45,15 +45,15 @@
         </li>
 
         <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Campaign' }" class="btn text-success lighten-30 selectable text-uppercase">
+          <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" class="btn text-success lighten-30 selectable text-uppercase">
             Create Campaign
           </router-link>
         </li>
 
-        <div class="col-12 col-lg-1 d-flex justify-content-md-end align-items-center">
+        <li class="col-12 col-lg-1 d-flex justify-content-lg-end align-items-center">
           <!-- LOGIN COMPONENT HERE -->
           <Login />
-        </div>
+        </li>
       </ul>
     </div>
   </nav>
@@ -64,7 +64,7 @@
         <div v-for="(i, index) in info" :key="index" class="col-12 col-sm-4 col-md-3 py-2">
           <hr class="m-0 pt-2">
           <router-link :to="`/info/${i[1].replace('/api/', '').replace(/'/g, '')}/search`" @click="dismissInfo()" class="d-flex align-items-center h-100">
-            <p class="text-light fw-bold text-uppercase text-center selectable rounded p-2 w-100">{{ i[0].replace('-', ' ') }}</p>
+            <p class="text-light fw-bold text-uppercase text-center selectable p-2 w-100">{{ i[0].replace('-', ' ') }}</p>
           </router-link>
         </div>
       </section>
@@ -117,24 +117,28 @@ export default {
     text-decoration: none;
   }
 
-  .navbar-brand {
-    background-color: #e9ecef;
-    height: 60px;
-    width: 60px;
-    border-bottom: none !important;
-    border-radius: 50% !important;
+  a p {
+    border-radius: 0.375rem;
   }
 
   .navbar-nav .router-link-exact-active,
   .collapse .router-link-exact-active p,
   .route {
     border-bottom: 2px solid var(--bs-success);
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   .nav-link {
     text-transform: uppercase;
+  }
+
+  .navbar-brand {
+    background-color: #e9ecef;
+    height: 60px;
+    width: 60px;
+    border-bottom: none !important;
+    border-radius: 50% !important;
   }
 
   @media screen and (min-width: 992px) {

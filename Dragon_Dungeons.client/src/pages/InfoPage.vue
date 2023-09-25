@@ -42,6 +42,9 @@ export default {
 
     async function getInfoById(infoId) {
       try {
+        if (!infoId) {
+          return
+        }
         await infosService.getInfoById(infoId)
       } catch (error) {
         Pop.error(error.message, '[GETTING INFO BY ID]')

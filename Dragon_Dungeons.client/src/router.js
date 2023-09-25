@@ -34,7 +34,7 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: '/campaign',
+    path: '/campaign/:campaignId',
     name: 'Campaign',
     component: loadPage('CampaignPage'),
     beforeEnter: authGuard
