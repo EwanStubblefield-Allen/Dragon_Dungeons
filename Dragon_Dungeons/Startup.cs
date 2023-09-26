@@ -36,6 +36,9 @@ namespace Dragon_Dungeons
 
       _ = services.AddScoped<CharactersRepository>();
       _ = services.AddScoped<CharactersService>();
+
+      _ = services.AddScoped<BonusesRepository>();
+      _ = services.AddScoped<BonusesService>();
     }
 
     private static void ConfigureCors(IServiceCollection services)

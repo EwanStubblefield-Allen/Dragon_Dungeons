@@ -6,7 +6,7 @@ import { api } from './AxiosService'
 class AccountService {
   async getAccount() {
     try {
-      const res = await api.get('/account')
+      const res = await api.get('account')
       AppState.account = new Account(res.data)
     } catch (err) {
       logger.error('HAVE YOU STARTED YOUR SERVER YET???', err)
@@ -14,7 +14,7 @@ class AccountService {
   }
 
   async updateAccount(formData) {
-    const res = await api.put('/account', formData)
+    const res = await api.put('account', formData)
     AppState.account = new Account(res.data)
   }
 }

@@ -28,7 +28,7 @@ export class Character extends RepoItem {
     this.str = data.str
     this.dex = data.dex
     this.con = data.con
-    this.int = data.intelligence
+    this.int = data.intelligence || data.int
     this.wis = data.wis
     this.cha = data.cha
     this.bonus = new Bonus(data.bonus)

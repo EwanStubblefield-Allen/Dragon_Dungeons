@@ -24,6 +24,10 @@
       <div v-if="route.params.campaignId == 'notes'">
         <CampaignNotes />
       </div>
+
+      <div v-if="route.params.campaignId == 'encounters'">
+        <CampaignEncounters />
+      </div>
     </div>
   </section>
 </template>
@@ -34,12 +38,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppState } from "../AppState.js"
 import CampaignBasics from '../components/CampaignBasics.vue'
 import CampaignNotes from '../components/CampaignNotes.vue'
+import CampaignEncounters from '../components/CampaignEncounters.vue'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const list = ['Basics', 'Notes', 'NPCs', 'Encounters', 'Events', 'Points of Interests', 'Creatures']
+    const list = ['Basics', 'Notes', 'Encounters', 'Creatures']
     watchEffect(() => {
       let camPage = AppState.camPage
 
@@ -55,7 +60,7 @@ export default {
       camPage: computed(() => AppState.camPage)
     }
   },
-  components: { CampaignBasics, CampaignNotes }
+  components: { CampaignBasics, CampaignNotes, CampaignEncounters }
 }
 </script>
 

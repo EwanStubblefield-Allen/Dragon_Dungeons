@@ -3,13 +3,13 @@
 
   <form @submit.prevent="changeCamPage()" class="row g-3 bg-dark text-dark m-3 p-3 rounded elevation-5">
     <div class="col-12 form-floating">
-      <input v-model="editable.name" type="text" class="form-control" id="name" minlength="3" maxlength="100" placeholder="Name..." required>
+      <input v-model="editable.name" type="text" id="name" class="form-control" autocomplete="off" minlength="3" maxlength="100" placeholder="Name..." required>
       <label for="name">Campaign Name:</label>
     </div>
 
     <div class="col-12 form-group">
       <label class="text-light" for="description">Description:</label>
-      <textarea v-model="editable.description" id="description" class="form-control" rows="10"></textarea>
+      <textarea v-model="editable.description" id="description" class="form-control" autocomplete="off" placeholder="Description..." rows="10"></textarea>
     </div>
 
     <!-- <div class="col-12 form-group">
