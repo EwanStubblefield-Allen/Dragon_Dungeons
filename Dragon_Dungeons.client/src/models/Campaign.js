@@ -6,5 +6,7 @@ export class Campaign extends RepoItem {
     this.name = data.name
     this.privateNote = data.privateNote
     this.publicNote = data.publicNote
+    this.events = data.events
+    this.npcs = data.npcs
   }
 }

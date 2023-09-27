@@ -13,41 +13,21 @@
     </ul>
 
     <div class="bg-dark p-3 rounded-bottom elevation-5">
-      <form @submit.prevent="changeTab()" v-if="selectable == 1" class="row g-3">
-        <div class="col-md-4 form-group">
-          <label for="age">Age:</label>
-          <input v-model="editable.age" type="number" class="form-control" id="age" min="1" max="1000" placeholder="Age..." required>
+      <form @submit.prevent="selectable = 2" v-if="selectable == 1" class="row g-3">
+        <div class="col-12 d-flex justify-content-between">
+          <p class="fs-3 fw-bold">Events:</p>
+          <button @click="addEvent()" type="button" class="btn btn-primary">Event +</button>
         </div>
-
-        <div class="col-md-4 form-group">
-          <label for="inch">Height:</label>
-          <div class="input-group">
-            <input v-model="editable.feet" type="number" class="form-control" id="inch" min="1" max="100" placeholder="Feet..." required>
-            <input v-model="editable.inches" type="number" class="form-control" id="feet" min="0" max="11" placeholder="Inches..." required>
-          </div>
-        </div>
-
-        <div class="col-md-4 form-group">
-          <label for="weight">Weight:</label>
-          <div class="input-group">
-            <input v-model="editable.weight" type="number" class="form-control" id="weight" min="1" max="500" placeholder="Weight..." required>
-            <div class="input-group-text">.lb</div>
-          </div>
-        </div>
-
-        <div class="col-md-4 form-group">
-          <label for="eyes">Eyes:</label>
-          <input v-model="editable.eyes" type="text" class="form-control" id="eyes" minlength="3" maxlength="30" placeholder="Eyes..." required>
-        </div>
-
-        <div class="col-md-4 form-group">
-          <label for="skin">Skin:</label>
-          <input v-model="editable.skin" type="text" class="form-control" id="skin" minlength="3" maxlength="30" placeholder="Skin..." required>
-        </div>
-
-        <div class="col-md-4 form-group">
-          <label for="hair">Hair:</label>
-          <input v-model="editable.hair" type="text" class="form-control" id="hair" minlength="3" maxlength="30" placeholder="Hair..." required>
+        <div v-if="editable?.events" class="col-12">
+          <section class="row">
+            <div v-for="(e, index) in editable.events" :key="e" class="col-12 col-md-6 col-lg-4 py-3">
+              <div class="input-group pb-2">
+                <input v-model="editable.events[index].name" type="text" class="form-control" :id="`eventName${index}`" minlength="3" maxlength="100" placeholder="Event Title..." required>
+                <button @click="removeEvent(index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
+              </div>
+              <textarea v-model="editable.events[index].description" :id="`eventDescription${index}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
+            </div>
+          </section>
         </div>
 
         <div class="col-12 text-end">
@@ -56,19 +36,28 @@
       </form>
 
       <form v-else @submit.prevent="changeCamPage()" class="row g-3">
-        <div v-if="characters.length">
+        <div v-if="characters.length" class="col-12">
           <div class="form-group">
             <label for="npc">Select Character to Use as Npc</label>
             <div class="input-group">
               <select v-model="character" id="npc" class="form-select" aria-label="NPC dropdown">
-                <option v-for="c in characters" :key="c.id" :value="c">{{ c.name }}</option>
+                <option selected disabled>Select...</option>
+                <option v-for="c in characters" :key="c.id" :value="c" :disabled="editable.npcs.includes(c)">{{ c.name }}</option>
               </select>
-              <button @click="addNpc()" type="button" class="mdi mdi-plus input-group-text"></button>
+              <button @click="addNpc()" type="button" :class="character == 'Select...'" class="mdi mdi-plus input-group-text"></button>
             </div>
           </div>
 
-          <div v-for="n in editable?.npcs" :key="n">
-            <p>{{ n.name }}</p>
+          <div class="row mx-2">
+            <div v-for="n in editable?.npcs" :key="n" class="col-12 col-sm-6 col-lg-4 text-dark">
+              <div class="d-flex justify-content-between align-items-center bg-light rounded elevation-5 p-2 mt-3">
+                <p class="text-uppercase">{{ n.name }}</p>
+                <div class="d-flex align-items-center">
+                  <i class="mdi mdi-information text-primary selectable fs-5 px-1"></i>
+                  <i @click="removeNpc(n.id)" type="button" class="mdi mdi-delete text-danger px-1"></i>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -89,13 +78,14 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
+import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const router = useRouter()
     const editable = ref({})
     const selectable = ref(1)
-    const character = ref({})
+    const character = ref('Select...')
 
     onMounted(() => {
       editable.value = { ...AppState.tempCampaign }
@@ -124,16 +114,42 @@ export default {
       character,
       characters: computed(() => AppState.characters),
 
+      addEvent() {
+        if (!editable.value.events) {
+          editable.value.events = []
+        }
+        editable.value.events.push({})
+      },
+
+      async removeEvent(index) {
+        const isSure = await Pop.confirm('Are you sure you want to remove this event?')
+
+        if (!isSure) {
+          return
+        }
+        editable.value.events.splice(index, 1)
+      },
+
       addNpc() {
         if (!editable.value.npcs) {
           editable.value.npcs = []
         }
         editable.value.npcs.push(character.value)
+        character.value = 'Select...'
+      },
+
+      async removeNpc(characterId) {
+        const isSure = await Pop.confirm('Are you sure you want to remove this npc?')
+
+        if (!isSure) {
+          return
+        }
+        editable.value.npcs = editable.value.npcs.filter(n => n.id != characterId)
       },
 
       changeCamPage() {
         campaignsService.changeCamPage(2)
-        router.push({ name: 'Campaign', params: { campaignId: 'notes' } })
+        router.push({ name: 'Campaign', params: { campaignId: 'creatures' } })
       }
     }
   }
