@@ -45,7 +45,7 @@
         </li>
 
         <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" class="btn text-success lighten-30 selectable text-uppercase">
+          <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" :class="{ route: route.fullPath.includes('campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
             Create Campaign
           </router-link>
         </li>

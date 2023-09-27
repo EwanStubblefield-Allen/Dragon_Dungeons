@@ -3,6 +3,7 @@ import { Character } from "../models/Character.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
+import { logger } from "../utils/Logger.js"
 
 const keys = ['skills', 'proficiencies', 'cantrips', 'spells', 'equipment']
 
@@ -17,6 +18,14 @@ class CharactersService {
   saveCharacter(characterData) {
     saveState('tempCharacter', characterData)
     AppState.tempCharacter = new Character(characterData)
+    logger.log('saveCharacter', AppState.tempCharacter)
+  }
+
+  resetCharacter() {
+    saveState('tempCharacter', {})
+    saveState('charPage', 0)
+    AppState.tempCharacter = {}
+    logger.log('resetCharacter')
   }
 
   async getCharactersByUserId() {
@@ -35,8 +44,7 @@ class CharactersService {
     characterData = this.converter(characterData, true)
     const res = await api.post('api/characters', characterData)
     AppState.characters.push(new Character(this.converter(res.data)))
-    saveState('charPage', 0)
-    saveState('tempCharacter', {})
+    this.resetCharacter()
   }
 
   async updateCharacter(characterData) {

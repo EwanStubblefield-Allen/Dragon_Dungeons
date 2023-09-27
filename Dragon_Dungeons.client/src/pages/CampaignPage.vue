@@ -21,12 +21,16 @@
         <CampaignBasics />
       </div>
 
-      <div v-if="route.params.campaignId == 'notes'">
+      <div v-else-if="route.params.campaignId == 'notes'">
         <CampaignNotes />
       </div>
 
-      <div v-if="route.params.campaignId == 'encounters'">
+      <div v-else-if="route.params.campaignId == 'encounters'">
         <CampaignEncounters />
+      </div>
+
+      <div v-else-if="route.params.campaignId == 'creatures'">
+        <CampaignCreatures />
       </div>
     </div>
   </section>
@@ -39,6 +43,7 @@ import { AppState } from "../AppState.js"
 import CampaignBasics from '../components/CampaignBasics.vue'
 import CampaignNotes from '../components/CampaignNotes.vue'
 import CampaignEncounters from '../components/CampaignEncounters.vue'
+import CampaignCreatures from '../components/CampaignCreatures.vue'
 
 export default {
   setup() {
@@ -60,7 +65,7 @@ export default {
       camPage: computed(() => AppState.camPage)
     }
   },
-  components: { CampaignBasics, CampaignNotes, CampaignEncounters }
+  components: { CampaignBasics, CampaignNotes, CampaignEncounters, CampaignCreatures }
 }
 </script>
 
