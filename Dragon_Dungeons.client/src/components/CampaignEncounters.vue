@@ -42,7 +42,7 @@
             <div class="input-group">
               <select v-model="character" id="npc" class="form-select" aria-label="NPC dropdown">
                 <option selected disabled>Select...</option>
-                <option v-for="c in characters" :key="c.id" :value="c" :disabled="editable.npcs.includes(c)">{{ c.name }}</option>
+                <option v-for="c in characters" :key="c.id" :value="c" :disabled="editable.npcs?.includes(c)">{{ c.name }}</option>
               </select>
               <button @click="addNpc()" type="button" :class="character == 'Select...'" class="mdi mdi-plus input-group-text"></button>
             </div>
@@ -51,6 +51,7 @@
           <div class="row mx-2">
             <div v-for="n in editable?.npcs" :key="n" class="col-12 col-sm-6 col-lg-4 text-dark">
               <div class="d-flex justify-content-between align-items-center bg-light rounded elevation-5 p-2 mt-3">
+                <img :src="n.picture" :alt="n.name">
                 <p class="text-uppercase">{{ n.name }}</p>
                 <div class="d-flex align-items-center">
                   <i class="mdi mdi-information text-primary selectable fs-5 px-1"></i>

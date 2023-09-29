@@ -61,8 +61,8 @@
     </div>
 
     <div v-else-if="imageType == 'importImg'" class="col-12 col-md-6 form-group">
-      <label for="name" class="text-dark">Character Picture:</label>
-      <input v-model="editable.picture" type="url" class="form-control" id="name" minlength="3" maxlength="1000" placeholder="Url..." required>
+      <label for="picture" class="text-dark">Character Picture:</label>
+      <input @change="handleFile" type="file" class="form-control" id="picture" accept=".jpg, .jpeg, .png" required>
     </div>
 
     <div class="col-12">
@@ -115,7 +115,7 @@ export default {
     })
 
     async function handleSave() {
-      if (editable.value.race && !editable.value.bonus) {
+      if (!editable.value.bonus) {
         await getRace()
       }
 
@@ -167,14 +167,40 @@ export default {
         editable.value[type] = temp
       },
 
+      async handleFile(event) {
+        try {
+          editable.value.picture = ''
+          const file = event.target.files[0]
+
+          if (!file) {
+            return
+          }
+          await openService.compress(file, 0.5)
+          const picture = AppState.tempCharacter.picture
+
+          if (picture.size > 100000) {
+            throw new Error('Image is too large')
+          }
+          let reader = new FileReader()
+
+          reader.onload = (e) => {
+            editable.value.picture = e.target.result
+          }
+          reader.readAsDataURL(picture)
+        } catch (error) {
+          Pop.error(error.message, '[HANDLING FILE]')
+        }
+      },
+
       async createImg() {
         try {
           editable.value.picture = ''
           loading.value = true
           editable.value.picture = await openService.createImg(description.value)
-          loading.value = false
         } catch (error) {
           Pop.error(error.message, '[CREATING IMAGE]')
+        } finally {
+          loading.value = false
         }
       },
 

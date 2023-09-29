@@ -14,7 +14,7 @@ export const dndApi = Axios.create({
 
 export const openApi = Axios.create({
   baseURL: 'https://api.openai.com/v1/images',
-  headers: { Authorization: 'Bearer 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' },
+  headers: { Authorization: 'Bearer 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' },
   timeout: 60000
 })
 
