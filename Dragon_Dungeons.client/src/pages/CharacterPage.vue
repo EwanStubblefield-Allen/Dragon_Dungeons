@@ -53,10 +53,9 @@
 </template>
 
 <script>
-import { computed, onUnmounted, watchEffect } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
-import { charactersService } from '../services/CharactersService.js'
 import BasicsForm from '../components/BasicsForm.vue'
 import FeaturesForm from '../components/FeaturesForm.vue'
 import BackgroundForm from '../components/BackgroundForm.vue'
@@ -65,17 +64,12 @@ import AttributesForm from '../components/AttributesForm.vue'
 import ProficienciesForm from '../components/ProficienciesForm.vue'
 import SpellsForm from '../components/SpellsForm.vue'
 import EquipmentForm from '../components/EquipmentForm.vue'
-import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
     const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Spells', 'Equipment']
-
-    onUnmounted(() => {
-      saveProgress()
-    })
 
     watchEffect(() => {
       let charPage = AppState.charPage
@@ -86,15 +80,6 @@ export default {
         }
       }
     })
-
-    async function saveProgress() {
-      const isSaving = await Pop.confirm('Would you like to save your progress?')
-
-      if (isSaving) {
-        return
-      }
-      charactersService.resetCharacter()
-    }
 
     return {
       route,

@@ -79,8 +79,8 @@ public class CharactersRepository
   internal void CreateCharacter(Character characterData)
   {
     string sql = @"
-      INSERT INTO characters(id, name, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, skills, proficiencies, cantrips, spells, equipment, creatorId)
-      VALUES(@Id, @Name, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Skills, @Proficiencies, @Cantrips, @Spells, @Equipment, @CreatorId);";
+      INSERT INTO characters(id, name, picture, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, skills, proficiencies, cantrips, spells, equipment, creatorId)
+      VALUES(@Id, @Name, @Picture, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Skills, @Proficiencies, @Cantrips, @Spells, @Equipment, @CreatorId);";
     _db.Execute(sql, characterData);
   }
 }

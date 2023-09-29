@@ -12,6 +12,12 @@ export const dndApi = Axios.create({
   timeout: 8000
 })
 
+export const openApi = Axios.create({
+  baseURL: 'https://api.openai.com/v1/images',
+  headers: { Authorization: 'Bearer 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' },
+  timeout: 60000
+})
+
 api.interceptors.request.use(config => config, handleAxiosError)
 api.interceptors.response.use(response => response, handleAxiosError)
 
