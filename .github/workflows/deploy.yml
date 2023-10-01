@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Client 🏗️
         run: |
-            cd ./$ROOT.client && npm ci && npm run build
+          cd ./$ROOT.client && echo "$CONFIG" > src/config.js && npm ci && npm run build
 
       - name: Set up Docker Buildx 🤖
         uses: docker/setup-buildx-action@v2
@@ -38,7 +38,6 @@ jobs:
           CONFIG: ${{ secrets.CONFIG }}
         run: |
           echo "$ENV" > ./$ROOT/appsettings.json
-          echo "$CONFIG" > ./$ROOT.client/src/config.js
 
       - name: Build and Push Docker Image 🐳
         run: |
