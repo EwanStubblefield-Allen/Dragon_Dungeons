@@ -38,7 +38,7 @@ jobs:
           CONFIG: ${{ secrets.CONFIG }}
         run: |
           echo "$ENV" > ./$ROOT/appsettings.json
-          echo "$CONFIG" > ./$ROOT.client/config.js
+          echo "$CONFIG" > ./$ROOT.client/src/config.js
 
       - name: Build and Push Docker Image 🐳
         run: |
