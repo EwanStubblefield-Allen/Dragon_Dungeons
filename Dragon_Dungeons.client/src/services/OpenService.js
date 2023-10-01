@@ -1,5 +1,4 @@
 import { AppState } from "../AppState.js"
-import { logger } from "../utils/Logger.js"
 import { openApi } from "./AxiosService.js"
 import Compressor from "compressorjs"
 
