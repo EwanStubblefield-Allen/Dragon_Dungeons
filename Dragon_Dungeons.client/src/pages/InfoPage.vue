@@ -37,6 +37,9 @@ export default {
 
     watchEffect(() => {
       getInfoById(route.params.infoId)
+    })
+
+    watchEffect(() => {
       getInfoDetails(route.params.infoDetails)
     })
 
@@ -54,6 +57,7 @@ export default {
     async function getInfoDetails(i) {
       try {
         if (!i || i == 'search') {
+          AppState.infoHtml = ''
           return
         }
         await infosService.getInfoDetails(route.fullPath.replace('info', 'api'))

@@ -55,7 +55,7 @@
 <script>
 import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AppState } from "../AppState.js"
+import { AppState } from '../AppState.js'
 import BasicsForm from '../components/BasicsForm.vue'
 import FeaturesForm from '../components/FeaturesForm.vue'
 import BackgroundForm from '../components/BackgroundForm.vue'

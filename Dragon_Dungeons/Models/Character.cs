@@ -3,6 +3,7 @@ namespace Dragon_Dungeons.Models
   public class Character : RepoItem
   {
     public string Name { get; set; }
+    public string Picture { get; set; }
     public int Level { get; set; }
     public string Class { get; set; }
     public string Race { get; set; }

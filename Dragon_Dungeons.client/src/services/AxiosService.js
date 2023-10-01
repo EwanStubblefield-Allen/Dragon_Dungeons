@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import { baseURL } from '../env'
 import { logger } from '../utils/Logger.js'
+import { openAiAuth } from '../../config.js'
 
 export const api = Axios.create({
   baseURL,
@@ -10,6 +11,12 @@ export const api = Axios.create({
 export const dndApi = Axios.create({
   baseURL: 'https://www.dnd5eapi.co',
   timeout: 8000
+})
+
+export const openApi = Axios.create({
+  baseURL: 'https://api.openai.com/v1/images',
+  headers: { Authorization: openAiAuth },
+  timeout: 60000
 })
 
 api.interceptors.request.use(config => config, handleAxiosError)

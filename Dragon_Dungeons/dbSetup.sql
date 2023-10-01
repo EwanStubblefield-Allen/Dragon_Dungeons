@@ -13,6 +13,7 @@ CREATE TABLE characters(
   createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
   name VARCHAR(100) NOT NULL,
+  picture VARCHAR(1000) NOT NULL,
   LEVEL TINYINT DEFAULT 1,
   class VARCHAR(20) NOT NULL,
   race VARCHAR(20) NOT NULL,
@@ -54,7 +55,7 @@ CREATE TABLE characters(
   spells JSON,
   equipment JSON,
   creatorId VARCHAR(255) NOT NULL,
-  FOREIGN KEY (creatorId) REFERENCES accounts(id)
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE characters;
@@ -70,7 +71,7 @@ CREATE TABLE bonuses(
   wis TINYINT,
   cha TINYINT,
   characterId VARCHAR(255),
-  FOREIGN KEY (characterId) REFERENCES characters(id)
+  FOREIGN KEY (characterId) REFERENCES characters(id) ON DELETE CASCADE
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE bonuses;

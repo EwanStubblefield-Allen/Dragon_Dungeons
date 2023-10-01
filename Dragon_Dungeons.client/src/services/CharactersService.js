@@ -2,6 +2,7 @@ import { AppState } from "../AppState.js"
 import { Character } from "../models/Character.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
+import Pop from "../utils/Pop.js"
 
 const keys = ['skills', 'proficiencies', 'cantrips', 'spells', 'equipment']
 
@@ -18,12 +19,29 @@ class CharactersService {
     AppState.tempCharacter = new Character(characterData)
   }
 
+  resetCharacter() {
+    saveState('tempCharacter', {})
+    saveState('charPage', 0)
+    AppState.tempCharacter = {}
+  }
+
+  async getCharactersByUserId() {
+    try {
+      const res = await api.get('account/characters')
+      AppState.characters = res.data.map(d => {
+        d = this.converter(d)
+        return new Character(d)
+      })
+    } catch (error) {
+      Pop.error(error.message, '[GETTING USERS CHARACTERS]')
+    }
+  }
+
   async createCharacter(characterData) {
     characterData = this.converter(characterData, true)
     const res = await api.post('api/characters', characterData)
     AppState.characters.push(new Character(this.converter(res.data)))
-    saveState('charPage', 0)
-    saveState('tempCharacter', {})
+    this.resetCharacter()
   }
 
   async updateCharacter(characterData) {
@@ -34,8 +52,8 @@ class CharactersService {
     AppState.characters.splice(foundIndex, 1, new Character(res.data))
   }
 
-  converter(data, bool = false) {
-    if (bool) {
+  converter(data, input = false) {
+    if (input) {
       data.intelligence = data.int
       data.bonus.intelligence = data.bonus?.int
     }
