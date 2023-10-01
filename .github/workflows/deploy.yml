@@ -11,6 +11,8 @@ env:
   EC2_PEM_KEY: ${{ secrets.EC2_PEM_KEY }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  ENV: ${{ secrets.ENV }}
+  CONFIG: ${{ secrets.CONFIG }}
   DOCKER_IMAGE_TAG: latest
   ROOT: Dragon_Dungeons
 
@@ -33,9 +35,6 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Configure Env 🤐
-        env: 
-          ENV: ${{ secrets.ENV }}
-          CONFIG: ${{ secrets.CONFIG }}
         run: |
           echo "$ENV" > ./$ROOT/appsettings.json
 
