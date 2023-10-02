@@ -14,7 +14,7 @@
         </div>
       </section>
     </div>
-    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 py-3">
+    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 my-2">
     </div>
   </section>
 </template>

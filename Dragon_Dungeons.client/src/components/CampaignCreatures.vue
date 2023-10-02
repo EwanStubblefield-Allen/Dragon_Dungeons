@@ -1,6 +1,6 @@
 <template>
   <div class="m-3">
-    <p class="fs-1 fw-bold py-2">Encounters</p>
+    <p class="fs-1 fw-bold py-2">Creatures</p>
 
     <ul class="nav nav-tabs">
       <li class="nav-item">

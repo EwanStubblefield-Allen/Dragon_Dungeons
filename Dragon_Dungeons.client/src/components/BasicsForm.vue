@@ -56,7 +56,7 @@
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
         <input v-model="description.prompt" type="text" class="form-control" id="picture" minlength="3" maxlength="100" placeholder="Description..." required>
-        <button @click="createImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
+        <button @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
     </div>
 
@@ -115,7 +115,7 @@ export default {
     })
 
     async function handleSave() {
-      if (!editable.value.bonus) {
+      if (editable.value.race && !editable.value.bonus) {
         await getRace()
       }
 
@@ -167,7 +167,7 @@ export default {
         editable.value[type] = temp
       },
 
-      async handleFile(event) {
+      async handleFile(event, compress = .6) {
         try {
           editable.value.picture = ''
           const file = event.target.files[0]
@@ -175,12 +175,8 @@ export default {
           if (!file) {
             return
           }
-          await openService.compress(file, 0.5)
+          await openService.compress(file, compress)
           const picture = AppState.tempCharacter.picture
-
-          if (picture.size > 100000) {
-            throw new Error('Image is too large')
-          }
           let reader = new FileReader()
 
           reader.onload = (e) => {
@@ -189,16 +185,24 @@ export default {
           reader.readAsDataURL(picture)
         } catch (error) {
           Pop.error(error.message, '[HANDLING FILE]')
+
+          if (error.message == 'Image is too large!!') {
+            const compressMore = await Pop.confirm('Image is too large compress image more?')
+
+            if (compressMore) {
+              this.handleFile(event, compress - .2)
+            }
+          }
         }
       },
 
-      async createImg() {
+      async generateImg() {
         try {
           editable.value.picture = ''
           loading.value = true
-          editable.value.picture = await openService.createImg(description.value)
+          editable.value.picture = await openService.generateImg(description.value)
         } catch (error) {
-          Pop.error(error.message, '[CREATING IMAGE]')
+          Pop.error(error.message, '[GENERATING IMAGE]')
         } finally {
           loading.value = false
         }
