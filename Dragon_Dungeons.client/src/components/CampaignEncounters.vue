@@ -49,13 +49,15 @@
           </div>
 
           <div class="row mx-2">
-            <div v-for="n in editable?.npcs" :key="n" class="col-12 col-sm-6 col-lg-4 text-dark">
-              <div class="d-flex justify-content-between align-items-center bg-light rounded elevation-5 p-2 mt-3">
-                <img :src="n.picture" :alt="n.name">
-                <p class="text-uppercase">{{ n.name }}</p>
-                <div class="d-flex align-items-center">
-                  <i class="mdi mdi-information text-primary selectable fs-5 px-1"></i>
-                  <i @click="removeNpc(n.id)" type="button" class="mdi mdi-delete text-danger px-1"></i>
+            <div v-for="n in editable?.npcs" :key="n" class="col-12 col-sm-6 col-lg-4 py-2">
+              <div class="card">
+                <img :src="n.picture.url" class="card-img-top" :alt="n.name">
+                <div class="card-body p-2">
+                  <h5 class="card-title text-uppercase">{{ n.name }}</h5>
+                  <div class="d-flex justify-content-end align-items-center">
+                    <i class="mdi mdi-information text-primary selectable fs-5 px-1"></i>
+                    <i @click="removeNpc(n.id)" type="button" class="mdi mdi-delete text-danger fs-5 px-1"></i>
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,7 +152,7 @@ export default {
 
       changeCamPage() {
         campaignsService.changeCamPage(2)
-        router.push({ name: 'Campaign', params: { campaignId: 'creatures' } })
+        router.push({ name: 'Campaign', params: { campaignId: 'monsters' } })
       }
     }
   }

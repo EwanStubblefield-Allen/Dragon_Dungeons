@@ -4,7 +4,7 @@ import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['skills', 'proficiencies', 'cantrips', 'spells', 'equipment']
+const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'equipment']
 
 class CharactersService {
   changeCharPage(current) {

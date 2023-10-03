@@ -8,9 +8,14 @@ class InfosService {
     AppState.info = res.data
   }
 
-  async getInfoById(infoId) {
+  async getInfoById(infoId, arr = true) {
     let url = AppState.info[infoId.replace(' ', '-').toLowerCase()]
-    AppState.infoArr = (await dndApi.get(url)).data.results
+    const res = await dndApi.get(url)
+
+    if (!arr) {
+      return res.data.results
+    }
+    AppState.infoArr = res.data.results
   }
 
   async getInfoDetails(i, arr = true) {
@@ -73,8 +78,13 @@ class InfosService {
               option = foundObj
             }
           }
-          delete option.index
-          return option
+
+          if (option.index) {
+            delete option.index
+            return option
+          } else {
+            this.handleObj(Object.entries(option))
+          }
         })
       } else if (typeof d[1] == 'object') {
         if (Array.isArray(d[1]) && !d[1].length) {
@@ -121,7 +131,7 @@ class InfosService {
 
   handleHtml(arr, size = 0) {
     let template = ''
-    template += `<div class="px-2">`
+    template += `<div class="ps-2">`
     arr.forEach((a, index) => {
       if (typeof a == 'object') {
         if (Array.isArray(a)) {
@@ -136,14 +146,13 @@ class InfosService {
       }
     })
     template += '</div>'
-
     return template
   }
 
   arrHtml(a, size) {
     let template = ''
 
-    if (typeof a[0] == 'string' && a.length == 2 && a[0].length < 30) {
+    if (typeof a[0] == 'string' && a.length == 2 && 2 < a[0].length && a[0].length < 30) {
       a[0] += ':'
     }
 
@@ -154,12 +163,17 @@ class InfosService {
   objHtml(arr, a, size) {
     let template = ''
 
-    if (arr.find(n => n[0] == 'name:')) {
+    if (a.name == 'image') {
+      template += /*HTML*/`
+      <div class="text-center text-lg-start">
+        <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
+      </div>`
+    } else if (arr.find(n => n[0] == 'name:')) {
       template += /*HTML*/`
         <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
     } else {
       template += /*HTML*/`
-        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark px-2"><u>${a.name}</u></a>`
+        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark ps-2"><u>${a.name}</u></a>`
     }
     return template
   }
@@ -168,12 +182,12 @@ class InfosService {
     let template = ''
     a = a.toString()
 
-    if (index == 0 && arr.length == 2 && a.length < 30) {
+    if (index == 0 && arr.length == 2 && 2 < a.length && a.length < 30) {
       template += /*HTML*/`
         <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
     } else {
       template += /*HTML*/`
-        <p class="fs-${size + 3} px-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
+        <p class="fs-${size + 3} ps-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
     }
     return template
   }

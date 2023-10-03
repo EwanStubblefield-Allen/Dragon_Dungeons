@@ -40,6 +40,7 @@ import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
+import { imagesService } from '../services/ImagesService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -87,7 +88,8 @@ export default {
 
     async function createCharacter() {
       try {
-        charactersService.createCharacter(editable.value)
+        editable.value.picture = await imagesService.createImg(editable.value.picture)
+        await charactersService.createCharacter(editable.value)
       } catch (error) {
         Pop.error(error.message, '[CREATING CHARACTER]')
       }

@@ -6,12 +6,14 @@ public class AccountController : ControllerBase
 {
   private readonly AccountService _accountService;
   private readonly CharactersService _charactersService;
+  private readonly CampaignsService _campaignsService;
   private readonly Auth0Provider _auth0Provider;
 
-  public AccountController(AccountService accountService, CharactersService charactersService, Auth0Provider auth0Provider)
+  public AccountController(AccountService accountService, CharactersService charactersService, CampaignsService campaignsService, Auth0Provider auth0Provider)
   {
     _accountService = accountService;
     _charactersService = charactersService;
+    _campaignsService = campaignsService;
     _auth0Provider = auth0Provider;
   }
 
@@ -30,7 +32,7 @@ public class AccountController : ControllerBase
     }
   }
 
-  [HttpGet("{characters}")]
+  [HttpGet("characters")]
   [Authorize]
   public async Task<ActionResult<List<Character>>> GetCharactersByUserId()
   {
@@ -39,6 +41,22 @@ public class AccountController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       List<Character> Characters = _charactersService.GetCharactersByUserId(userInfo.Id);
       return Ok(Characters);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpGet("campaigns")]
+  [Authorize]
+  public async Task<ActionResult<List<Campaign>>> GetCampaignsByUserId()
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      List<Campaign> campaigns = _campaignsService.GetCampaignsByUserId(userInfo.Id);
+      return Ok(campaigns);
     }
     catch (Exception e)
     {
