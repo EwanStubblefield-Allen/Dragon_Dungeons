@@ -62,6 +62,7 @@ export default {
 
     async function createCampaign() {
       try {
+        editable.value.npcs.map(n => n.picture = n.picture.url)
         await campaignsService.createCampaign(editable.value)
       } catch (error) {
         Pop.error(error.message, '[CREATING CAMPAIGN]')

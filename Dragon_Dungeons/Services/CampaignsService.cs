@@ -18,6 +18,13 @@ public class CampaignsService
     return campaign;
   }
 
+  internal List<Campaign> GetCampaignsByUserId(string userId)
+  {
+    List<Campaign> campaigns = _campaignsRepository.GetCampaignsByUserId(userId);
+    campaigns.ForEach(c => c.Npcs = _npcsService.GetNpcsByCampaignId(c.Id));
+    return campaigns;
+  }
+
   internal Campaign CreateCampaign(Campaign campaignData)
   {
     _campaignsRepository.CreateCampaign(campaignData);

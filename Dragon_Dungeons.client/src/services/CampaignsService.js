@@ -1,5 +1,6 @@
 import { AppState } from "../AppState.js"
 import { Campaign } from "../models/Campaign.js"
+import Pop from "../utils/Pop.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 
@@ -22,6 +23,18 @@ class CampaignsService {
     saveState('tempCampaign', {})
     saveState('camPage', 0)
     AppState.tempCampaign = {}
+  }
+
+  async getCampaignsByUserId() {
+    try {
+      const res = await api.get('account/campaigns')
+      AppState.campaigns = res.data.map(d => {
+        d = this.converter(d)
+        return new Campaign(d)
+      })
+    } catch (error) {
+      Pop.error(error.message, '[GETTING USERS CAMPAIGNS]')
+    }
   }
 
   async createCampaign(campaignData) {

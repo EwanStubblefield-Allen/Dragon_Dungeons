@@ -29,6 +29,26 @@ public class CampaignsRepository
       new { campaignId }).FirstOrDefault();
   }
 
+  internal List<Campaign> GetCampaignsByUserId(string userId)
+  {
+    string sql = @"
+      SELECT
+        c.*,
+        a.*
+      FROM
+        campaigns c
+        JOIN accounts a ON a.id = c.creatorId
+      WHERE c.creatorId = @userId;";
+    return _db.Query<Campaign, Account, Campaign>(
+      sql,
+      (campaign, profile) =>
+      {
+        campaign.Creator = profile;
+        return campaign;
+      },
+      new { userId }).ToList();
+  }
+
   internal void CreateCampaign(Campaign campaignData)
   {
     string sql = @"
