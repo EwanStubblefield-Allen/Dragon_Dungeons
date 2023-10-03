@@ -9,7 +9,7 @@
 
     <div class="col-12 form-group">
       <label class="text-light" for="description">Description:</label>
-      <textarea v-model="editable.description" id="description" class="form-control" autocomplete="off" placeholder="Description..." rows="10"></textarea>
+      <textarea v-model="editable.description" id="description" class="form-control" minlength="3" maxlength="1000" autocomplete="off" placeholder="Description..." rows="10"></textarea>
     </div>
 
     <!-- <div class="col-12 form-group">

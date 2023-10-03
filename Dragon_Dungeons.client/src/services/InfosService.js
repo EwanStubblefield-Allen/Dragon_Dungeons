@@ -8,9 +8,14 @@ class InfosService {
     AppState.info = res.data
   }
 
-  async getInfoById(infoId) {
+  async getInfoById(infoId, arr = true) {
     let url = AppState.info[infoId.replace(' ', '-').toLowerCase()]
-    AppState.infoArr = (await dndApi.get(url)).data.results
+    const res = await dndApi.get(url)
+
+    if (!arr) {
+      return res.data.results
+    }
+    AppState.infoArr = res.data.results
   }
 
   async getInfoDetails(i, arr = true) {
@@ -73,8 +78,13 @@ class InfosService {
               option = foundObj
             }
           }
-          delete option.index
-          return option
+
+          if (option.index) {
+            delete option.index
+            return option
+          } else {
+            this.handleObj(Object.entries(option))
+          }
         })
       } else if (typeof d[1] == 'object') {
         if (Array.isArray(d[1]) && !d[1].length) {
@@ -142,7 +152,7 @@ class InfosService {
   arrHtml(a, size) {
     let template = ''
 
-    if (typeof a[0] == 'string' && a.length == 2 && a[0].length < 30) {
+    if (typeof a[0] == 'string' && a.length == 2 && 2 < a[0].length && a[0].length < 30) {
       a[0] += ':'
     }
 
@@ -172,7 +182,7 @@ class InfosService {
     let template = ''
     a = a.toString()
 
-    if (index == 0 && arr.length == 2 && a.length < 30) {
+    if (index == 0 && arr.length == 2 && 2 < a.length && a.length < 30) {
       template += /*HTML*/`
         <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
     } else {
