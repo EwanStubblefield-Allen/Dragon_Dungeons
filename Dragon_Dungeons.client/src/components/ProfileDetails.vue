@@ -11,7 +11,7 @@
 
   <section class="row justify-content-between">
     <div class="offset-md-2 col-10 col-md-8 order-2 order-md-1 d-flex justify-content-md-center align-items-center pt-3">
-      <div class="fs-1 fs-bold text-center text-break text-uppercase">{{ profileProp.name }}</div>
+      <div class="fs-1 fw-bold text-center text-break text-uppercase">{{ profileProp.name }}</div>
     </div>
 
     <div v-if="account.id == profileProp.id" class="col-12 col-md-2 order-1 order-md-2 text-end">

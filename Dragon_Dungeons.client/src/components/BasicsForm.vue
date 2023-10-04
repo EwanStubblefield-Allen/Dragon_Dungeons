@@ -56,7 +56,7 @@
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
         <input v-model="description.prompt" type="text" class="form-control" id="picture" minlength="3" maxlength="100" placeholder="Description..." required>
-        <button @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
+        <button v-if="!loading" @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
     </div>
 
@@ -129,6 +129,7 @@ export default {
     async function getRace() {
       try {
         const race = await infosService.getInfoDetails(`api/races/${editable.value.race.toLowerCase().replaceAll(' ', '-')}`, false)
+        editable.value.speed = race.speed
         editable.value.bonus = {}
         race.ability_bonuses.forEach(b => editable.value.bonus[b.ability_score.index] = b.bonus)
       } catch (error) {
@@ -219,7 +220,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(0)
-        router.push({ name: 'Character', params: { characterId: 'features' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'features' } })
       }
     }
   }

@@ -60,7 +60,7 @@ export default {
 
       changeCamPage() {
         campaignsService.changeCamPage(0)
-        router.push({ name: 'Campaign', params: { campaignId: 'notes' } })
+        router.push({ name: 'BuildCampaign', params: { campaignStep: 'notes' } })
       }
     }
   }

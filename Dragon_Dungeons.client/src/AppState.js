@@ -12,14 +12,17 @@ export const AppState = reactive({
   infoArr: [],
   infoDetails: {},
   infoHtml: '',
-  /** @type {import('./models/Character.js').Character.js[]} */
+  /** @type {import('./models/Character.js').Character[]} */
   characters: [],
-  /** @type {import('./models/Character.js').Character.js} */
+  /** @type {import('./models/Character.js').Character | null} */
+  activeCharacter: null,
+  /** @type {import('./models/Character.js').Character} */
   tempCharacter: loadState('tempCharacter', Character),
-  /** @type {import('./models/Campaign.js').Campaign.js[]} */
+  /** @type {import('./models/Campaign.js').Campaign[]} */
   campaigns: [],
-  /** @type {import('./models/Campaign.js').Campaign.js} */
+  /** @type {import('./models/Campaign.js').Campaign} */
   tempCampaign: loadState('tempCampaign', Campaign),
   charPage: loadState('charPage') ?? 0,
-  camPage: loadState('camPage') ?? 0
+  camPage: loadState('camPage') ?? 0,
+  attributes: ['str', 'dex', 'con', 'int', 'wis', 'cha']
 })

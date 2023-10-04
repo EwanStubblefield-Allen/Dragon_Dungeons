@@ -1,107 +1,109 @@
 <template>
-  <section class="row">
-    <div class="col-12 col-md-3 col-lg-2 overflow-auto infoBar">
-      <section class="row p-3">
-        <div class="col-12 p-0">
-          <p class="fs-3 text-capitalize p-2">Steps:</p>
-          <hr class="mt-0">
+  <section v-if="character" class="row py-3">
+    <div class="col-12 col-md-6">
+      <section class="row">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <img class="img-fluid h-100 w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
         </div>
-        <div v-for="(l, index) in list" :key="l" class="col-12 col-sm-6 col-md-12">
-          <router-link :to="{ name: 'Character', params: { characterId: l.toLowerCase().replaceAll(' ', '-') } }" v-if="charPage >= index">
-            <p class="text-light selectable rounded px-2 py-1">{{ l }}</p>
-          </router-link>
-          <p v-else class="text-secondary rounded px-2 py-1">{{ l }}</p>
-          <hr v-if="index != list.length - 1" class="my-2">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <p class="fs-1 fw-bold">{{ character.name }}</p>
+          <hr class="my-2">
+          <p class="fs-3">Level: {{ character.level }}</p>
+          <p class="fs-3">{{ character.race }} {{ character.class }}</p>
+          <p class="fs-3">{{ character.alignment }}</p>
+        </div>
+        <div class="col-12 col-lg-4">
+          <section class="row align-item">
+            <div class="col-7 p-1">
+              <div class="d-flex justify-content-around align-items-center bg-dark rounded elevation-5 h-100">
+                <div class="text-center">
+                  <p>Hp:</p>
+                  <p>{{ character.hp }} / {{ character.maxHp }}</p>
+                </div>
+                <div class="text-center">
+                  <p>Temp:</p>
+                  <p>{{ character.tempHp }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-5 p-1">
+              <div class="bg-dark text-center rounded elevation-5 p-2">
+                <p>Armor</p>
+                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+                <p>Class</p>
+              </div>
+            </div>
+            <div class="col-4 p-1">
+              <div class="bg-dark text-center rounded elevation-5 p-2">
+                <p>Prof</p>
+                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+                <p>Bonus</p>
+              </div>
+            </div>
+            <div class="col-4 p-1">
+              <div class="bg-dark text-center rounded elevation-5 p-2">
+                <p>Walking</p>
+                <p>{{ character.speed }} ft.</p>
+                <p>Speed</p>
+              </div>
+            </div>
+            <div class="col-4 p-1">
+              <div class="bg-dark d-flex flex-column justify-content-center align-items-center rounded elevation-5 h-100 p-1">
+                <p>Initiative</p>
+                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </div>
 
-    <div class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2">
-      <div v-if="route.params.characterId == 'basics'">
-        <BasicsForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'features'">
-        <FeaturesForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'background'">
-        <BackgroundForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'personality-traits'">
-        <PersonalityTraitsForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'attributes'">
-        <AttributesForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'proficiencies'">
-        <ProficienciesForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'spells'">
-        <SpellsForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'equipment'">
-        <EquipmentForm />
-      </div>
+    <div class="col-12 col-md-6">
+      <CharacterInfo :characterProp="character" />
+      <CharacterSkills :characterProp="character" />
     </div>
   </section>
 </template>
 
 <script>
-import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
-import BasicsForm from '../components/BasicsForm.vue'
-import FeaturesForm from '../components/FeaturesForm.vue'
-import BackgroundForm from '../components/BackgroundForm.vue'
-import PersonalityTraitsForm from '../components/PersonalityTraitsForm.vue'
-import AttributesForm from '../components/AttributesForm.vue'
-import ProficienciesForm from '../components/ProficienciesForm.vue'
-import SpellsForm from '../components/SpellsForm.vue'
-import EquipmentForm from '../components/EquipmentForm.vue'
+import { computed, watchEffect } from 'vue'
+import { charactersService } from '../services/CharactersService.js'
+import CharacterInfo from '../components/CharacterInfo.vue'
+import CharacterSkills from '../components/CharacterSkills.vue'
+import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Spells', 'Equipment']
-
     watchEffect(() => {
-      let charPage = AppState.charPage
-
-      for (let i = list.length - 1; i > charPage; i--) {
-        if (list[i].toLowerCase().replace(' ', '-') == route.params.characterId && AppState.tempCharacter) {
-          router.push({ name: 'Character', params: { characterId: list[charPage].toLowerCase().replace(' ', '-') } })
-        }
+      if (route.params.characterId) {
+        getCharacterById()
       }
     })
 
+    async function getCharacterById() {
+      try {
+        await charactersService.getCharacterById(route.params.characterId)
+      }
+      catch (error) {
+        Pop.error(error.message, '[GETTING CHARACTER BY ID]')
+        router.push('/')
+      }
+    }
     return {
-      route,
-      list,
-      charPage: computed(() => AppState.charPage)
+      character: computed(() => AppState.activeCharacter)
     }
   },
-  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm, SpellsForm, EquipmentForm }
+  components: { CharacterInfo, CharacterSkills }
 }
 </script>
 
 <style lang="scss" scoped>
-  .infoBar {
-    background-color: var(--oxford);
-    color: white;
-    height: 25vh;
-  }
-
-  @media screen and (min-width: 768px) {
-    .infoBar {
-      height: var(--main-height);
-      position: fixed;
-    }
+  img {
+    object-fit: cover;
+    object-position: top;
   }
 </style>

@@ -28,7 +28,7 @@ public class CampaignsService
   internal Campaign CreateCampaign(Campaign campaignData)
   {
     _campaignsRepository.CreateCampaign(campaignData);
-    campaignData.Npcs.ForEach(n => _npcsService.CreateNpc(n));
+    campaignData.Npcs?.ForEach(n => _npcsService.CreateNpc(n));
     Campaign campaign = GetCampaignById(campaignData.Id);
     return campaign;
   }

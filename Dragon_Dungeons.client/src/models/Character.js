@@ -1,5 +1,4 @@
 import { Profile } from "./Account.js"
-import { Bonus } from "./Bonus.js"
 import { RepoItem } from "./RepoItem.js"
 
 export class Character extends RepoItem {
@@ -7,6 +6,10 @@ export class Character extends RepoItem {
     super(data)
     this.name = data.name
     this.picture = data.picture
+    this.hp = data.hp
+    this.maxHp = data.maxHp
+    this.tempHp = data.tempHp
+    this.speed = data.speed
     this.level = data.level
     this.class = data.class
     this.race = data.race
@@ -32,7 +35,7 @@ export class Character extends RepoItem {
     this.int = data.intelligence || data.int
     this.wis = data.wis
     this.cha = data.cha
-    this.bonus = new Bonus(data.bonus)
+    this.bonus = data.bonus
     this.skills = data.skills
     this.proficiencies = data.proficiencies
     this.cantrips = data.cantrips

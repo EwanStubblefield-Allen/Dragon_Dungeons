@@ -19,7 +19,7 @@
               <router-link :to="{ name: 'Info', params: { infoId: selectable[1], infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
             </p>
             <section class="row p-2">
-              <p @click="addPro(o.item.name.replace('Skill:', ''), opt.choose)" v-for="o in opt.from.options" :key="o.item.name" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name.replace('Skill:', '')) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name.replace('Skill:', '') }}</p>
+              <p @click="addPro(o.item.name.replace('Skill: ', ''), opt.choose)" v-for="o in opt.from.options" :key="o.item.name" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name.replace('Skill: ', '')) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name.replace('Skill: ', '') }}</p>
             </section>
           </div>
 
@@ -89,7 +89,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(5)
-        router.push({ name: 'Character', params: { characterId: 'spells' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'spells' } })
       },
 
       addPro(item, length) {

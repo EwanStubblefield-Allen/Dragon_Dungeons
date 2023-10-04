@@ -25,6 +25,11 @@ class CharactersService {
     AppState.tempCharacter = {}
   }
 
+  async getCharacterById(characterId) {
+    const res = await api.get(`api/characters/${characterId}`)
+    AppState.activeCharacter = new Character(this.converter(res.data))
+  }
+
   async getCharactersByUserId() {
     try {
       const res = await api.get('account/characters')
@@ -39,6 +44,39 @@ class CharactersService {
 
   async createCharacter(characterData) {
     characterData = this.converter(characterData, true)
+    AppState.attributes.forEach(a => {
+      if (characterData.bonus[a]) {
+        characterData[a] += characterData.bonus[a]
+      }
+    })
+    characterData.bonus = characterData.bonus.bonus
+
+    switch (characterData.race) {
+      case 'barbarian':
+        characterData.maxHp = 13
+        break
+      case 'fighter':
+      case 'paladin':
+      case 'ranger':
+        characterData.maxHp = 11
+        break
+      case 'bard':
+      case 'cleric':
+      case 'druid':
+      case 'monk':
+      case 'rogue':
+      case 'warlock':
+        characterData.maxHp = 9
+        break
+      case 'sorcerer':
+      case 'wizard':
+        characterData.maxHp = 7
+        break
+      default:
+        break
+    }
+    characterData.maxHp += Math.floor((characterData.con - 10) / 2)
+    characterData.hp = characterData.maxHp
     const res = await api.post('api/characters', characterData)
     AppState.characters.push(new Character(this.converter(res.data)))
     this.resetCharacter()

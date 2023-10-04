@@ -81,7 +81,9 @@ export default {
     async function getInfo() {
       try {
         const selectedClass = AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')
-        const casting = (await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)).spellcasting
+        const data = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)
+        editable.value.bonus.bonus = data.prof_bonus
+        const casting = data.spellcasting
 
         if (!casting || !Object.values(casting).find(c => c > 0)) {
           return changeCharPage()
@@ -118,7 +120,7 @@ export default {
 
     function changeCharPage() {
       charactersService.changeCharPage(6)
-      router.push({ name: 'Character', params: { characterId: 'equipment' } })
+      router.push({ name: 'CreateCharacter', params: { characterStep: 'equipment' } })
     }
 
     return {

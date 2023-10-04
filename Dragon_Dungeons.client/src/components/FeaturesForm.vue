@@ -117,7 +117,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(1)
-        router.push({ name: 'Character', params: { characterId: 'background' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'background' } })
       }
     }
   }

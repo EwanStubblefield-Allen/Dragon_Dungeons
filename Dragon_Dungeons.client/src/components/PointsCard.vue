@@ -42,7 +42,7 @@ export default {
   setup() {
     const router = useRouter()
     const editable = ref({})
-    const attributes = ['str', 'dex', 'con', 'int', 'wis', 'cha']
+    const attributes = AppState.attributes
     const points = ref(27)
 
     onMounted(() => {
@@ -102,7 +102,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(4)
-        router.push({ name: 'Character', params: { characterId: 'proficiencies' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'proficiencies' } })
       }
     }
   }

@@ -39,22 +39,22 @@
         </li>
 
         <li class="col-6 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Character', params: { characterId: 'basics' } }" :class="{ route: route.fullPath.includes('character') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Build Character
+          <router-link :to="{ name: 'CreateCharacter', params: { characterStep: 'basics' } }" :class="{ route: route.fullPath.includes('create-character') }" class="btn text-success lighten-30 selectable text-uppercase">
+            Create Character
           </router-link>
         </li>
 
         <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" :class="{ route: route.fullPath.includes('campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Create Campaign
+          <router-link :to="{ name: 'BuildCampaign', params: { campaignStep: 'basics' } }" :class="{ route: route.fullPath.includes('build-campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
+            Build Campaign
           </router-link>
         </li>
 
-        <li class="col-12 col-lg-1 d-flex justify-content-lg-end align-items-center">
-          <!-- LOGIN COMPONENT HERE -->
-          <Login />
-        </li>
       </ul>
+      <div class="d-flex justify-content-lg-end align-items-center">
+        <!-- LOGIN COMPONENT HERE -->
+        <Login />
+      </div>
     </div>
   </nav>
 

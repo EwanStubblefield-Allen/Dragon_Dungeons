@@ -44,7 +44,7 @@ export default defineComponent({
   data() {
     const router = useRouter()
     const editable = ref([])
-    const attributes = ['str', 'dex', 'con', 'int', 'wis', 'cha']
+    const attributes = AppState.attributes
 
     onMounted(() => {
       let temp = AppState.tempCharacter
@@ -99,7 +99,7 @@ export default defineComponent({
 
       changeCharPage() {
         charactersService.changeCharPage(4)
-        router.push({ name: 'Character', params: { characterId: 'proficiencies' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'proficiencies' } })
       }
     }
   },
