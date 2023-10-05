@@ -18,8 +18,8 @@
             <p class="fs-3 fw-bold">Choose {{ opt.choose }} {{ selectable[1] }}
               <router-link :to="{ name: 'Info', params: { infoId: selectable[1], infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
             </p>
-            <section class="row p-2">
-              <p @click="addPro(o.item.name.replace('Skill: ', ''), opt.choose)" v-for="o in opt.from.options" :key="o.item.name" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item.name.replace('Skill: ', '')) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ o.item.name.replace('Skill: ', '') }}</p>
+            <section class="row align-items-center p-2">
+              <p @click="addPro(o.item, opt.choose)" v-for="o in opt.from.options" :key="o.item.name" :class="{ 'bg-light text-dark elevation-5': editable[selectable[1]]?.includes(o.item) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ o.item.name.replace('Skill: ', '') }}</p>
             </section>
           </div>
 
@@ -37,7 +37,6 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
-import { infosService } from '../services/InfosService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -66,7 +65,7 @@ export default {
 
     async function getOptions() {
       try {
-        const selectedClass = await infosService.getInfoDetails(`api/classes/${AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')}`, false)
+        const selectedClass = AppState.tempClass
         selectedClass.proficiency_choices.forEach(choice => {
           if (!choice.from.options[0].item) {
             let template = []
@@ -93,6 +92,7 @@ export default {
       },
 
       addPro(item, length) {
+        delete item.index
         let type = selectable.value[1]
 
         if (!editable.value[type]) {

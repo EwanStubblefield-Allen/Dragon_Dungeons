@@ -1,5 +1,5 @@
 <template>
-  <section class="row mx-0 my-3 p-3 bg-dark rounded elevation-5">
+  <section class="row mx-0 my-2 p-2 bg-dark rounded elevation-5">
     <div v-for="a in attributes" :key="a" class="col-4 col-sm-2 text-center">
       <p class="fs-5 fw-bold">{{ a.toUpperCase() }}:</p>
       <div class="d-flex justify-content-around align-items-center">
@@ -9,24 +9,24 @@
     </div>
   </section>
 
-  <section class="row mx-0 my-3 p-3 bg-dark rounded elevation-5">
-    <div v-for="s in Object.entries(skills)" :key="s" class="col-12 col-sm-6 col-md-12 col-lg-6 py-1">
-      <section v-if="characterProp.skills.includes(s[0])" class="row justify-content-between align-items-center">
-        <i class="col-2 text-center mdi mdi-circle"></i>
-        <p class="col-6 text-end">{{ s[0] }}</p>
-        <div class="col-4 d-flex">
-          <p class="w-50 text-center text-uppercase">{{ s[1] }}</p>
-          <p title="Modifier" class="w-50 text-center">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus }}</p>
-        </div>
-      </section>
-      <section v-else class="row justify-content-between align-items-center">
-        <i class="col-2 text-center mdi mdi-circle-outline"></i>
-        <p class="col-6 text-end">{{ s[0] }}</p>
-        <div class="col-4 d-flex">
-          <p class="w-50 text-center text-uppercase">{{ s[1] }}</p>
-          <p title="Modifier" class="w-50 text-center">{{ Math.floor((characterProp[s[1]] - 10) / 2) }}</p>
-        </div>
-      </section>
+  <section class="row mx-0 my-3 p-2 bg-dark rounded elevation-5">
+    <div v-for="s in Object.entries(skills)" :key="s" class="col-12 col-sm-6 col-md-12 col-xl-6 py-1">
+      <div v-if="characterProp.skills.includes(s[0])" class="d-flex justify-content-between align-items-center">
+        <i class="mdi mdi-circle"></i>
+        <section class="row align-items-center flex-grow-1">
+          <p class="col-7 text-end">{{ s[0] }}</p>
+          <p class="col-3 text-center text-uppercase">{{ s[1] }}</p>
+          <p title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus }}</p>
+        </section>
+      </div>
+      <div v-else class="d-flex justify-content-between align-items-center">
+        <i class="mdi mdi-circle-outline"></i>
+        <section class="row align-items-center flex-grow-1">
+          <p class="col-7 text-end">{{ s[0] }}</p>
+          <p class="col-3 text-center text-uppercase">{{ s[1] }}</p>
+          <p title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) }}</p>
+        </section>
+      </div>
     </div>
   </section>
 </template>

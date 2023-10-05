@@ -1,5 +1,4 @@
 import { AppState } from "../AppState.js"
-import { logger } from "../utils/Logger.js"
 import { openApi } from "./AxiosService.js"
 import Compressor from "compressorjs"
 
@@ -10,7 +9,6 @@ class OpenService {
   }
 
   async compress(file, compress) {
-    logger.log('before', file)
     await new Promise((resolve) => {
       new Compressor(file, {
         quality: compress,
@@ -26,7 +24,6 @@ class OpenService {
       }
       throw new Error('Image is too large!!')
     }
-    logger.log('after', AppState.tempCharacter.picture)
   }
 }
 

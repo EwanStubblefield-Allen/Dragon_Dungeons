@@ -17,8 +17,8 @@
           <p class="fs-3 fw-bold">Choose {{ cantrips.count }}
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
-          <section class="row p-2">
-            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.find(cantrip => cantrip.name == c.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ c.name }}</p>
+          <section class="row align-items-center p-2">
+            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.find(cantrip => cantrip.name == c.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ c.name }}</p>
           </section>
         </div>
 
@@ -33,7 +33,7 @@
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
           <section class="row align-items-center p-2">
-            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.find(spell => spell.name == s.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-center selectable rounded">{{ s.name }}</p>
+            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.find(spell => spell.name == s.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ s.name }}</p>
           </section>
         </div>
 
@@ -80,7 +80,7 @@ export default {
 
     async function getInfo() {
       try {
-        const selectedClass = AppState.tempCharacter.class.toLowerCase().replaceAll(' ', '-')
+        const selectedClass = AppState.tempCharacter.class.toLowerCase()
         const data = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)
         editable.value.bonus.bonus = data.prof_bonus
         const casting = data.spellcasting

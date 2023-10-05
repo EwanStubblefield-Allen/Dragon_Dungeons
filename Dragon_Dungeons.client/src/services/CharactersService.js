@@ -21,8 +21,11 @@ class CharactersService {
 
   resetCharacter() {
     saveState('tempCharacter', {})
+    saveState('tempClass', {})
     saveState('charPage', 0)
     AppState.tempCharacter = {}
+    AppState.tempClass = {}
+    AppState.charPage = 0
   }
 
   async getCharacterById(characterId) {
@@ -51,29 +54,29 @@ class CharactersService {
     })
     characterData.bonus = characterData.bonus.bonus
 
-    switch (characterData.race) {
-      case 'barbarian':
+    switch (characterData.class) {
+      case 'Barbarian':
         characterData.maxHp = 13
         break
-      case 'fighter':
-      case 'paladin':
-      case 'ranger':
+      case 'Fighter':
+      case 'Paladin':
+      case 'Ranger':
         characterData.maxHp = 11
         break
-      case 'bard':
-      case 'cleric':
-      case 'druid':
-      case 'monk':
-      case 'rogue':
-      case 'warlock':
+      case 'Bard':
+      case 'Cleric':
+      case 'Druid':
+      case 'Monk':
+      case 'Rogue':
+      case 'Warlock':
         characterData.maxHp = 9
         break
-      case 'sorcerer':
-      case 'wizard':
+      case 'Sorcerer':
+      case 'Wizard':
         characterData.maxHp = 7
         break
       default:
-        break
+        throw new Error('Unknown Class!')
     }
     characterData.maxHp += Math.floor((characterData.con - 10) / 2)
     characterData.hp = characterData.maxHp

@@ -82,9 +82,8 @@ class InfosService {
           if (option.index) {
             delete option.index
             return option
-          } else {
-            this.handleObj(Object.entries(option))
           }
+          return this.handleObj(Object.entries(option))
         })
       } else if (typeof d[1] == 'object') {
         if (Array.isArray(d[1]) && !d[1].length) {

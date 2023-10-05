@@ -89,6 +89,7 @@ import { AppState } from '../AppState.js'
 import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import { openService } from '../services/OpenService.js'
+import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -119,6 +120,10 @@ export default {
         await getRace()
       }
 
+      if (editable.value.class && !AppState.tempClass.index) {
+        await getClass()
+      }
+
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
       } else {
@@ -134,6 +139,18 @@ export default {
         race.ability_bonuses.forEach(b => editable.value.bonus[b.ability_score.index] = b.bonus)
       } catch (error) {
         Pop.error(error.message, '[GETTING RACE]')
+      }
+    }
+
+    async function getClass() {
+      try {
+        const selectedClass = await infosService.getInfoDetails(`api/classes/${editable.value.class.toLowerCase()}`, false)
+        selectedClass.proficiencies.forEach(p => delete p.index)
+        editable.value.hitDie = selectedClass.hit_die
+        AppState.tempClass = selectedClass
+        saveState('tempClass', selectedClass)
+      } catch (error) {
+        Pop.error(error.message, '[GETTING CLASS]')
       }
     }
 
@@ -162,9 +179,8 @@ export default {
           return
         }
         const temp = editable.value[type]
-        AppState.charPage = 0
         editable.value = {}
-        AppState.tempCharacter = {}
+        charactersService.resetCharacter()
         editable.value[type] = temp
       },
 

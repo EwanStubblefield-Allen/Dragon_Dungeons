@@ -112,6 +112,11 @@ export default {
 
 <style lang="scss" scoped>
   .active,
+  .nav-item {
+    transition: .5s;
+  }
+
+  .active,
   .nav-item:hover {
     color: var(--wheat);
     background: linear-gradient(145deg, #000000, #23272b);

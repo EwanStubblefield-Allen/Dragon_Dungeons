@@ -19,11 +19,11 @@
           </option>
         </select>
         <div v-if="list[index]?.length">
-          <section v-if="!Array.isArray(editable.equipment[index])" class="row pt-3">
-            <p @click="addPro(sel, editable.equipment[index].choose, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-light text-center selectable rounded">{{ sel.name }}</p>
+          <section v-if="!Array.isArray(editable.equipment[index])" class="row align-items-center pt-3">
+            <p @click="addPro(sel, editable.equipment[index].choose, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
           </section>
-          <section v-else class="row pt-3">
-            <p @click="addPro(sel, false, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 p-2 text-light text-center selectable rounded">{{ sel.name }}</p>
+          <section v-else class="row align-items-center pt-3">
+            <p @click="addPro(sel, false, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
           </section>
         </div>
       </div>
@@ -88,6 +88,7 @@ export default {
 
     async function createCharacter() {
       try {
+        editable.value.proficiencies = editable.value.proficiencies.concat(AppState.tempClass.proficiencies)
         editable.value.picture = await imagesService.createImg(editable.value.picture)
         await charactersService.createCharacter(editable.value)
       } catch (error) {
@@ -101,13 +102,15 @@ export default {
 
     async function getInfo() {
       try {
-        let selectedClass = await infosService.getInfoDetails(`api/classes/${AppState.tempCharacter.class.toLowerCase()}`, false)
-        starting.value = await Promise.all(selectedClass.starting_equipment_options.map(async s => {
-          if (!Array.isArray(s.from.options)) {
+        starting.value = await Promise.all(AppState.tempClass.starting_equipment_options.map(async s => {
+          if (s.from.equipment_category) {
             s.from = (await infosService.getInfoDetails(s.from.equipment_category.url, false)).equipment
             s.from.forEach(o => o.count ? o.count : o.count = 1)
           } else {
-            s.from = s.from.options.map(option => {
+            if (s.from.options) {
+              s.from = s.from.options
+            }
+            s.from = s.from.map(option => {
               if (option.choice) {
                 option.choice.from.equipment_category.choose = option.choice.choose
                 option = option.choice.from.equipment_category
@@ -132,6 +135,7 @@ export default {
           }
           return s
         }))
+
         editable.value.equipment.forEach(async (equip, i) => {
           if (Array.isArray(equip)) {
             const foundIndex = starting.value[i].from.findIndex(fro => {
