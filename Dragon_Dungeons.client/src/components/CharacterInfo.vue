@@ -11,6 +11,10 @@
     <li @click="selectable = 'Background'" :class="{ 'active': selectable == 'Background' }" class="nav-item flex-grow-1 text-center p-2 selectable rounded" data-bs-toggle="offcanvas" data-bs-target="#characterOffcanvas" aria-controls="characterOffcanvas">
       <p class="fw-bold">Background</p>
     </li>
+
+    <!-- <li @click="selectable = 'Notes'" :class="{ 'active': selectable == 'Notes' }" class="nav-item flex-grow-1 text-center p-2 selectable rounded" data-bs-toggle="offcanvas" data-bs-target="#characterOffcanvas" aria-controls="characterOffcanvas">
+      <p class="fw-bold">Notes</p>
+    </li> -->
   </ul>
 
   <div class="offcanvas offcanvas-start bg-dark" tabindex="-1" id="characterOffcanvas" aria-labelledby="characterOffcanvasLabel">
@@ -56,7 +60,30 @@
         </div>
       </div>
 
-      <div v-if="selectable == 'Background'">
+      <div v-else-if="selectable == 'Background'">
+        <div class="bg-light my-2 p-2 rounded elevation-5">
+          <p class="fs-4">Background: {{ characterProp.background }}</p>
+          <p>
+            <span class="fs-4">Backstory: </span>
+            {{ characterProp.backstory }}
+          </p>
+        </div>
+
+        <div class="my-2 px-3 py-2 bg-light rounded elevation-5">
+          <p class="fs-4">Ideal:</p>
+          <p class="px-2">{{ characterProp.features }}</p>
+        </div>
+        <div class="my-2 px-3 py-2 bg-light rounded elevation-5">
+          <p class="fs-4">Flaws:</p>
+          <p class="px-2">{{ characterProp.personalityTraits }}</p>
+        </div>
+        <div class="my-2 px-3 py-2 bg-light rounded elevation-5">
+          <p class="fs-4">Bonds:</p>
+          <p class="px-2">{{ characterProp.personalityTraits }}</p>
+        </div>
+      </div>
+
+      <div v-else-if="selectable == 'Notes'">
         <div class="bg-light my-2 p-2 rounded elevation-5">
           <p class="fs-4">Background: {{ characterProp.background }}</p>
           <p>
@@ -98,7 +125,7 @@ export default {
     const selectable = ref('')
 
     onMounted(() => {
-      document.getElementById('characterOffcanvas').addEventListener('hide.bs.offcanvas', () => {
+      document.getElementById('characterOffcanvas').addEventListener('hidden.bs.offcanvas', () => {
         selectable.value = ''
       })
     })

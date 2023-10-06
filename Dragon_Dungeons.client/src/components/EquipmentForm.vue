@@ -88,9 +88,9 @@ export default {
 
     async function createCharacter() {
       try {
-        editable.value.proficiencies = editable.value.proficiencies.concat(AppState.tempClass.proficiencies)
         editable.value.picture = await imagesService.createImg(editable.value.picture)
         await charactersService.createCharacter(editable.value)
+        Pop.success('Created Character!!')
       } catch (error) {
         Pop.error(error.message, '[CREATING CHARACTER]')
       }

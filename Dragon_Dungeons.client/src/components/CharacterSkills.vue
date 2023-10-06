@@ -11,20 +11,14 @@
 
   <section class="row mx-0 my-3 p-2 bg-dark rounded elevation-5">
     <div v-for="s in Object.entries(skills)" :key="s" class="col-12 col-sm-6 col-md-12 col-xl-6 py-1">
-      <div v-if="characterProp.skills.includes(s[0])" class="d-flex justify-content-between align-items-center">
-        <i class="mdi mdi-circle"></i>
+      <div class="d-flex justify-content-between align-items-center">
+        <i v-if="characterProp.skills.includes(s[0])" class="mdi mdi-circle"></i>
+        <i v-else class="mdi mdi-circle-outline"></i>
         <section class="row align-items-center flex-grow-1">
           <p class="col-7 text-end">{{ s[0] }}</p>
           <p class="col-3 text-center text-uppercase">{{ s[1] }}</p>
-          <p title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus }}</p>
-        </section>
-      </div>
-      <div v-else class="d-flex justify-content-between align-items-center">
-        <i class="mdi mdi-circle-outline"></i>
-        <section class="row align-items-center flex-grow-1">
-          <p class="col-7 text-end">{{ s[0] }}</p>
-          <p class="col-3 text-center text-uppercase">{{ s[1] }}</p>
-          <p title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) }}</p>
+          <p v-if="characterProp.skills.includes(s[0])" title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus }}</p>
+          <p v-else title="Modifier" class="col-2 text-end">{{ Math.floor((characterProp[s[1]] - 10) / 2) }}</p>
         </section>
       </div>
     </div>

@@ -12,25 +12,25 @@
 
     <div class="col-12 collapse navbar-collapse" id="navbarText">
       <ul class="row navbar-nav flex-row justify-content-between mx-0 w-100">
-        <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+        <li class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
           <section class="row flex-grow-1 py-2">
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <router-link :to="{ name: 'Home' }" class="btn text-success lighten-30 selectable text-uppercase">
                 Home
               </router-link>
-            </li>
+            </div>
 
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <button type="button" role="button" :class="{ route: route.fullPath.includes('info') }" class="btn text-success lighten-30" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">INFO</button>
-            </li>
+            </div>
 
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <router-link :to="{ name: 'Help' }" class="btn text-success lighten-30 selectable text-uppercase">
                 Help
               </router-link>
-            </li>
+            </div>
           </section>
-        </div>
+        </li>
 
         <li class="col-2 d-none d-lg-flex justify-content-center align-items-center">
           <router-link class="navbar-brand d-flex justify-content-center align-items-center mx-0" :to="{ name: 'Home' }">

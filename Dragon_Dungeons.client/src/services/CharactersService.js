@@ -46,6 +46,12 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
+    if (characterData.proficiencies) {
+      characterData.proficiencies = characterData.proficiencies.concat(AppState.tempClass.proficiencies)
+    } else {
+      characterData.proficiencies = AppState.tempClass.proficiencies
+    }
+    characterData.skills = characterData.skills.map(s => s.name.replace('Skill: ', ''))
     characterData = this.converter(characterData, true)
     AppState.attributes.forEach(a => {
       if (characterData.bonus[a]) {
