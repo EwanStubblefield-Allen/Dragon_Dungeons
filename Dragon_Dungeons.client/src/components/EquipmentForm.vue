@@ -59,9 +59,9 @@ export default {
         editable.value.equipment = []
       }
 
-      if (!AppState.tempCharacter.class) {
-        return
-      }
+      // if (!AppState.tempCharacter.class) {
+      //   return
+      // }
       getInfo()
     })
 

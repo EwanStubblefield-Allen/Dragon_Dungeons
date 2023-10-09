@@ -60,4 +60,22 @@ public class CharactersController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [HttpPut("{characterId}")]
+  [Authorize]
+  public async Task<ActionResult<Character>> UpdateCharacter([FromBody] Character characterData, string characterId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      characterData.CreatorId = userInfo.Id;
+      characterData.Id = characterId;
+      Character character = _charactersService.UpdateCharacter(characterData);
+      return Ok(character);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }

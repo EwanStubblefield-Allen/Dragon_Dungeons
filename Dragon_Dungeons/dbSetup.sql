@@ -62,16 +62,25 @@ CREATE TABLE characters(
   cantrips JSON,
   spells JSON,
   equipment JSON,
+  armor JSON,
+  weapons JSON,
   creatorId VARCHAR(255) NOT NULL,
   FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE characters;
 
+SELECT
+  *
+FROM
+  information_schema.TABLES
+WHERE
+  TABLE_NAME = 'characters';
+
 ALTER TABLE
   characters
 ADD
-  COLUMN hitDie TINYINT NOT NULL;
+  COLUMN weapons JSON;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

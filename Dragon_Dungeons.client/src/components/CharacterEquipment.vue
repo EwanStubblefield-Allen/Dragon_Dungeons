@@ -14,16 +14,22 @@
   </ul>
 
   <section class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
-    <div class="col-6">
+    <div class="col-12 col-sm-6 col-md-12 col-lg-6">
       <p>Weapons</p>
       <hr class="my-2">
+      <div class="px-2">
+        <p v-for="w in equipment.weapons" :key="w.index">{{ w.name }}</p>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { Character } from '../models/Character.js'
+import { infosService } from '../services/InfosService.js'
+import { AppState } from '../AppState.js'
+import Pop from '../utils/Pop.js'
 
 export default {
   props: {
@@ -36,8 +42,26 @@ export default {
   setup() {
     const selectable = ref(1)
 
+    onMounted(() => {
+      getEquipment()
+    })
+
+    async function getEquipment() {
+      try {
+        const character = AppState.activeCharacter
+        AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
+        character.weapons.forEach(async w => {
+          const weapon = await infosService.getInfoDetails(w.url, false)
+          AppState.equipment.weapons.push(weapon)
+        })
+      } catch (error) {
+        Pop.error(error.message, '[GETTING EQUIPMENT]')
+      }
+    }
+
     return {
-      selectable
+      selectable,
+      equipment: computed(() => AppState.equipment)
     }
   }
 }
