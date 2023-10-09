@@ -56,7 +56,7 @@
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
         <input v-model="description.prompt" type="text" class="form-control" id="picture" minlength="3" maxlength="100" placeholder="Description..." required>
-        <button @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
+        <button v-if="!loading" @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
     </div>
 
@@ -89,6 +89,7 @@ import { AppState } from '../AppState.js'
 import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import { openService } from '../services/OpenService.js'
+import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -119,6 +120,10 @@ export default {
         await getRace()
       }
 
+      if (editable.value.class && !AppState.tempClass.index) {
+        await getClass()
+      }
+
       if (JSON.stringify(editable.value) == '{}' || editable.value == AppState.tempCharacter) {
         return
       } else {
@@ -129,10 +134,23 @@ export default {
     async function getRace() {
       try {
         const race = await infosService.getInfoDetails(`api/races/${editable.value.race.toLowerCase().replaceAll(' ', '-')}`, false)
+        editable.value.speed = race.speed
         editable.value.bonus = {}
         race.ability_bonuses.forEach(b => editable.value.bonus[b.ability_score.index] = b.bonus)
       } catch (error) {
         Pop.error(error.message, '[GETTING RACE]')
+      }
+    }
+
+    async function getClass() {
+      try {
+        const selectedClass = await infosService.getInfoDetails(`api/classes/${editable.value.class.toLowerCase()}`, false)
+        selectedClass.proficiencies.forEach(p => delete p.index)
+        editable.value.hitDie = selectedClass.hit_die
+        AppState.tempClass = selectedClass
+        saveState('tempClass', selectedClass)
+      } catch (error) {
+        Pop.error(error.message, '[GETTING CLASS]')
       }
     }
 
@@ -161,9 +179,8 @@ export default {
           return
         }
         const temp = editable.value[type]
-        AppState.charPage = 0
         editable.value = {}
-        AppState.tempCharacter = {}
+        charactersService.resetCharacter()
         editable.value[type] = temp
       },
 
@@ -219,7 +236,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(0)
-        router.push({ name: 'Character', params: { characterId: 'features' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'features' } })
       }
     }
   }

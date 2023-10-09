@@ -1,107 +1,166 @@
 <template>
-  <section class="row">
-    <div class="col-12 col-md-3 col-lg-2 overflow-auto infoBar">
-      <section class="row p-3">
-        <div class="col-12 p-0">
-          <p class="fs-3 text-capitalize p-2">Steps:</p>
-          <hr class="mt-0">
+  <section v-if="character" class="row py-2">
+    <div class="col-12 col-md-6">
+      <p class="fs-2 fw-bold text-wrap text-truncate">{{ character.name }}</p>
+      <hr class="my-2">
+      <section class="row">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <img class="img-fluid w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
         </div>
-        <div v-for="(l, index) in list" :key="l" class="col-12 col-sm-6 col-md-12">
-          <router-link :to="{ name: 'Character', params: { characterId: l.toLowerCase().replaceAll(' ', '-') } }" v-if="charPage >= index">
-            <p class="text-light selectable rounded px-2 py-1">{{ l }}</p>
-          </router-link>
-          <p v-else class="text-secondary rounded px-2 py-1">{{ l }}</p>
-          <hr v-if="index != list.length - 1" class="my-2">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <p class="fs-5">Level: {{ character.level }}</p>
+          <p class="fs-5">{{ character.race }} {{ character.class }}</p>
+          <p class="fs-5">{{ character.alignment }}</p>
+          <div class="d-flex">
+            <button class="btn btn-dark mdi mdi-campfire m-1">Short Rest</button>
+            <button class="btn btn-dark mdi mdi-weather-night m-1"> Long Rest</button>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-4 p-2">
+          <section class="row bg-dark text-center rounded elevation-5 mx-0 py-2">
+            <u class="col-12">Saving Throws</u>
+            <div v-for="a in attributes" :key="a" class="col-6 col-md-12 col-xl-6">
+              <div class="d-flex justify-content-between align-items-center">
+                <i v-if="savingThrows.includes(a)" class="mdi mdi-circle"></i>
+                <i v-else class="mdi mdi-circle-outline"></i>
+                <p class="text-center text-uppercase">{{ a }}</p>
+                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+                <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="row p-2">
+            <div class="col-6 col-lg-12 col-xl-6 p-1">
+              <div class="bg-dark text-center rounded elevation-5 p-2">
+                <p>Armor</p>
+                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+                <p>Class</p>
+              </div>
+            </div>
+            <div class="col-6 col-lg-12 col-xl-6 p-1">
+              <div class="bg-dark d-flex flex-column justify-content-center align-items-center rounded elevation-5 h-100 p-1">
+                <p class="text-break">Initiative</p>
+                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
+
+      <CharacterEquipment :characterProp="character" />
     </div>
 
-    <div class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2">
-      <div v-if="route.params.characterId == 'basics'">
-        <BasicsForm />
-      </div>
+    <div class="col-12 col-md-6">
+      <CharacterInfo :characterProp="character" />
 
-      <div v-else-if="route.params.characterId == 'features'">
-        <FeaturesForm />
-      </div>
+      <section class="row p-2">
+        <div class="col-12 col-lg-6 p-1">
+          <div v-if="character.hp > 0" class="d-flex justify-content-around align-items-center bg-dark rounded elevation-5 p-2 h-100">
+            <div class="text-center">
+              <p>Hp:</p>
+              <p>{{ character.hp }} / {{ character.maxHp }}</p>
+            </div>
+            <div class="text-center">
+              <p>Temp:</p>
+              <p>{{ character.tempHp }}</p>
+            </div>
+          </div>
+          <div v-else class="bg-dark text-center rounded elevation-5 p-2">
+            <section v-for="d in Object.keys(deathSaves)" :key="d" class="row mx-0">
+              <p class="col-7 px-0">{{ d }}</p>
+              <div class="col-5 d-flex justify-content-center px-0">
+                <div v-for="i in 3" :key="i" class="d-flex align-items-center">
+                  <i :class="{ 'mdi-circle': deathSaves[d] >= i }" class="mdi mdi-circle-outline"></i>
+                  <p v-if="i < 3" class="pb-1">-</p>
+                </div>
+              </div>
+            </section>
+            <u>Death Saves</u>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3 p-1">
+          <div class="bg-dark text-center rounded elevation-5 p-2">
+            <p>Prof.</p>
+            <p>{{ character.bonus }}</p>
+            <p>Bonus</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3 p-1">
+          <div class="bg-dark text-center rounded elevation-5 p-2">
+            <p>Walk</p>
+            <p>{{ character.speed }} ft.</p>
+            <p>Speed</p>
+          </div>
+        </div>
+      </section>
 
-      <div v-else-if="route.params.characterId == 'background'">
-        <BackgroundForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'personality-traits'">
-        <PersonalityTraitsForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'attributes'">
-        <AttributesForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'proficiencies'">
-        <ProficienciesForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'spells'">
-        <SpellsForm />
-      </div>
-
-      <div v-else-if="route.params.characterId == 'equipment'">
-        <EquipmentForm />
-      </div>
+      <CharacterSkills :characterProp="character" />
     </div>
   </section>
 </template>
 
 <script>
-import { computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
-import BasicsForm from '../components/BasicsForm.vue'
-import FeaturesForm from '../components/FeaturesForm.vue'
-import BackgroundForm from '../components/BackgroundForm.vue'
-import PersonalityTraitsForm from '../components/PersonalityTraitsForm.vue'
-import AttributesForm from '../components/AttributesForm.vue'
-import ProficienciesForm from '../components/ProficienciesForm.vue'
-import SpellsForm from '../components/SpellsForm.vue'
-import EquipmentForm from '../components/EquipmentForm.vue'
+import { computed, onUnmounted, ref, watchEffect } from 'vue'
+import { charactersService } from '../services/CharactersService.js'
+import CharacterInfo from '../components/CharacterInfo.vue'
+import CharacterSkills from '../components/CharacterSkills.vue'
+import CharacterEquipment from '../components/CharacterEquipment.vue'
+import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const list = ['Basics', 'Features', 'Background', 'Personality Traits', 'Attributes', 'Proficiencies', 'Spells', 'Equipment']
+    const savingThrows = ref([])
+    const deathSaves = ref({ Success: 0, Failure: 0 })
+
+    onUnmounted(() => {
+      AppState.activeCharacter = null
+    })
 
     watchEffect(() => {
-      let charPage = AppState.charPage
-
-      for (let i = list.length - 1; i > charPage; i--) {
-        if (list[i].toLowerCase().replace(' ', '-') == route.params.characterId && AppState.tempCharacter) {
-          router.push({ name: 'Character', params: { characterId: list[charPage].toLowerCase().replace(' ', '-') } })
-        }
+      if (route.params.characterId) {
+        getCharacterById()
       }
     })
 
+    async function getCharacterById() {
+      try {
+        await charactersService.getCharacterById(route.params.characterId)
+        const prof = AppState.activeCharacter.proficiencies
+
+        for (let i = prof.length - 1; i > 0; i--) {
+          const p = prof[i].name
+
+          if (!p.startsWith('Saving Throw:')) {
+            return
+          }
+          savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
+        }
+      }
+      catch (error) {
+        Pop.error(error.message, '[GETTING CHARACTER BY ID]')
+        router.push('/')
+      }
+    }
     return {
-      route,
-      list,
-      charPage: computed(() => AppState.charPage)
+      character: computed(() => AppState.activeCharacter),
+      attributes: computed(() => AppState.attributes),
+      savingThrows,
+      deathSaves
     }
   },
-  components: { BasicsForm, FeaturesForm, BackgroundForm, PersonalityTraitsForm, AttributesForm, ProficienciesForm, SpellsForm, EquipmentForm }
+  components: { CharacterInfo, CharacterSkills, CharacterEquipment }
 }
 </script>
 
 <style lang="scss" scoped>
-  .infoBar {
-    background-color: var(--oxford);
-    color: white;
-    height: 25vh;
-  }
-
-  @media screen and (min-width: 768px) {
-    .infoBar {
-      height: var(--main-height);
-      position: fixed;
-    }
+  img {
+    object-fit: cover;
+    object-position: top;
   }
 </style>

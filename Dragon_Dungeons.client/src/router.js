@@ -28,16 +28,26 @@ const routes = [
     component: loadPage('HelpPage')
   },
   {
-    path: '/character/:characterId',
-    name: 'Character',
-    component: loadPage('CharacterPage'),
+    path: '/create-character/:characterStep',
+    name: 'CreateCharacter',
+    component: loadPage('CreateCharacterPage'),
     beforeEnter: authGuard
   },
   {
-    path: '/campaign/:campaignId',
-    name: 'Campaign',
-    component: loadPage('CampaignPage'),
+    path: '/characters/:characterId',
+    name: 'Character',
+    component: loadPage('CharacterPage')
+  },
+  {
+    path: '/build-campaign/:campaignStep',
+    name: 'BuildCampaign',
+    component: loadPage('BuildCampaignPage'),
     beforeEnter: authGuard
+  },
+  {
+    path: '/campaigns/:campaignId',
+    name: 'Campaigns',
+    component: loadPage('CampaignPage')
   },
   {
     path: '/info/:infoId/:infoDetails/:infoSpec?/:infoMore?',

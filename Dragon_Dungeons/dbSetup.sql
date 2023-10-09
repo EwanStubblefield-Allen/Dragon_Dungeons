@@ -5,8 +5,10 @@ CREATE TABLE IF NOT EXISTS accounts(
   name varchar(255) COMMENT 'User Name',
   email varchar(255) COMMENT 'User Email',
   picture varchar(255) COMMENT 'User Picture',
-  coverImg VARCHAR(255) COMMENT 'User Cover Image'
+  coverImg VARCHAR(255) DEFAULT 'https://cdn.pixabay.com/photo/2023/06/26/15/21/ai-generated-8090013_1280.png' COMMENT 'User Cover Image'
 ) DEFAULT CHARSET utf8 COMMENT '';
+
+DROP TABLE accounts;
 
 CREATE TABLE characters(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
@@ -14,6 +16,11 @@ CREATE TABLE characters(
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
   name VARCHAR(100) NOT NULL,
   picture JSON NOT NULL,
+  hp TINYINT NOT NULL,
+  maxHp TINYINT NOT NULL,
+  tempHp TINYINT DEFAULT 0,
+  speed TINYINT NOT NULL,
+  hitDie TINYINT NOT NULL,
   LEVEL TINYINT DEFAULT 1,
   class VARCHAR(20) NOT NULL,
   race VARCHAR(20) NOT NULL,
@@ -49,6 +56,7 @@ CREATE TABLE characters(
   intelligence TINYINT NOT NULL,
   wis TINYINT NOT NULL,
   cha TINYINT NOT NULL,
+  bonus TINYINT NOT NULL,
   skills JSON,
   proficiencies JSON,
   cantrips JSON,
@@ -60,21 +68,10 @@ CREATE TABLE characters(
 
 DROP TABLE characters;
 
-CREATE TABLE bonuses(
-  id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
-  str TINYINT,
-  dex TINYINT,
-  con TINYINT,
-  intelligence TINYINT,
-  wis TINYINT,
-  cha TINYINT,
-  characterId VARCHAR(255) NOT NULL,
-  FOREIGN KEY (characterId) REFERENCES characters(id) ON DELETE CASCADE
-) DEFAULT CHARSET utf8 COMMENT '';
-
-DROP TABLE bonuses;
+ALTER TABLE
+  characters
+ADD
+  COLUMN hitDie TINYINT NOT NULL;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
@@ -100,8 +97,8 @@ CREATE TABLE npcs(
   picture VARCHAR(255) NOT NULL,
   characterId VARCHAR(128) NOT NULL,
   campaignId VARCHAR(128) NOT NULL,
-  FOREIGN KEY (characterId) REFERENCES characters(id),
-  FOREIGN KEY (campaignId) REFERENCES campaigns(id)
+  FOREIGN KEY (characterId) REFERENCES characters(id) ON DELETE CASCADE,
+  FOREIGN KEY (campaignId) REFERENCES campaigns(id) ON DELETE CASCADE
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE npcs;

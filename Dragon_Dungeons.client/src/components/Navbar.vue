@@ -12,25 +12,25 @@
 
     <div class="col-12 collapse navbar-collapse" id="navbarText">
       <ul class="row navbar-nav flex-row justify-content-between mx-0 w-100">
-        <div class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
+        <li class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
           <section class="row flex-grow-1 py-2">
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <router-link :to="{ name: 'Home' }" class="btn text-success lighten-30 selectable text-uppercase">
                 Home
               </router-link>
-            </li>
+            </div>
 
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <button type="button" role="button" :class="{ route: route.fullPath.includes('info') }" class="btn text-success lighten-30" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">INFO</button>
-            </li>
+            </div>
 
-            <li class="col-4 d-flex justify-content-center align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
               <router-link :to="{ name: 'Help' }" class="btn text-success lighten-30 selectable text-uppercase">
                 Help
               </router-link>
-            </li>
+            </div>
           </section>
-        </div>
+        </li>
 
         <li class="col-2 d-none d-lg-flex justify-content-center align-items-center">
           <router-link class="navbar-brand d-flex justify-content-center align-items-center mx-0" :to="{ name: 'Home' }">
@@ -39,22 +39,22 @@
         </li>
 
         <li class="col-6 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Character', params: { characterId: 'basics' } }" :class="{ route: route.fullPath.includes('character') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Build Character
+          <router-link :to="{ name: 'CreateCharacter', params: { characterStep: 'basics' } }" :class="{ route: route.fullPath.includes('create-character') }" class="btn text-success lighten-30 selectable text-uppercase">
+            Create Character
           </router-link>
         </li>
 
         <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
-          <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" :class="{ route: route.fullPath.includes('campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Create Campaign
+          <router-link :to="{ name: 'BuildCampaign', params: { campaignStep: 'basics' } }" :class="{ route: route.fullPath.includes('build-campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
+            Build Campaign
           </router-link>
         </li>
 
-        <li class="col-12 col-lg-1 d-flex justify-content-lg-end align-items-center">
-          <!-- LOGIN COMPONENT HERE -->
-          <Login />
-        </li>
       </ul>
+      <div class="d-flex justify-content-lg-end align-items-center">
+        <!-- LOGIN COMPONENT HERE -->
+        <Login />
+      </div>
     </div>
   </nav>
 

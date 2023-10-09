@@ -6,6 +6,7 @@
           <p class="fs-3 text-capitalize p-2">{{ route.params.infoId.replace('-', ' ') }}:</p>
           <hr class="mt-0">
         </div>
+
         <div v-for="(i, index) in infoArr" :key="i" class="col-12 col-sm-6 col-md-12">
           <router-link :to="{ name: 'Info', params: { infoId: route.params.infoId, infoDetails: i.index } }">
             <p class="text-light selectable rounded p-2">{{ i.name }}</p>
@@ -14,8 +15,11 @@
         </div>
       </section>
     </div>
-    <div v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 my-2">
+
+    <div v-if="infoHtml" v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 my-2">
     </div>
+
+    <i v-else-if="route.params.infoDetails != 'search'" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 text-center mdi mdi-loading mdi-spin fs-1"></i>
   </section>
 </template>
 
@@ -56,8 +60,9 @@ export default {
 
     async function getInfoDetails(i) {
       try {
+        AppState.infoHtml = ''
+
         if (!i || i == 'search') {
-          AppState.infoHtml = ''
           return
         }
         await infosService.getInfoDetails(route.fullPath.replace('info', 'api'))

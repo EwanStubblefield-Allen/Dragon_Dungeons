@@ -3,12 +3,10 @@ namespace Dragon_Dungeons.Services;
 public class CharactersService
 {
   private readonly CharactersRepository _charactersRepository;
-  private readonly BonusesService _bonusesService;
 
-  public CharactersService(CharactersRepository charactersRepository, BonusesService bonusesService)
+  public CharactersService(CharactersRepository charactersRepository)
   {
     _charactersRepository = charactersRepository;
-    _bonusesService = bonusesService;
   }
 
   internal List<Character> GetCharacters()
@@ -18,7 +16,8 @@ public class CharactersService
 
   internal Character GetCharacterById(string characterId)
   {
-    return _charactersRepository.GetCharacterById(characterId);
+    Character character = _charactersRepository.GetCharacterById(characterId);
+    return character ?? throw new Exception($"[NO CHARACTER MATCHES THE ID {characterId}]");
   }
 
   internal List<Character> GetCharactersByUserId(string userId)
@@ -29,7 +28,6 @@ public class CharactersService
   internal Character CreateCharacter(Character characterData)
   {
     _charactersRepository.CreateCharacter(characterData);
-    _bonusesService.CreateBonus(characterData.Bonus);
     return GetCharacterById(characterData.Id);
   }
 }

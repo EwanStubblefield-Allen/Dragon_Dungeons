@@ -50,7 +50,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(2)
-        router.push({ name: 'Character', params: { characterId: 'personality-traits' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'personality-traits' } })
       }
     }
   }

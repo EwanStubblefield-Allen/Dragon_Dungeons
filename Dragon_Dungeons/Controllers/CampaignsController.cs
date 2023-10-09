@@ -36,7 +36,7 @@ public class CampaignsController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       campaignData.CreatorId = userInfo.Id;
       campaignData.Id = Guid.NewGuid().ToString();
-      campaignData.Npcs.ConvertAll(n =>
+      campaignData.Npcs?.ConvertAll(n =>
       {
         n.CharacterId = n.Id;
         n.CampaignId = campaignData.Id;

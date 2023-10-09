@@ -152,7 +152,7 @@ export default {
 
       changeCamPage() {
         campaignsService.changeCamPage(2)
-        router.push({ name: 'Campaign', params: { campaignId: 'monsters' } })
+        router.push({ name: 'BuildCampaign', params: { campaignStep: 'monsters' } })
       }
     }
   }

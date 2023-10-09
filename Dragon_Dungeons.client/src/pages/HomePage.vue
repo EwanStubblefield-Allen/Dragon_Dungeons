@@ -2,8 +2,8 @@
   <section class="row justify-content-center">
     <div class="col-10 py-3">
       <section class="masonry">
-        <router-link :to="{ name: 'Character', params: { characterId: 'basics' } }" class="masonry-item border border-dark elevation-5">
-          <p class="fs-1 fw-bold text-russian text-center">Build Character</p>
+        <router-link :to="{ name: 'CreateCharacter', params: { characterStep: 'basics' } }" class="masonry-item border border-dark elevation-5">
+          <p class="fs-1 fw-bold text-russian text-center">Create Character</p>
         </router-link>
         <router-link :to="{ name: 'Account' }" class="masonry-item border border-dark elevation-5">
           <p class="fs-1 fw-bold text-russian text-center">Account</p>
@@ -11,8 +11,8 @@
         <button class="masonry-item border border-dark elevation-5" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">
           <p class="fs-1 fw-bold text-russian text-center">Info</p>
         </button>
-        <router-link :to="{ name: 'Campaign', params: { campaignId: 'basics' } }" class="masonry-item border border-dark elevation-5">
-          <p class="fs-1 fw-bold text-russian text-center">Create Campaign</p>
+        <router-link :to="{ name: 'BuildCampaign', params: { campaignStep: 'basics' } }" class="masonry-item border border-dark elevation-5">
+          <p class="fs-1 fw-bold text-russian text-center">Build Campaign</p>
         </router-link>
       </section>
     </div>
@@ -20,16 +20,8 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
-import { AppState } from '../AppState.js'
-
 export default {
   setup() {
-    onMounted(() => {
-      AppState.charPage = 0
-      AppState.tempCharacter = {}
-    })
-
     return {}
   }
 }

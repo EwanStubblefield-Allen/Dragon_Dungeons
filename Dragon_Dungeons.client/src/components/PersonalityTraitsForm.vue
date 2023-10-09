@@ -63,7 +63,7 @@ export default {
 
       changeCharPage() {
         charactersService.changeCharPage(3)
-        router.push({ name: 'Character', params: { characterId: 'attributes' } })
+        router.push({ name: 'CreateCharacter', params: { characterStep: 'attributes' } })
       }
     }
   }

@@ -14,18 +14,15 @@ public class CharactersRepository
     string sql = @"
       SELECT
         c.*,
-        a.*,
-        b.*
+        a.*
       FROM
         characters c
-        JOIN accounts a ON a.id = c.creatorId
-        LEFT JOIN bonuses b ON c.id = b.characterId;";
-    return _db.Query<Character, Profile, Bonus, Character>(
+        JOIN accounts a ON a.id = c.creatorId;";
+    return _db.Query<Character, Profile, Character>(
       sql,
-      (character, profile, bonus) =>
+      (character, profile) =>
       {
         character.Creator = profile;
-        character.Bonus = bonus;
         return character;
       }).ToList();
   }
@@ -35,19 +32,16 @@ public class CharactersRepository
     string sql = @"
       SELECT
         c.*,
-        a.*,
-        b.*
+        a.*
       FROM
         characters c
         JOIN accounts a ON a.id = c.creatorId
-        LEFT JOIN bonuses b ON c.id = b.characterId
       WHERE c.id = @characterId;";
-    return _db.Query<Character, Profile, Bonus, Character>(
+    return _db.Query<Character, Profile, Character>(
       sql,
-      (character, profile, bonus) =>
+      (character, profile) =>
       {
         character.Creator = profile;
-        character.Bonus = bonus;
         return character;
       },
       new { characterId }).FirstOrDefault();
@@ -58,19 +52,16 @@ public class CharactersRepository
     string sql = @"
       SELECT
         c.*,
-        a.*,
-        b.*
+        a.*
       FROM
         characters c
         JOIN accounts a ON a.id = c.creatorId
-        LEFT JOIN bonuses b ON c.id = b.characterId
       WHERE c.creatorId = @userId; ";
-    return _db.Query<Character, Profile, Bonus, Character>(
+    return _db.Query<Character, Profile, Character>(
       sql,
-      (character, profile, bonus) =>
+      (character, profile) =>
       {
         character.Creator = profile;
-        character.Bonus = bonus;
         return character;
       },
       new { userId }).ToList();
@@ -79,8 +70,8 @@ public class CharactersRepository
   internal void CreateCharacter(Character characterData)
   {
     string sql = @"
-      INSERT INTO characters(id, name, picture, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, skills, proficiencies, cantrips, spells, equipment, creatorId)
-      VALUES(@Id, @Name, @Picture, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Skills, @Proficiencies, @Cantrips, @Spells, @Equipment, @CreatorId);";
+      INSERT INTO characters(id, name, picture, hp, maxHp, speed, hitDie, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, bonus, skills, proficiencies, cantrips, spells, equipment, creatorId)
+      VALUES(@Id, @Name, @Picture, @Hp, @MaxHp, @Speed, @HitDie, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Bonus, @Skills, @Proficiencies, @Cantrips, @Spells, @Equipment, @CreatorId);";
     _db.Execute(sql, characterData);
   }
 }
