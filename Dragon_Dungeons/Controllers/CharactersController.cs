@@ -78,4 +78,20 @@ public class CharactersController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [HttpDelete("{characterId}")]
+  [Authorize]
+  public async Task<ActionResult<Character>> RemoveCharacter(string characterId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Character character = _charactersService.RemoveCharacter(characterId, userInfo.Id);
+      return Ok(character);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }

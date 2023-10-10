@@ -18,7 +18,7 @@
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
           <section class="row align-items-center p-2">
-            <p @click="addPro(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.find(cantrip => cantrip.name == c.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ c.name }}</p>
+            <p @click="addSpell(c, cantrips.count)" v-for="c in cantrips.results" :key="c" :class="{ 'bg-light text-dark elevation-5': editable.cantrips?.find(cantrip => cantrip.name == c.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ c.name }}</p>
           </section>
         </div>
 
@@ -33,7 +33,7 @@
             <router-link :to="{ name: 'Info', params: { infoId: 'spells', infoDetails: 'search' } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
           </p>
           <section class="row align-items-center p-2">
-            <p @click="addPro(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.find(spell => spell.name == s.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ s.name }}</p>
+            <p @click="addSpell(s, spells.count)" v-for="s in spells.results" :key="s" :class="{ 'bg-light text-dark elevation-5': editable.spells?.find(spell => spell.name == s.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-center text-break selectable rounded">{{ s.name }}</p>
           </section>
         </div>
 
@@ -130,15 +130,16 @@ export default {
       spells,
       changeCharPage,
 
-      addPro(item, length) {
+      addSpell(item, length) {
         let type = selectable.value[1]
 
         if (!editable.value[type]) {
           editable.value[type] = []
         }
+        const foundIndex = editable.value[type].findIndex(e => e.index == item.index)
 
-        if (editable.value[type].includes(item)) {
-          return
+        if (foundIndex > -1) {
+          return editable.value[type].splice(foundIndex, 1)
         }
         editable.value[type].push(item)
 

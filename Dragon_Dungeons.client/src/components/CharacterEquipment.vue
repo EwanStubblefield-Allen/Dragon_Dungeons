@@ -13,7 +13,7 @@
     </li>
   </ul>
 
-  <section class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
+  <section v-if="selectable == 1" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
     <div class="col-12 col-sm-8 col-md-12 col-lg-8">
       <p>Weapons</p>
       <hr class="my-1">
@@ -53,6 +53,22 @@
       </div>
       <p v-else>No Armor Equipped</p>
     </div>
+  </section>
+
+  <section v-else-if="selectable == 2" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
+    <section class="row">
+      <p class="col-4">Type/Name</p>
+      <p class="col-4">Range</p>
+      <p class="col-4">Damage</p>
+    </section>
+  </section>
+
+  <section v-else-if="selectable == 3" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
+    <section class="row">
+      <p class="col-4">Type/Name</p>
+      <p class="col-4">Range</p>
+      <p class="col-4">Damage</p>
+    </section>
   </section>
 </template>
 

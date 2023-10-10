@@ -33,11 +33,7 @@ public class CharactersService
 
   internal Character UpdateCharacter(Character characterData)
   {
-    Character originalCharacter = GetCharacterById(characterData.Id);
-    if (characterData.CreatorId != originalCharacter.CreatorId)
-    {
-      throw new Exception($"[YOU ARE NOT THE CREATOR OF {originalCharacter.Name}]");
-    }
+    Character originalCharacter = HandleData(characterData.Id, characterData.CreatorId);
     originalCharacter.Hp = characterData.Hp ?? originalCharacter.Hp;
     originalCharacter.TempHp = characterData.TempHp ?? originalCharacter.TempHp;
     originalCharacter.Level = characterData.Level ?? originalCharacter.Level;
@@ -57,5 +53,22 @@ public class CharactersService
     originalCharacter.Weapons = characterData.Weapons ?? originalCharacter.Weapons;
     _charactersRepository.UpdateCharacter(originalCharacter);
     return originalCharacter;
+  }
+
+  internal Character RemoveCharacter(string characterId, string userId)
+  {
+    Character characterToRemove = HandleData(characterId, userId);
+    _charactersRepository.RemoveCharacter(characterId);
+    return characterToRemove;
+  }
+
+  private Character HandleData(string characterId, string userId)
+  {
+    Character characterData = GetCharacterById(characterId);
+    if (characterData.CreatorId != userId)
+    {
+      throw new Exception($"[YOU ARE NOT THE CREATOR OF {characterData.Name}]");
+    }
+    return characterData;
   }
 }

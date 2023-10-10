@@ -104,6 +104,12 @@ class CharactersService {
     AppState.activeCharacter = formattedCharacter
   }
 
+  async removeCharacter(characterId) {
+    const res = await api.delete(`api/characters/${characterId}`)
+    AppState.characters = AppState.characters.filter(c => c.id != characterId)
+    return res.data
+  }
+
   async equipItem(equipment, index) {
     let temp = {}
     let character = AppState.activeCharacter

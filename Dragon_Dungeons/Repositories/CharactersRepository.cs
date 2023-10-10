@@ -99,4 +99,10 @@ public class CharactersRepository
       WHERE id = @Id LIMIT 1;";
     _db.Execute(sql, characterData);
   }
+
+  internal void RemoveCharacter(string characterId)
+  {
+    string sql = "DELETE FROM characters WHERE id = @characterId LIMIT 1;";
+    _db.Execute(sql, new { characterId });
+  }
 }
