@@ -47,18 +47,7 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
-    let temp = []
-
-    for (let i = 0; i < characterData.equipment.length; i++) {
-      let e = characterData.equipment[i]
-
-      if (Array.isArray(e)) {
-        temp = temp.concat(e)
-      } else {
-        temp.push(e)
-      }
-    }
-    characterData.equipment = temp
+    characterData.equipment = characterData.equipment.flat(Infinity)
 
     if (characterData.proficiencies) {
       characterData.proficiencies = characterData.proficiencies.concat(AppState.tempClass.proficiencies)
@@ -109,8 +98,10 @@ class CharactersService {
     characterData = this.converter(characterData)
     const res = await api.put(`api/characters/${AppState.activeCharacter.id}`, characterData)
     res.data = this.converter(res.data)
+    const formattedCharacter = new Character(res.data)
     const foundIndex = AppState.characters.findIndex(c => c.id == res.data.id)
-    AppState.characters.splice(foundIndex, 1, new Character(res.data))
+    AppState.characters.splice(foundIndex, 1, formattedCharacter)
+    AppState.activeCharacter = formattedCharacter
   }
 
   async equipItem(equipment, index) {
@@ -120,26 +111,63 @@ class CharactersService {
     item = Object.entries(item).filter(i => Array.isArray(i[1]) ? i[1].length : i[1] != null)
     item = Object.fromEntries(item)
 
-    if (equipment.count > 1) {
-      equipment.count--
-    } else {
-      character.equipment.splice(index, 1)
-    }
-
     switch (item.equipment_category.index) {
       case 'armor':
         temp.armor = equipment
         AppState.equipment.armor = item
         break
       case 'weapon':
+        if (character.weapons.find(w => w.index == equipment.index)) {
+          throw new Error('[WEAPON ALREADY EQUIPPED]')
+        }
+
+        if (character.weapons.length > 2) {
+          throw new Error('[THREE WEAPONS ARE ALREADY EQUIPPED]')
+        }
         temp.weapons = character.weapons
         temp.weapons.push(equipment)
         AppState.equipment.weapons.push(item)
         break
+      // case 'adventure-gear':
+      //   if (item.gear_category.index == 'ammunition') {
+      //     break
+      //   } else {
+      //     return
+      //   }
       default:
         return
     }
+
+    if (equipment.count > 1) {
+      equipment.count--
+    } else {
+      character.equipment.splice(index, 1)
+    }
     temp.equipment = character.equipment
+    await this.updateCharacter(temp)
+  }
+
+  async unEquipItem(index) {
+    const character = AppState.activeCharacter
+    let temp = {}
+    temp.equipment = [...character.equipment]
+
+    if (index > -1) {
+      temp.weapons = [...character.weapons]
+      AppState.equipment.weapons.splice(index, 1)
+      const weapon = temp.weapons.splice(index, 1)
+      const foundIndex = temp.equipment.findIndex(e => e.index == weapon[0].index)
+
+      if (foundIndex > -1) {
+        temp.equipment[foundIndex].count++
+      } else {
+        temp.equipment = temp.equipment.concat(weapon)
+      }
+    } else {
+      AppState.equipment.armor = null
+      temp.armor = {}
+      temp.equipment.push(character.armor)
+    }
     await this.updateCharacter(temp)
   }
 

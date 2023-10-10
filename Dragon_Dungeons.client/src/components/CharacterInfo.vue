@@ -158,7 +158,7 @@ export default {
         try {
           await charactersService.equipItem(equipment, index)
         } catch (error) {
-          Pop.error(error.message, '[GETTING ITEM]')
+          Pop.error(error.message, '[EQUIPPING ITEM]')
         }
       }
     }

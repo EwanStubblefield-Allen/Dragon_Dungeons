@@ -126,6 +126,7 @@ export default {
 
     onUnmounted(() => {
       AppState.activeCharacter = null
+      AppState.equipment = { weapons: [] }
     })
 
     watchEffect(() => {
@@ -162,11 +163,11 @@ export default {
         const dex = Math.floor((character.dex - 10) / 2)
         let armorClass = 0
 
-        if (!armor || armor.armor_class.dex_bonus) {
+        if (!armor?.index || armor.armor_class?.dex_bonus) {
           armorClass += dex
         }
 
-        if (!armor) {
+        if (!armor?.index) {
           return armorClass += 10
         }
         return armorClass += armor.armor_class.base
