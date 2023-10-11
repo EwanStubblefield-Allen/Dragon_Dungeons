@@ -13,14 +13,14 @@
     </li>
   </ul>
 
-  <section v-if="selectable == 1" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
+  <section v-if="selectable == 1" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5 overflow">
     <div class="col-12 col-sm-8 col-md-12 col-lg-8">
       <p>Weapons</p>
       <hr class="my-1">
       <section class="row">
-        <p class="col-4">Type/Name</p>
-        <p class="col-4">Range</p>
-        <p class="col-4">Damage</p>
+        <p class="col-4">Type/Name:</p>
+        <p class="col-4">Range:</p>
+        <p class="col-4">Damage:</p>
       </section>
       <section v-for="(w, index) in equipment.weapons" :key="w.index" class="row align-items-center px-2">
         <hr class="my-1">
@@ -55,21 +55,38 @@
     </div>
   </section>
 
-  <section v-else-if="selectable == 2" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
-    <section class="row">
-      <p class="col-4">Type/Name</p>
-      <p class="col-4">Range</p>
-      <p class="col-4">Damage</p>
+  <div v-else class="mb-2 p-2 bg-dark rounded-bottom elevation-5 overflow">
+    <section class="row justify-content-around align-items-center mx-0 px-3">
+      <p class="col-6 col-xl-3">Name:</p>
+      <p class="col-3 col-xl-2 text-xl-end">Time:</p>
+      <p class="col-3 col-xl-2 text-xl-end">Damage:</p>
+      <p class="col-4 col-xl-2 text-center text-xl-start">Range:</p>
+      <p class="col-4 col-xl-3 text-center text-xl-start">Other:</p>
     </section>
-  </section>
-
-  <section v-else-if="selectable == 3" class="row mx-0 mb-2 p-2 bg-dark rounded-bottom elevation-5">
-    <section class="row">
-      <p class="col-4">Type/Name</p>
-      <p class="col-4">Range</p>
-      <p class="col-4">Damage</p>
+    <section v-for="c in selectable == 2 ? equipment.cantrips : equipment.spells" :key="c.index" class="row justify-content-around align-items-center mx-0 px-3">
+      <hr class="my-1">
+      <div class="col-6 col-xl-4 d-flex align-items-center">
+        <i v-if="c.concentration" class="mdi mdi-meditation fs-6 pe-1" title="Concentration"></i>
+        <i v-if="c.ritual" class="mdi mdi-candelabra-fire fs-6 pe-1" title="Ritual"></i>
+        <i v-if="c.area_of_effect" class="mdi mdi-axis-arrow fs-6 pe-1" :title="`AOE: ${c.area_of_effect.size}ft. ${c.area_of_effect.type}`"></i>
+        <p>{{ c.name }}</p>
+      </div>
+      <div class="col-3 col-xl-2">
+        <p class="no-select" :title="c.casting_time">{{ c.casting_time.replace(/ .*/g, c.casting_time.charAt(2).toUpperCase()) }}</p>
+      </div>
+      <div class="col-3 col-xl-1">
+        <p v-if="c.damage" class="no-select" :title="c.damage.damage_type.name">{{ handleDamage(c.damage) }}</p>
+        <p v-else>--</p>
+      </div>
+      <div class="col-4 col-xl-2 text-center text-xl-start">
+        <p>{{ c.range.replace(' feet', 'ft.') }}</p>
+      </div>
+      <div class="col-4 col-xl-3 d-flex justify-content-center justify-content-xl-start">
+        <p v-for="component in c.components" :key="component" class="pe-1 no-select" :title="component == 'V' ? 'Verbal' : component == 'S' ? 'Somatic' : 'Material'">{{ component }},</p>
+        <p v-if="c.duration" class="no-select" :title="c.duration">D: {{ c.duration.replace('Instantaneous', 'Inst').replace(/ .*/g, c.duration.charAt(2).toUpperCase()) }}</p>
+      </div>
     </section>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -78,6 +95,7 @@ import { Character } from '../models/Character.js'
 import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import { AppState } from '../AppState.js'
+import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -88,7 +106,7 @@ export default {
     }
   },
 
-  setup() {
+  setup(props) {
     const selectable = ref(1)
 
     onMounted(() => {
@@ -99,13 +117,24 @@ export default {
       try {
         const character = AppState.activeCharacter
 
+        if (character.id == AppState.equipment.id) {
+          return
+        }
+        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: [] }
+
         if (character.armor?.index) {
           AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
         }
-        character.weapons.forEach(async w => {
-          const weapon = await infosService.getInfoDetails(w.url, false)
-          AppState.equipment.weapons.push(weapon)
-        })
+        AppState.equipment.weapons = await Promise.all(character.weapons.map(async w => {
+          return await infosService.getInfoDetails(w.url, false)
+        }))
+        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async c => {
+          return await infosService.getInfoDetails(c.url, false)
+        }))
+        AppState.equipment.spells = await Promise.all(character.spells.map(async s => {
+          return await infosService.getInfoDetails(s.url, false)
+        }))
+        saveState('equipment', AppState.equipment)
       } catch (error) {
         Pop.error(error.message, '[GETTING EQUIPMENT]')
       }
@@ -114,6 +143,15 @@ export default {
     return {
       selectable,
       equipment: computed(() => AppState.equipment),
+
+      handleDamage(damage) {
+        let tempLevel = props.characterProp.level
+
+        while (!damage.damage_at_character_level[tempLevel]) {
+          tempLevel--
+        }
+        return damage.damage_at_character_level[tempLevel]
+      },
 
       async unEquipItem(index = -1) {
         try {
@@ -127,4 +165,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  @media screen and (min-width: 1200px) {
+    .overflow {
+      overflow-y: auto;
+      height: calc(var(--main-height) - 371px);
+    }
+  }
+</style>

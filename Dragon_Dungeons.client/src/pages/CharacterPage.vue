@@ -126,7 +126,6 @@ export default {
 
     onUnmounted(() => {
       AppState.activeCharacter = null
-      AppState.equipment = { weapons: [] }
     })
 
     watchEffect(() => {
