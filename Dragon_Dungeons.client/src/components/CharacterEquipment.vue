@@ -61,31 +61,21 @@
       <p class="col-3 col-xl-2 text-xl-end">Time:</p>
       <p class="col-3 col-xl-2 text-xl-end">Damage:</p>
       <p class="col-4 col-xl-2 text-center text-xl-start">Range:</p>
-      <p class="col-4 col-xl-3 text-center text-xl-start">Other:</p>
+      <p class="col-6 col-xl-3 text-center text-xl-start">Other:</p>
     </section>
-    <section v-for="c in selectable == 2 ? equipment.cantrips : equipment.spells" :key="c.index" class="row justify-content-around align-items-center mx-0 px-3">
-      <hr class="my-1">
-      <div class="col-6 col-xl-4 d-flex align-items-center">
-        <i v-if="c.concentration" class="mdi mdi-meditation fs-6 pe-1" title="Concentration"></i>
-        <i v-if="c.ritual" class="mdi mdi-candelabra-fire fs-6 pe-1" title="Ritual"></i>
-        <i v-if="c.area_of_effect" class="mdi mdi-axis-arrow fs-6 pe-1" :title="`AOE: ${c.area_of_effect.size}ft. ${c.area_of_effect.type}`"></i>
-        <p>{{ c.name }}</p>
+    <div v-if="selectable == 2">
+      <section v-for="cantrip in equipment.cantrips" :key="cantrip.index" class="row justify-content-around align-items-center mx-0 px-3">
+        <CharacterMagic :magicProp="cantrip" />
+      </section>
+    </div>
+    <div v-else-if="selectable == 3">
+      <div v-for="level in Object.entries(characterProp.casting)" :key="level" class="py-2">
+        <CharacterSpells :level="level" />
       </div>
-      <div class="col-3 col-xl-2">
-        <p class="no-select" :title="c.casting_time">{{ c.casting_time.replace(/ .*/g, c.casting_time.charAt(2).toUpperCase()) }}</p>
+      <div class="text-end">
+        <button @click="updateSpells(characterProp.spells)" class="btn btn-primary" type="button">Save</button>
       </div>
-      <div class="col-3 col-xl-1">
-        <p v-if="c.damage" class="no-select" :title="c.damage.damage_type.name">{{ handleDamage(c.damage) }}</p>
-        <p v-else>--</p>
-      </div>
-      <div class="col-4 col-xl-2 text-center text-xl-start">
-        <p>{{ c.range.replace(' feet', 'ft.') }}</p>
-      </div>
-      <div class="col-4 col-xl-3 d-flex justify-content-center justify-content-xl-start">
-        <p v-for="component in c.components" :key="component" class="pe-1 no-select" :title="component == 'V' ? 'Verbal' : component == 'S' ? 'Somatic' : 'Material'">{{ component }},</p>
-        <p v-if="c.duration" class="no-select" :title="c.duration">D: {{ c.duration.replace('Instantaneous', 'Inst').replace(/ .*/g, c.duration.charAt(2).toUpperCase()) }}</p>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -96,7 +86,9 @@ import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
 import { AppState } from '../AppState.js'
 import { saveState } from '../utils/Store.js'
+import CharacterMagic from './CharacterMagic.vue'
 import Pop from '../utils/Pop.js'
+import CharacterSpells from './CharacterSpells.vue'
 
 export default {
   props: {
@@ -105,10 +97,8 @@ export default {
       required: true
     }
   },
-
-  setup(props) {
+  setup() {
     const selectable = ref(1)
-
     onMounted(() => {
       getEquipment()
     })
@@ -120,48 +110,54 @@ export default {
         if (character.id == AppState.equipment.id) {
           return
         }
-        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: [] }
+        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: {} }
 
         if (character.armor?.index) {
           AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
         }
-        AppState.equipment.weapons = await Promise.all(character.weapons.map(async w => {
+        AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
           return await infosService.getInfoDetails(w.url, false)
         }))
-        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async c => {
+        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
           return await infosService.getInfoDetails(c.url, false)
         }))
-        AppState.equipment.spells = await Promise.all(character.spells.map(async s => {
-          return await infosService.getInfoDetails(s.url, false)
-        }))
+        Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
+
+        for (let s of character.spells) {
+          const spell = await infosService.getInfoDetails(s.url, false)
+          spell.level = spell.level > s.level ? spell.level : s.level
+          AppState.equipment.spells[spell.level].push(spell)
+        }
         saveState('equipment', AppState.equipment)
-      } catch (error) {
+      }
+      catch (error) {
         Pop.error(error.message, '[GETTING EQUIPMENT]')
       }
     }
-
     return {
       selectable,
       equipment: computed(() => AppState.equipment),
 
-      handleDamage(damage) {
-        let tempLevel = props.characterProp.level
-
-        while (!damage.damage_at_character_level[tempLevel]) {
-          tempLevel--
-        }
-        return damage.damage_at_character_level[tempLevel]
-      },
-
       async unEquipItem(index = -1) {
         try {
           await charactersService.unEquipItem(index)
-        } catch (error) {
+        }
+        catch (error) {
           Pop.error(error.message, '[UNEQUIPPING ITEM]')
+        }
+      },
+
+      async updateSpells(spells) {
+        try {
+          await charactersService.updateCharacter({ spells: spells })
+          saveState('equipment', AppState.equipment)
+        } catch (error) {
+          Pop.error(error.message, '[UPDATING SPELLS]')
         }
       }
     }
-  }
+  },
+  components: { CharacterMagic, CharacterSpells }
 }
 </script>
 

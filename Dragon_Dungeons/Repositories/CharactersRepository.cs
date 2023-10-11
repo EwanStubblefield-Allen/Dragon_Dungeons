@@ -70,8 +70,8 @@ public class CharactersRepository
   internal void CreateCharacter(Character characterData)
   {
     string sql = @"
-      INSERT INTO characters(id, name, picture, hp, maxHp, speed, hitDie, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, bonus, skills, proficiencies, cantrips, spells, equipment, creatorId)
-      VALUES(@Id, @Name, @Picture, @Hp, @MaxHp, @Speed, @HitDie, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Bonus, @Skills, @Proficiencies, @Cantrips, @Spells, @Equipment, @CreatorId);";
+      INSERT INTO characters(id, name, picture, hp, maxHp, speed, hitDie, class, race, alignment, age, feet, inches, weight, eyes, skin, hair, features, background, backstory, personalityTraits, ideals, bonds, flaws, manual, str, dex, con, intelligence, wis, cha, bonus, skills, proficiencies, cantrips, spells, casting, equipment, creatorId)
+      VALUES(@Id, @Name, @Picture, @Hp, @MaxHp, @Speed, @HitDie, @Class, @Race, @Alignment, @Age, @Feet, @Inches, @Weight, @Eyes, @Skin, @Hair, @Features, @Background, @Backstory, @PersonalityTraits, @Ideals, @Bonds, @Flaws, @Manual, @Str, @Dex, @Con, @Intelligence, @Wis, @Cha, @Bonus, @Skills, @Proficiencies, @Cantrips, @Spells, @Casting, @Equipment, @CreatorId);";
     _db.Execute(sql, characterData);
   }
 
@@ -93,6 +93,7 @@ public class CharactersRepository
         proficiencies = @Proficiencies,
         cantrips = @Cantrips,
         spells = @Spells,
+        casting = @Casting,
         equipment = @Equipment,
         armor = @Armor,
         weapons = @Weapons

@@ -39,6 +39,7 @@ namespace Dragon_Dungeons.Models
     public string Proficiencies { get; set; }
     public string Cantrips { get; set; }
     public string Spells { get; set; }
+    public string Casting { get; set; }
     public string Equipment { get; set; }
     public string Armor { get; set; }
     public string Weapons { get; set; }

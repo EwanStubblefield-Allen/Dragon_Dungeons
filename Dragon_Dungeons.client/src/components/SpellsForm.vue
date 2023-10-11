@@ -83,7 +83,7 @@ export default {
         const selectedClass = AppState.tempCharacter.class.toLowerCase()
         const data = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)
         editable.value.bonus.bonus = data.prof_bonus
-        const casting = data.spellcasting
+        let casting = data.spellcasting
 
         if (!casting || !Object.values(casting).find(c => c > 0)) {
           return changeCharPage()
@@ -105,7 +105,7 @@ export default {
 
               break
             default:
-              Pop.error('Needs a case for spells')
+              Pop.error(`No case for ${selectedClass} in spells`)
               break
           }
 
@@ -113,6 +113,17 @@ export default {
             spells.value.count = 1
           }
         }
+        delete casting.cantrips_known
+        delete casting.spells_known
+        casting = Object.entries(casting).filter((c, index) => {
+          if (c[1] > 0) {
+            c[0] = `Level${index + 1}`
+            return true
+          }
+          return false
+        })
+        casting = Object.fromEntries(casting)
+        editable.value.casting = casting
       } catch (error) {
         Pop.error(error.message, '[GETTING SPELLS]')
       }
@@ -141,6 +152,8 @@ export default {
         if (foundIndex > -1) {
           return editable.value[type].splice(foundIndex, 1)
         }
+        delete item.index
+        item.level = 1
         editable.value[type].push(item)
 
         if (editable.value[type].length > length) {
