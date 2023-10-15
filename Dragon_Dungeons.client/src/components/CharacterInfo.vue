@@ -25,28 +25,47 @@
     <div class="offcanvas-body">
 
       <div v-if="selectable == 'Inventory'">
-        <div class="bg-light mx-0 p-2 rounded elevation-5"></div>
+        <div class="bg-light mx-0 p-2 rounded elevation-5">
+          <div v-for="(e, index) in characterProp.equipment" :key="e.index">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex">
+                <p v-if="e.count">{{ e.count }}</p>
+                <p v-else>1</p>
+                <p class="px-2">{{ e.name }}</p>
+                <a :href="`#/info${e.url.replace('/api', '')}`" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></a>
+              </div>
+              <button @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
+            </div>
+            <hr v-if="index != characterProp.equipment.length - 1" class="my-2">
+          </div>
+        </div>
       </div>
 
       <div v-else-if="selectable == 'Features and Traits'">
         <section class="row bg-light mx-0 my-2 p-2 rounded elevation-5">
           <div class="col-4 text-center">
-            <p>Age: {{ characterProp.age }}</p>
+            <p>Age:</p>
+            <p>{{ characterProp.age }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Height: {{ characterProp.feet }}' {{ characterProp.inches }}"</p>
+            <p>Height:</p>
+            <p>{{ characterProp.feet }}' {{ characterProp.inches }}"</p>
           </div>
           <div class="col-4 text-center">
-            <p>Weight: {{ characterProp.weight }}</p>
+            <p>Weight:</p>
+            <p>{{ characterProp.weight }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Eyes: {{ characterProp.eyes }}</p>
+            <p>Eyes:</p>
+            <p class="text-capitalize">{{ characterProp.eyes }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Skin: {{ characterProp.skin }}</p>
+            <p>Skin:</p>
+            <p class="text-capitalize">{{ characterProp.skin }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Hair: {{ characterProp.hair }}</p>
+            <p>Hair:</p>
+            <p class="text-capitalize">{{ characterProp.hair }}</p>
           </div>
         </section>
 
@@ -112,6 +131,8 @@
 <script>
 import { onMounted, ref } from 'vue'
 import { Character } from '../models/Character.js'
+import { charactersService } from '../services/CharactersService.js'
+import Pop from '../utils/Pop.js'
 
 export default {
   props: {
@@ -131,7 +152,15 @@ export default {
     })
 
     return {
-      selectable
+      selectable,
+
+      async equipItem(equipment, index) {
+        try {
+          await charactersService.equipItem(equipment, index)
+        } catch (error) {
+          Pop.error(error.message, '[EQUIPPING ITEM]')
+        }
+      }
     }
   }
 }

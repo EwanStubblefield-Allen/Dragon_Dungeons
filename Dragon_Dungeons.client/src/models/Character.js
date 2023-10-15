@@ -41,7 +41,10 @@ export class Character extends RepoItem {
     this.proficiencies = data.proficiencies
     this.cantrips = data.cantrips
     this.spells = data.spells
+    this.casting = data.casting
     this.equipment = data.equipment
+    this.armor = data.armor
+    this.weapons = data.weapons || []
     this.creator = new Profile(data.creator)
     this.creatorId = data.creatorId
   }

@@ -57,6 +57,39 @@ export default class Pop {
   }
 
   /**
+ *
+ * @param {string} title The title text
+ * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon
+ * @param {'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'} position
+ * @param {number} timer Time in milliseconds.
+ * @param {boolean} progressBar Show progress bar or not respectively.
+ * -----------------------------------
+ * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
+ */
+  static async question(title = 'Question!', text = 'This is a question?') {
+    try {
+      const res = await Swal.fire({
+        title,
+        text,
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: 'Confirm'
+      })
+
+      if (res.isConfirmed) {
+        return res.value
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
+
+  /**
    * @param {import('axios').AxiosError | Error | String } Error An Error Object.
    * @param { String } eventTrigger Queryable trigger
    */

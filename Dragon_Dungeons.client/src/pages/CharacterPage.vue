@@ -11,9 +11,15 @@
           <p class="fs-5">Level: {{ character.level }}</p>
           <p class="fs-5">{{ character.race }} {{ character.class }}</p>
           <p class="fs-5">{{ character.alignment }}</p>
-          <div class="d-flex">
-            <button class="btn btn-dark mdi mdi-campfire m-1">Short Rest</button>
-            <button class="btn btn-dark mdi mdi-weather-night m-1"> Long Rest</button>
+          <div class="d-flex justify-content-around align-items-center">
+            <button class="btn btn-dark d-flex align-items-center m-1">
+              <i class="mdi mdi-campfire pe-2"></i>
+              <p>Short Rest</p>
+            </button>
+            <button class="btn btn-dark d-flex align-items-center m-1">
+              <i class="mdi mdi-weather-night pe-2"></i>
+              <p>Long Rest</p>
+            </button>
           </div>
         </div>
 
@@ -31,11 +37,11 @@
             </div>
           </section>
 
-          <section class="row p-2">
+          <section class="row mx-0 py-2">
             <div class="col-6 col-lg-12 col-xl-6 p-1">
               <div class="bg-dark text-center rounded elevation-5 p-2">
                 <p>Armor</p>
-                <p>{{ Math.floor((character.dex - 10) / 2) }}</p>
+                <p>{{ armorClass }}</p>
                 <p>Class</p>
               </div>
             </div>
@@ -150,6 +156,21 @@ export default {
     return {
       character: computed(() => AppState.activeCharacter),
       attributes: computed(() => AppState.attributes),
+      armorClass: computed(() => {
+        const character = AppState.activeCharacter
+        const armor = AppState.equipment.armor
+        const dex = Math.floor((character.dex - 10) / 2)
+        let armorClass = 0
+
+        if (!armor?.index || armor.armor_class?.dex_bonus) {
+          armorClass += dex
+        }
+
+        if (!armor?.index) {
+          return armorClass += 10
+        }
+        return armorClass += armor.armor_class.base
+      }),
       savingThrows,
       deathSaves
     }

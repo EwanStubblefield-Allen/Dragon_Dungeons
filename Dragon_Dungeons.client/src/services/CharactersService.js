@@ -1,10 +1,11 @@
 import { AppState } from "../AppState.js"
 import { Character } from "../models/Character.js"
+import { infosService } from "./InfosService.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'equipment']
+const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
 
 class CharactersService {
   changeCharPage(current) {
@@ -46,6 +47,8 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
+    characterData.equipment = characterData.equipment.flat(Infinity)
+
     if (characterData.proficiencies) {
       characterData.proficiencies = characterData.proficiencies.concat(AppState.tempClass.proficiencies)
     } else {
@@ -92,11 +95,86 @@ class CharactersService {
   }
 
   async updateCharacter(characterData) {
-    characterData = this.converter(characterData, true)
-    const res = await api.put(`api/characters/${characterData.id}`, characterData)
+    characterData = this.converter(characterData)
+    const res = await api.put(`api/characters/${AppState.activeCharacter.id}`, characterData)
     res.data = this.converter(res.data)
-    const foundIndex = AppState.characters.findIndex(c => c.id == characterData.id)
-    AppState.characters.splice(foundIndex, 1, new Character(res.data))
+    const formattedCharacter = new Character(res.data)
+    const foundIndex = AppState.characters.findIndex(c => c.id == res.data.id)
+    AppState.characters.splice(foundIndex, 1, formattedCharacter)
+    AppState.activeCharacter = formattedCharacter
+  }
+
+  async removeCharacter(characterId) {
+    const res = await api.delete(`api/characters/${characterId}`)
+    AppState.characters = AppState.characters.filter(c => c.id != characterId)
+    return res.data
+  }
+
+  async equipItem(equipment, index) {
+    let temp = {}
+    let character = AppState.activeCharacter
+    let item = await infosService.getInfoDetails(equipment.url, false)
+    item = Object.entries(item).filter(i => Array.isArray(i[1]) ? i[1].length : i[1] != null)
+    item = Object.fromEntries(item)
+
+    switch (item.equipment_category.index) {
+      case 'armor':
+        temp.armor = equipment
+        AppState.equipment.armor = item
+        break
+      case 'weapon':
+        if (character.weapons.find(w => w.index == equipment.index)) {
+          throw new Error('[WEAPON ALREADY EQUIPPED]')
+        }
+
+        if (character.weapons.length > 2) {
+          throw new Error('[THREE WEAPONS ARE ALREADY EQUIPPED]')
+        }
+        temp.weapons = character.weapons
+        temp.weapons.push(equipment)
+        AppState.equipment.weapons.push(item)
+        break
+      // case 'adventure-gear':
+      //   if (item.gear_category.index == 'ammunition') {
+      //     break
+      //   } else {
+      //     return
+      //   }
+      default:
+        return
+    }
+
+    if (equipment.count > 1) {
+      equipment.count--
+    } else {
+      character.equipment.splice(index, 1)
+    }
+    temp.equipment = character.equipment
+    await this.updateCharacter(temp)
+  }
+
+  async unEquipItem(index) {
+    const character = AppState.activeCharacter
+    let temp = {}
+    temp.equipment = [...character.equipment]
+
+    if (index > -1) {
+      temp.weapons = [...character.weapons]
+      AppState.equipment.weapons.splice(index, 1)
+      const weapon = temp.weapons.splice(index, 1)
+      const foundIndex = temp.equipment.findIndex(e => e.index == weapon[0].index)
+
+      if (foundIndex > -1) {
+        temp.equipment[foundIndex].count++
+      } else {
+        temp.equipment = temp.equipment.concat(weapon)
+      }
+    } else {
+      AppState.equipment.armor = null
+      temp.armor = {}
+      temp.equipment.push(character.armor)
+    }
+    await this.updateCharacter(temp)
   }
 
   converter(data, input = false) {

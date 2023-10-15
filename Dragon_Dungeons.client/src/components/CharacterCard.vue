@@ -1,6 +1,7 @@
 <template>
   <div class="card elevation-5">
-    <img :src="characterProp.picture.url" class="card-img-top" :alt="characterProp.name">
+    <img :src="characterProp.picture.url" class="card-img-top position-relative" :alt="characterProp.name">
+    <i @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
     <div class="card-body p-2">
       <h5 class="card-title text-center text-uppercase fs-3">{{ characterProp.name }}</h5>
       <div class="d-flex justify-content-around pb-2">
@@ -16,6 +17,8 @@
 
 <script>
 import { Character } from '../models/Character.js'
+import { charactersService } from '../services/CharactersService.js'
+import Pop from '../utils/Pop.js'
 
 export default {
   props: {
@@ -25,10 +28,31 @@ export default {
     }
   },
 
-  setup() {
-    return {}
+  setup(props) {
+    return {
+      async removeCharacter() {
+        try {
+          const character = props.characterProp
+          const res = await Pop.question('Delete Character?', `To delete the character: "${character.name}", type the name to confirm.`)
+
+          if (res != character.name) {
+            return Pop.toast('Character name does not match!')
+          }
+          const characterToDelete = await charactersService.removeCharacter(character.id)
+          Pop.toast(`${characterToDelete.name} was deleted!`)
+        } catch (error) {
+          Pop.error(error.message, '[DELETING CHARACTER]')
+        }
+      }
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  i {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+  }
+</style>

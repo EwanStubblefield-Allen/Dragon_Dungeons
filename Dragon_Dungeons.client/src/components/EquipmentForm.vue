@@ -20,10 +20,10 @@
         </select>
         <div v-if="list[index]?.length">
           <section v-if="!Array.isArray(editable.equipment[index])" class="row align-items-center pt-3">
-            <p @click="addPro(sel, editable.equipment[index].choose, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
+            <p @click="addEquipment(sel, editable.equipment[index].choose, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
           </section>
           <section v-else class="row align-items-center pt-3">
-            <p @click="addPro(sel, false, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
+            <p @click="addEquipment(sel, false, index)" v-for="sel in list[index]" :key="sel.index" :class="{ 'bg-light text-dark elevation-5': selectable[index]?.find(s => s.name == sel.name) }" class="col-6 col-sm-4 col-md-3 col-lg-2 my-1 p-2 text-light text-center text-break selectable rounded">{{ sel.name }}</p>
           </section>
         </div>
       </div>
@@ -57,10 +57,6 @@ export default {
 
       if (!editable.value.equipment) {
         editable.value.equipment = []
-      }
-
-      if (!AppState.tempCharacter.class) {
-        return
       }
       getInfo()
     })
@@ -194,7 +190,7 @@ export default {
       list,
       checkOptions,
 
-      addPro(item, length, index) {
+      addEquipment(item, length, index) {
         if (!length) {
           length = 0
           editable.value.equipment[index].forEach(e => {
@@ -207,9 +203,10 @@ export default {
         if (!selectable.value[index]) {
           selectable.value[index] = []
         }
+        const foundIndex = selectable.value[index].findIndex(e => e.index == item.index)
 
-        if (selectable.value[index].includes(item)) {
-          return
+        if (foundIndex > -1) {
+          return selectable.value[index].splice(foundIndex, 1)
         }
         selectable.value[index].push(item)
 

@@ -25,5 +25,6 @@ export const AppState = reactive({
   tempClass: loadState('tempClass', Object),
   charPage: loadState('charPage') ?? 0,
   camPage: loadState('camPage') ?? 0,
+  equipment: loadState('equipment', Object),
   attributes: ['str', 'dex', 'con', 'int', 'wis', 'cha']
 })

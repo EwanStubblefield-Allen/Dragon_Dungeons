@@ -98,9 +98,10 @@ export default {
         if (!editable.value[type]) {
           editable.value[type] = []
         }
+        const foundIndex = editable.value[type].findIndex(e => e == item)
 
-        if (editable.value[type].includes(item)) {
-          return
+        if (foundIndex > -1) {
+          return editable.value[type].splice(foundIndex, 1)
         }
         editable.value[type].push(item)
 
