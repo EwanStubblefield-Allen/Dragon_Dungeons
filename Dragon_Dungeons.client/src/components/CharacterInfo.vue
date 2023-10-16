@@ -157,6 +157,7 @@ export default {
       async equipItem(equipment, index) {
         try {
           await charactersService.equipItem(equipment, index)
+          Pop.success(`${equipment.name} was equipped!`)
         } catch (error) {
           Pop.error(error.message, '[EQUIPPING ITEM]')
         }

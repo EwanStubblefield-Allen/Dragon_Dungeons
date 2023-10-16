@@ -1,8 +1,11 @@
 <template>
-  <section v-if="character" class="row py-2">
+  <section v-if="character" class="row py-1">
     <div class="col-12 col-md-6">
-      <p class="fs-2 fw-bold text-wrap text-truncate">{{ character.name }}</p>
-      <hr class="my-2">
+      <div>
+        <p class="fs-2 fw-bold text-wrap text-truncate">{{ character.name }}</p>
+        <hr class="my-2">
+      </div>
+
       <section class="row">
         <div class="col-12 col-sm-6 col-lg-4">
           <img class="img-fluid w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
@@ -31,7 +34,7 @@
                 <i v-if="savingThrows.includes(a)" class="mdi mdi-circle"></i>
                 <i v-else class="mdi mdi-circle-outline"></i>
                 <p class="text-center text-uppercase">{{ a }}</p>
-                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
                 <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
               </div>
             </div>
@@ -61,7 +64,7 @@
     <div class="col-12 col-md-6">
       <CharacterInfo :characterProp="character" />
 
-      <section class="row p-2">
+      <section class="row px-2">
         <div class="col-12 col-lg-6 p-1">
           <div v-if="character.hp > 0" class="d-flex justify-content-around align-items-center bg-dark rounded elevation-5 p-2 h-100">
             <div class="text-center">

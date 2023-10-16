@@ -150,6 +150,7 @@ class CharactersService {
       character.equipment.splice(index, 1)
     }
     temp.equipment = character.equipment
+    saveState('equipment', AppState.equipment)
     await this.updateCharacter(temp)
   }
 
@@ -174,6 +175,7 @@ class CharactersService {
       temp.armor = {}
       temp.equipment.push(character.armor)
     }
+    saveState('equipment', AppState.equipment)
     await this.updateCharacter(temp)
   }
 

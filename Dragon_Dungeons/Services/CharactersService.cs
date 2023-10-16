@@ -48,6 +48,7 @@ public class CharactersService
     originalCharacter.Proficiencies = characterData.Proficiencies ?? originalCharacter.Proficiencies;
     originalCharacter.Cantrips = characterData.Cantrips ?? originalCharacter.Cantrips;
     originalCharacter.Spells = characterData.Spells ?? originalCharacter.Spells;
+    originalCharacter.Casting = characterData.Casting ?? originalCharacter.Casting;
     originalCharacter.Equipment = characterData.Equipment ?? originalCharacter.Equipment;
     originalCharacter.Armor = characterData.Armor ?? originalCharacter.Armor;
     originalCharacter.Weapons = characterData.Weapons ?? originalCharacter.Weapons;
