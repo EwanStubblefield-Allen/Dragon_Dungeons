@@ -111,10 +111,14 @@ class CharactersService {
   }
 
   async equipItem(equipment, index) {
+    if (equipment.contents) {
+      delete AppState.activeCharacter.equipment[index].contents
+      return
+    }
     let temp = {}
     let character = AppState.activeCharacter
     let item = await infosService.getInfoDetails(equipment.url, false)
-    item = Object.entries(item).filter(i => Array.isArray(i[1]) ? i[1].length : i[1] != null)
+    item = Object.entries(item).filter(i => i[0] != 'contents' && Array.isArray(i[1]) ? i[1].length : i[1] != null)
     item = Object.fromEntries(item)
 
     switch (item.equipment_category.index) {
@@ -134,12 +138,37 @@ class CharactersService {
         temp.weapons.push(equipment)
         AppState.equipment.weapons.push(item)
         break
-      // case 'adventure-gear':
-      //   if (item.gear_category.index == 'ammunition') {
-      //     break
-      //   } else {
-      //     return
-      //   }
+      case 'adventuring-gear':
+        if (item.contents) {
+          AppState.activeCharacter.equipment[index].contents = item.contents
+        } else if (item.gear_category.index == 'ammunition') {
+          const name = item.name.toLowerCase()
+          let search = ''
+
+          if (name.includes('arrow')) {
+            search = 'Bow'
+          } else if (name.includes('bolt')) {
+            search = 'Crossbow'
+          } else if (name.includes('blowgun')) {
+            search = 'Blowgun'
+          } else if (name.includes('sling')) {
+            search = 'Sling'
+          } else if (name.containers('ammunition')) {
+            throw new Error('Figure out what ammunition goes to')
+          }
+          const charEquip = character.equipment
+          const foundIndex = charEquip.findIndex(e => e.name.includes(search) && e.name != item.name)
+
+          if (foundIndex == -1) {
+            if (character.weapons.find(w => w.name.includes(search))) {
+              Pop.toast('Weapon is already equipped')
+              return
+            }
+            throw new Error(`You do not have a weapon that uses ${item.name}`)
+          }
+          this.equipItem(charEquip[foundIndex], foundIndex)
+        }
+        return
       default:
         return
     }
@@ -152,6 +181,7 @@ class CharactersService {
     temp.equipment = character.equipment
     saveState('equipment', AppState.equipment)
     await this.updateCharacter(temp)
+    Pop.success(`${equipment.name} was equipped!`)
   }
 
   async unEquipItem(index) {

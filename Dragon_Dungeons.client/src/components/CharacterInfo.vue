@@ -36,6 +36,19 @@
               </div>
               <button @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
             </div>
+            <div v-if="e.contents" class="px-2">
+              <div v-for="c in e.contents" :key="c.index" class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <p>{{ c.quantity }}</p>
+                  <p class="px-2">{{ c.item.name }}</p>
+                  <a :href="`#/info${c.item.url.replace('/api', '')}`" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></a>
+                </div>
+                <div class="d-flex">
+                  <i @click="c.quantity++" class="mdi mdi-plus fs-6 text-success selectable"></i>
+                  <i @click="c.quantity != 0 ? c.quantity-- : c.quantity" class="mdi mdi-minus fs-6 text-danger selectable"></i>
+                </div>
+              </div>
+            </div>
             <hr v-if="index != characterProp.equipment.length - 1" class="my-2">
           </div>
         </div>
@@ -157,7 +170,6 @@ export default {
       async equipItem(equipment, index) {
         try {
           await charactersService.equipItem(equipment, index)
-          Pop.success(`${equipment.name} was equipped!`)
         } catch (error) {
           Pop.error(error.message, '[EQUIPPING ITEM]')
         }
