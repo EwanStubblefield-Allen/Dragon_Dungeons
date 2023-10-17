@@ -56,12 +56,12 @@
   </section>
 
   <div v-else class="mb-2 p-2 bg-dark rounded-bottom elevation-5 overflow">
-    <section class="row justify-content-around align-items-center mx-0 px-3">
-      <p class="col-6 col-xl-3">Name:</p>
-      <p class="col-3 col-xl-2 text-xl-end">Time:</p>
-      <p class="col-3 col-xl-2 text-xl-end">Damage:</p>
-      <p class="col-4 col-xl-2 text-center text-xl-start">Range:</p>
-      <p class="col-6 col-xl-3 text-center text-xl-start">Other:</p>
+    <section class="row justify-content-around align-items-center mx-0">
+      <p class="col-4 col-md-6 col-xl-3 px-1 fw-bold">Name:</p>
+      <p class="col-4 col-md-3 col-xl-2 px-1 fw-bold text-xl-end">Time:</p>
+      <p class="col-4 col-md-3 col-xl-2 px-1 fw-bold text-xl-end">Damage:</p>
+      <p class="col-4 col-xl-2 px-1 fw-bold text-center text-xl-start">Range:</p>
+      <p class="col-6 col-xl-3 px-1 fw-bold text-center text-xl-start">Other:</p>
     </section>
     <div v-if="selectable == 2">
       <section v-for="cantrip in equipment.cantrips" :key="cantrip.index" class="row justify-content-around align-items-center mx-0 px-3">

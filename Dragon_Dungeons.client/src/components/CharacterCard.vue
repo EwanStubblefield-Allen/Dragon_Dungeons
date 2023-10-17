@@ -38,7 +38,7 @@ export default {
           if (res != character.name) {
             return Pop.toast('Character name does not match!')
           }
-          const characterToDelete = await charactersService.removeCharacter(character.id)
+          const characterToDelete = await charactersService.removeCharacter(character)
           Pop.toast(`${characterToDelete.name} was deleted!`)
         } catch (error) {
           Pop.error(error.message, '[DELETING CHARACTER]')

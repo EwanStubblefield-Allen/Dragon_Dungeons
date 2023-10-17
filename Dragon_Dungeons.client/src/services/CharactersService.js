@@ -4,6 +4,7 @@ import { infosService } from "./InfosService.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
+import { imagesService } from "./ImagesService.js"
 
 const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
 
@@ -104,9 +105,10 @@ class CharactersService {
     AppState.activeCharacter = formattedCharacter
   }
 
-  async removeCharacter(characterId) {
-    const res = await api.delete(`api/characters/${characterId}`)
-    AppState.characters = AppState.characters.filter(c => c.id != characterId)
+  async removeCharacter(characterData) {
+    await imagesService.removeImg(characterData.picture.id)
+    const res = await api.delete(`api/characters/${characterData.id}`)
+    AppState.characters = AppState.characters.filter(c => c.id != characterData.id)
     return res.data
   }
 
