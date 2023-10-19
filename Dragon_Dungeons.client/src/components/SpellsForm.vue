@@ -117,7 +117,8 @@ export default {
         delete casting.spells_known
         casting = Object.entries(casting).filter((c, index) => {
           if (c[1] > 0) {
-            c[0] = `Level${index + 1}`
+            c[0] = index + 1
+            c[1] = { current: 0, max: c[1] }
             return true
           }
           return false

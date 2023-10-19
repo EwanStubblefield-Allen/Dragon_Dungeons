@@ -1,8 +1,11 @@
 <template>
-  <section v-if="character" class="row py-2">
+  <section v-if="character" class="row py-1">
     <div class="col-12 col-md-6">
-      <p class="fs-2 fw-bold text-wrap text-truncate">{{ character.name }}</p>
-      <hr class="my-2">
+      <div>
+        <p class="fs-2 fw-bold text-wrap text-truncate">{{ character.name }}</p>
+        <hr class="my-2">
+      </div>
+
       <section class="row">
         <div class="col-12 col-sm-6 col-lg-4">
           <img class="img-fluid w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
@@ -31,7 +34,7 @@
                 <i v-if="savingThrows.includes(a)" class="mdi mdi-circle"></i>
                 <i v-else class="mdi mdi-circle-outline"></i>
                 <p class="text-center text-uppercase">{{ a }}</p>
-                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
                 <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
               </div>
             </div>
@@ -61,7 +64,7 @@
     <div class="col-12 col-md-6">
       <CharacterInfo :characterProp="character" />
 
-      <section class="row p-2">
+      <section class="row px-2">
         <div class="col-12 col-lg-6 p-1">
           <div v-if="character.hp > 0" class="d-flex justify-content-around align-items-center bg-dark rounded elevation-5 p-2 h-100">
             <div class="text-center">
@@ -112,6 +115,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { computed, onUnmounted, ref, watchEffect } from 'vue'
 import { charactersService } from '../services/CharactersService.js'
+import { infosService } from '../services/InfosService.js'
+import { saveState } from '../utils/Store.js'
 import CharacterInfo from '../components/CharacterInfo.vue'
 import CharacterSkills from '../components/CharacterSkills.vue'
 import CharacterEquipment from '../components/CharacterEquipment.vue'
@@ -147,12 +152,46 @@ export default {
           }
           savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
         }
+        getEquipment()
       }
       catch (error) {
         Pop.error(error.message, '[GETTING CHARACTER BY ID]')
         router.push('/')
       }
     }
+
+    async function getEquipment() {
+      try {
+        const character = AppState.activeCharacter
+
+        if (character.id == AppState.equipment.id) {
+          return
+        }
+        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: {} }
+
+        if (character.armor?.index) {
+          AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
+        }
+        AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
+          return await infosService.getInfoDetails(w.url, false)
+        }))
+        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
+          return await infosService.getInfoDetails(c.url, false)
+        }))
+        Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
+
+        for (let s of character.spells) {
+          const spell = await infosService.getInfoDetails(s.url, false)
+          spell.level = spell.level > s.level ? spell.level : s.level
+          AppState.equipment.spells[spell.level].push(spell)
+        }
+        saveState('equipment', AppState.equipment)
+      }
+      catch (error) {
+        Pop.error(error.message, '[GETTING EQUIPMENT]')
+      }
+    }
+
     return {
       character: computed(() => AppState.activeCharacter),
       attributes: computed(() => AppState.attributes),
