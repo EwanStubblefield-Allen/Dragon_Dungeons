@@ -1,3 +1,4 @@
+import { Profile } from "./Account.js"
 import { RepoItem } from "./RepoItem.js"
 
 export class Campaign extends RepoItem {
@@ -10,5 +11,7 @@ export class Campaign extends RepoItem {
     this.events = data.events
     this.npcs = data.npcs
     this.monsters = data.monsters
+    this.creator = new Profile(data.creator)
+    this.creatorId = data.creatorId
   }
 }
