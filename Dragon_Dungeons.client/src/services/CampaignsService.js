@@ -25,6 +25,11 @@ class CampaignsService {
     AppState.tempCampaign = {}
   }
 
+  async getCampaignById(campaignId) {
+    const res = await api.get(`api/campaigns/${campaignId}`)
+    AppState.activeCampaign = new Campaign(this.converter(res.data))
+  }
+
   async getCampaignsByUserId() {
     try {
       const res = await api.get('account/campaigns')

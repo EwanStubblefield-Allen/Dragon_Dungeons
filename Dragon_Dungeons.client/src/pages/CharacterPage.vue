@@ -111,9 +111,9 @@
 </template>
 
 <script>
+import { computed, onUnmounted, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
-import { computed, onUnmounted, ref, watchEffect } from 'vue'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
 import { saveState } from '../utils/Store.js'

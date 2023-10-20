@@ -20,6 +20,8 @@ export const AppState = reactive({
   tempCharacter: loadState('tempCharacter', Character),
   /** @type {import('./models/Campaign.js').Campaign[]} */
   campaigns: [],
+  /** @type {import('./models/Campaign.js').Campaign | null} */
+  activeCampaign: null,
   /** @type {import('./models/Campaign.js').Campaign} */
   tempCampaign: loadState('tempCampaign', Campaign),
   tempClass: loadState('tempClass', Object),
