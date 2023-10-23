@@ -11,8 +11,7 @@ public class NpcsRepository
 
   internal List<Npc> GetNpcsByCampaignId(string campaignId)
   {
-    string sql = @"
-      SELECT * FROM npcs WHERE campaignId = @campaignId;";
+    string sql = "SELECT * FROM npcs WHERE campaignId = @campaignId;";
     return _db.Query<Npc>(sql, new { campaignId }).ToList();
   }
 
