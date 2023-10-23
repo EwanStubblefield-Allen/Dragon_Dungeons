@@ -28,6 +28,7 @@ class CampaignsService {
   async getCampaignById(campaignId) {
     const res = await api.get(`api/campaigns/${campaignId}`)
     AppState.activeCampaign = new Campaign(this.converter(res.data))
+    return AppState.activeCampaign
   }
 
   async getCampaignsByUserId() {

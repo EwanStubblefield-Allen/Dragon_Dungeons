@@ -21,9 +21,7 @@
 import { computed, defineComponent } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { AppState } from '../AppState.js'
-import { charactersService } from '../services/CharactersService.js'
 import CharacterMagic from './CharacterMagic.vue'
-import Pop from '../utils/Pop.js'
 
 export default defineComponent({
   props: {
@@ -52,12 +50,7 @@ export default defineComponent({
       },
 
       async manageSpell(level, num) {
-        try {
-          AppState.activeCharacter.casting[level].current += num
-          await charactersService.updateCharacter({ casting: AppState.activeCharacter.casting })
-        } catch (error) {
-          Pop.error(error.message, '[USING SPELL]')
-        }
+        AppState.activeCharacter.casting[level].current += num
       }
     }
   },

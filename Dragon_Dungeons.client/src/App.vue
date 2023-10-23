@@ -70,4 +70,10 @@ export default {
   .text-russian {
     color: var(--russian);
   }
+
+  @media screen and (min-width: 768px) {
+    .vh-md-25 {
+      height: 25vh;
+    }
+  }
 </style>

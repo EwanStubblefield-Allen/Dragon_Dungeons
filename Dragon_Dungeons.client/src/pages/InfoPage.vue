@@ -19,7 +19,9 @@
     <div v-if="infoHtml" v-html="infoHtml" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 my-2">
     </div>
 
-    <i v-else-if="route.params.infoDetails != 'search'" class="col-12 col-md-9 col-lg-10 offset-md-3 offset-lg-2 text-center mdi mdi-loading mdi-spin fs-1"></i>
+    <div v-else-if="route.params.infoDetails != 'search'">
+      <Loader />
+    </div>
   </section>
 </template>
 

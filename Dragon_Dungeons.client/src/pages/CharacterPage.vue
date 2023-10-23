@@ -108,6 +108,10 @@
       <CharacterSkills :characterProp="character" />
     </div>
   </section>
+
+  <div v-else>
+    <Loader />
+  </div>
 </template>
 
 <script>
@@ -120,6 +124,7 @@ import { saveState } from '../utils/Store.js'
 import CharacterInfo from '../components/CharacterInfo.vue'
 import CharacterSkills from '../components/CharacterSkills.vue'
 import CharacterEquipment from '../components/CharacterEquipment.vue'
+import Loader from '../components/Loader.vue'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -147,10 +152,9 @@ export default {
         for (let i = prof.length - 1; i > 0; i--) {
           const p = prof[i].name
 
-          if (!p.startsWith('Saving Throw:')) {
-            return
+          if (p.startsWith('Saving Throw:')) {
+            savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
           }
-          savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
         }
         getEquipment()
       }
@@ -214,7 +218,7 @@ export default {
       deathSaves
     }
   },
-  components: { CharacterInfo, CharacterSkills, CharacterEquipment }
+  components: { CharacterInfo, CharacterSkills, CharacterEquipment, Loader }
 }
 </script>
 

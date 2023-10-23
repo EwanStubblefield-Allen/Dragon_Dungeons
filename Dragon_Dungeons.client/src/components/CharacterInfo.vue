@@ -34,7 +34,7 @@
                 <p class="px-2">{{ e.name }}</p>
                 <a :href="`#/info${e.url.replace('/api', '')}`" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></a>
               </div>
-              <button @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
+              <button v-if="account.id == characterProp.id" @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
             </div>
             <div v-if="e.contents" class="px-2">
               <div v-for="c in e.contents" :key="c.index" class="d-flex justify-content-between align-items-center">
@@ -142,7 +142,8 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { AppState } from '../AppState.js'
 import { Character } from '../models/Character.js'
 import { charactersService } from '../services/CharactersService.js'
 import Pop from '../utils/Pop.js'
@@ -166,6 +167,7 @@ export default {
 
     return {
       selectable,
+      account: computed(() => AppState.account),
 
       async equipItem(equipment, index) {
         try {
