@@ -77,19 +77,29 @@
         </ul>
       </div>
 
-      <div class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 pb-2">
+      <div class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 py-2">
         <div v-if="changeable == 1" class="d-flex align-items-end h-100">
           <form @submit.prevent="createComment()" class="px-2 w-100">
             <div class="input-group">
-              <input v-model="editable" id="comment" class="form-control" type="text" minlength="2" maxlength="100" placeholder="Leave your comment...">
-              <button type="submit" class="mdi mdi-plus input-group-text" title="Post Comment"></button>
+              <input v-model="editable.comment" id="comment" class="form-control" type="text" minlength="2" maxlength="100" placeholder="Leave your comment...">
+              <button class="mdi mdi-plus input-group-text" type="submit" title="Post Comment"></button>
             </div>
           </form>
         </div>
 
         <div v-else-if="changeable == 2">
-          <div v-if="campaign.npcs.length" class="d-flex p-2">
-            <div v-for="n in campaign.npcs" :key="n">
+          <form @submit.prevent="createNpc()" class="d-flex justify-content-end">
+            <div class="px-2 w-sm-50 input-group">
+              <select v-model="editable.npc" class="form-select" aria-label="Select Npc" required>
+                <option disabled>Add Npc</option>
+                <option v-for="c in characters" :key="c.id" :value="c">{{ c.name }}</option>
+              </select>
+              <button class="mdi mdi-plus input-group-text" type="submit" title="Add Npc"></button>
+            </div>
+          </form>
+
+          <div v-if="campaign.npcs.length" class="row overflow-auto p-2">
+            <div v-for="n in campaign.npcs" :key="n" class="col-12 col-sm-6 col-md-12">
               <CharacterCard :characterProp="n" />
             </div>
           </div>
@@ -100,6 +110,19 @@
         </div>
 
         <div v-else>
+          <form @submit.prevent="updateMonsters()" class="d-flex justify-content-end">
+            <div class="px-2 w-sm-75 input-group">
+              <select v-model="editable.monster" class="form-select" aria-label="Select Monster" required>
+                <option disabled>Add Monster</option>
+                <option v-for="m in monsters" :key="m.index" :value="m">
+                  {{ m.name }}
+                </option>
+              </select>
+              <router-link :to="editable.monster.url.replace('api', 'info')" v-if="editable.monster" target="_blank" class="mdi mdi-information text-primary selectable input-group-text" title="Learn more"></router-link>
+              <button class="mdi mdi-plus input-group-text" type="submit" title="Add Monster"></button>
+            </div>
+          </form>
+
           <div v-if="campaign.monsters.length" class="row mx-0">
             <div v-for="m in campaign.monsters" :key="m" class="col-12 col-md-6 p-2">
               <router-link :to="m.url.replace('api', 'info')" class="px-2 fs-5 fw-bold text-light">
@@ -123,10 +146,12 @@
 </template>
 
 <script>
-import { computed, ref, watchEffect } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
+import { npcsService } from '../services/NpcsService.js'
+import { infosService } from '../services/InfosService.js'
 import CharacterCard from '../components/CharacterCard.vue'
 import Pop from '../utils/Pop.js'
 
@@ -134,15 +159,28 @@ export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const editable = ref('')
+    const editable = ref({})
     const selectable = ref(1)
     const changeable = ref(1)
+    const monsters = ref([])
+
+    onMounted(() => {
+      getMonsters()
+    })
 
     watchEffect(() => {
       if (route.params.campaignId) {
         getCampaignById()
       }
     })
+
+    async function getMonsters() {
+      try {
+        monsters.value = await infosService.getInfoById('monsters', false)
+      } catch (error) {
+        Pop.error(error.message, '[GETTING MONSTERS]')
+      }
+    }
 
     async function getCampaignById() {
       try {
@@ -157,11 +195,31 @@ export default {
       editable,
       selectable,
       changeable,
+      monsters,
       account: computed(() => AppState.account),
       campaign: computed(() => AppState.activeCampaign),
+      characters: computed(() => AppState.characters),
 
       copyCode() {
         navigator.clipboard.writeText(this.campaign.id)
+      },
+
+      async createNpc() {
+        try {
+          await npcsService.createNpc({ ...editable.value.npc }, this.campaign.id)
+        } catch (error) {
+          Pop.error(error.message, '[CREATING NPC]')
+        } finally {
+          editable.value.npc = {}
+        }
+      },
+
+      async updateMonsters() {
+        try {
+          await campaignsService.updateCampaign()
+        } catch (error) {
+          Pop.error(error.message, '[UPDATING MONSTERS]')
+        }
       }
     }
   },
@@ -181,6 +239,16 @@ export default {
 
     .players {
       height: 28vh;
+    }
+  }
+
+  @media screen and (min-width: 543px) {
+    .w-sm-75 {
+      width: 75%;
+    }
+
+    .w-sm-50 {
+      width: 50%;
     }
   }
 </style>

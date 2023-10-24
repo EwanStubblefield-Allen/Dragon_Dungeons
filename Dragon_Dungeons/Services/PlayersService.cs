@@ -22,7 +22,13 @@ public class PlayersService
 
   internal Player CreatePlayer(Player playerData)
   {
-    string playerId = _playersRepository.CreatePlayer(playerData);
-    return GetPlayerById(playerId);
+    List<Player> players = GetPlayersByCampaignId(playerData.CampaignId);
+    bool foundPlayer = players.Exists(p => p.CreatorId == playerData.CreatorId);
+    if (foundPlayer)
+    {
+      throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");
+    }
+    _playersRepository.CreatePlayer(playerData);
+    return GetPlayerById(playerData.Id);
   }
 }

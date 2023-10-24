@@ -15,7 +15,7 @@ public class PlayersController : ControllerBase
 
   [HttpPost]
   [Authorize]
-  public async Task<ActionResult<Player>> CreatePlayer(Player playerData)
+  public async Task<ActionResult<Player>> CreatePlayer([FromBody] Player playerData)
   {
     try
     {

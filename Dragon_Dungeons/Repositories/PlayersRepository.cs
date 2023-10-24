@@ -21,12 +21,11 @@ public class PlayersRepository
     return _db.Query<Player>(sql, new { campaignId }).ToList();
   }
 
-  internal string CreatePlayer(Player playerData)
+  internal void CreatePlayer(Player playerData)
   {
     string sql = @"
-      INSERT INTO players(name, picture, level, class, race, creatorId, characterId, campaignId)
-      VALUES(@Name, @Picture, @Level, @Class, @Race, @CreatorId, @CharacterId, @CampaignId);
-      SELECT LAST_INSERT_ID();";
-    return _db.ExecuteScalar<string>(sql, playerData);
+      INSERT INTO players(id, name, picture, class, race, creatorId, characterId, campaignId)
+      VALUES(@Id, @Name, @Picture, @Class, @Race, @CreatorId, @CharacterId, @CampaignId);\";
+    _db.Execute(sql, playerData);
   }
 }

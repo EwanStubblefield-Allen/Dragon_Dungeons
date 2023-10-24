@@ -6,10 +6,10 @@
       </div>
       <div class="col-md-8">
         <div class="card-body d-flex flex-column justify-content-between p-2 h-100">
-          <h3 class="card-title fw-bold">{{ characterProp.name }}</h3>
+          <h3 class="text-truncate fw-bold">{{ characterProp.name }}</h3>
           <div class="d-flex justify-content-around pb-2">
             <p class="fs-5">{{ characterProp.race }} {{ characterProp.class }}</p>
-            <p class="fs-5">Level: {{ characterProp.level }}</p>
+            <p v-if="characterProp.level" class="fs-5">Level: {{ characterProp.level }}</p>
           </div>
           <div class="d-flex justify-content-end align-items-center">
             <router-link :to="{ name: 'Character', params: { characterId: characterProp.id } }" class="btn btn-primary elevation-5">Character Details</router-link>

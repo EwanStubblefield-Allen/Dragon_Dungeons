@@ -1,4 +1,4 @@
-import { Player } from "../models/Player.js"
+import { Player } from "../models/Npc.js"
 import { api } from "./AxiosService.js"
 
 class PlayersService {

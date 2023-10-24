@@ -14,11 +14,12 @@ public class CampaignsController : ControllerBase
   }
 
   [HttpGet("{campaignId}")]
-  public ActionResult<Campaign> GetCampaignById(string campaignId)
+  public async Task<ActionResult<Campaign>> GetCampaignById(string campaignId)
   {
     try
     {
-      Campaign campaign = _campaignsService.GetCampaignById(campaignId);
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Campaign campaign = _campaignsService.GetCampaignById(campaignId, userInfo.Id);
       return Ok(campaign);
     }
     catch (Exception e)
@@ -36,14 +37,26 @@ public class CampaignsController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       campaignData.CreatorId = userInfo.Id;
       campaignData.Id = Guid.NewGuid().ToString();
-      campaignData.Npcs?.ConvertAll(n =>
-      {
-        n.CharacterId = n.Id;
-        n.CampaignId = campaignData.Id;
-        return n;
-      });
       Campaign campaign = _campaignsService.CreateCampaign(campaignData);
       return Ok(campaign);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpPost("{campaignId}/npcs")]
+  [Authorize]
+  public async Task<ActionResult<Npc>> CreateNpc([FromBody] Npc npcData, string campaignId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      npcData.Id = Guid.NewGuid().ToString();
+      npcData.CampaignId = campaignId;
+      Npc npc = _campaignsService.CreateNpc(npcData, userInfo.Id);
+      return Ok(npc);
     }
     catch (Exception e)
     {

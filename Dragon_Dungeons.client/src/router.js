@@ -47,7 +47,8 @@ const routes = [
   {
     path: '/campaigns/:campaignId',
     name: 'Campaign',
-    component: loadPage('CampaignPage')
+    component: loadPage('CampaignPage'),
+    beforeEnter: authGuard
   },
   {
     path: '/info/:infoId/:infoDetails/:infoSpec?/:infoMore?',
