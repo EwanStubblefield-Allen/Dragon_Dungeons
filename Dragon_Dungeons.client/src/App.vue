@@ -72,6 +72,10 @@ export default {
   }
 
   @media screen and (min-width: 768px) {
+    .h-md-50 {
+      height: 50%;
+    }
+
     .vh-md-25 {
       height: 25vh;
     }

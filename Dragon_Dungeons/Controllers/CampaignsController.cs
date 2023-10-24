@@ -63,4 +63,22 @@ public class CampaignsController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [HttpPut("{campaignId}")]
+  [Authorize]
+  public async Task<ActionResult<Campaign>> UpdateCampaign([FromBody] Campaign campaignData, string campaignId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      campaignData.CreatorId = userInfo.Id;
+      campaignData.Id = campaignId;
+      Campaign campaign = _campaignsService.UpdateCampaign(campaignData);
+      return Ok(campaign);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }

@@ -56,4 +56,17 @@ public class CampaignsRepository
       VALUES(@Id, @Name, @Description, @PrivateNote, @PublicNote, @Events, @Monsters, @CreatorId);";
     _db.Execute(sql, campaignData);
   }
+
+  internal void UpdateCampaign(Campaign campaignData)
+  {
+    string sql = @"
+      UPDATE campaigns SET
+        description = @Description,
+        privateNote = @PrivateNote,
+        publicNote = @PublicNote,
+        events = @Events,
+        monsters = @Monsters
+      WHERE id = @Id LIMIT 1;";
+    _db.Execute(sql, campaignData);
+  }
 }

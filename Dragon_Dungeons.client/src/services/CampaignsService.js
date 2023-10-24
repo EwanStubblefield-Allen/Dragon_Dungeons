@@ -50,6 +50,12 @@ class CampaignsService {
     this.resetCampaign()
   }
 
+  async updateCampaign(campaignData, campaignId) {
+    campaignData = this.converter(campaignData)
+    const res = await api.put(`api/campaigns/${campaignId}`, campaignData)
+    AppState.campaigns.push(new Campaign(this.converter(res.data)))
+  }
+
   converter(data) {
     for (let k in keys) {
       let d = data[keys[k]]

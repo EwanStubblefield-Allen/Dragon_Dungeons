@@ -60,4 +60,26 @@ public class CampaignsService
     }
     return _npcsService.CreateNpc(npcData);
   }
+
+  internal Campaign UpdateCampaign(Campaign campaignData)
+  {
+    Campaign originalCampaign = HandleData(campaignData.Id, campaignData.CreatorId);
+    originalCampaign.Description = campaignData.Description ?? originalCampaign.Description;
+    originalCampaign.PrivateNote = campaignData.PrivateNote ?? originalCampaign.PrivateNote;
+    originalCampaign.PublicNote = campaignData.PublicNote ?? originalCampaign.PublicNote;
+    originalCampaign.Events = campaignData.Events ?? originalCampaign.Events;
+    originalCampaign.Monsters = campaignData.Monsters ?? originalCampaign.Monsters;
+    _campaignsRepository.UpdateCampaign(originalCampaign);
+    return originalCampaign;
+  }
+
+  private Campaign HandleData(string campaignId, string userId)
+  {
+    Campaign campaignData = GetCampaignById(campaignId, userId);
+    if (campaignData.CreatorId != userId)
+    {
+      throw new Exception($"[YOU ARE NOT THE CREATOR OF {campaignData.Name}]");
+    }
+    return campaignData;
+  }
 }
