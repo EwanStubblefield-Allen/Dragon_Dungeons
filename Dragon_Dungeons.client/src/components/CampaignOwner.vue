@@ -8,7 +8,7 @@
       </div>
       <div v-if="campaignProp.players.length" class="row overflow-auto players">
         <div v-for="p in campaignProp.players" :key="p.id" class="col-12 col-sm-6 col-md-12">
-          <CharacterCard :characterProp="p" />
+          <CharacterCard :characterProp="p" locationProp="player" />
         </div>
       </div>
       <div v-else class="d-flex justify-content-center">
@@ -42,7 +42,7 @@
     </div>
 
     <div v-else-if="selectable == 2">
-      <form @submit.prevent="createNpc()" class="d-flex justify-content-end">
+      <form @submit.prevent="createNpc()" class="d-flex justify-content-end pb-2">
         <div class="px-2 w-sm-50 input-group">
           <select v-model="editable.npc" class="form-select" aria-label="Select Npc" required>
             <option disabled>Add Npc</option>
@@ -52,9 +52,9 @@
         </div>
       </form>
 
-      <div v-if="campaignProp.npcs.length" class="row overflow-auto p-2">
+      <div v-if="campaignProp.npcs.length" class="row mx-0 overflow-auto">
         <div v-for="n in campaignProp.npcs" :key="n" class="col-12 col-sm-6 col-md-12">
-          <CharacterCard :characterProp="n" />
+          <CharacterCard :characterProp="n" locationProp="npc" />
         </div>
       </div>
 
@@ -79,9 +79,14 @@
 
       <div v-if="campaignProp.monsters.length" class="row mx-0">
         <div v-for="m in campaignProp.monsters" :key="m" class="col-12 col-md-6 p-2">
-          <router-link :to="m.url.replace('api', 'info')" class="px-2 fs-5 fw-bold text-light">
-            <u>{{ m.name }}</u>
-          </router-link>
+          <div class="d-flex justify-content-between">
+            <router-link :to="m.url.replace('api', 'info')" class="fs-5 fw-bold text-light">
+              <p class="px-2 text-decoration-underline">{{ m.name }}</p>
+            </router-link>
+            <div>
+              <i @click="removeMonster(m)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+            </div>
+          </div>
           <hr class="my-2">
         </div>
       </div>
@@ -147,13 +152,33 @@ export default {
       async addMonster() {
         try {
           const campaign = AppState.activeCampaign
+
+          if (campaign.monsters.find(m => m.index == editable.value.monster.index)) {
+            return Pop.toast('Monster is already in this campaign!')
+          }
           campaign.monsters.push(editable.value.monster)
           await campaignsService.updateCampaign({ monsters: campaign.monsters }, campaign.id)
           Pop.success('Monster was added to this campaign!')
         } catch (error) {
-          Pop.error(error.message, '[UPDATING MONSTERS]')
+          Pop.error(error.message, '[ADDING MONSTERS]')
         } finally {
-          editable.value.monster = {}
+          editable.value.monster = null
+        }
+      },
+
+      async removeMonster(monster) {
+        try {
+          const isSure = await Pop.confirm(`Are you sure you want to remove ${monster.name} from this campaign?`)
+
+          if (!isSure) {
+            return
+          }
+          const campaign = AppState.activeCampaign
+          campaign.monsters = campaign.monsters.filter(m => m.index != monster.index)
+          await campaignsService.updateCampaign({ monsters: campaign.monsters }, campaign.id)
+          Pop.toast('Monster was removed from this campaign')
+        } catch (error) {
+          Pop.error(error.message, '[REMOVING MONSTER]')
         }
       }
     }

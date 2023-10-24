@@ -20,9 +20,16 @@ public class NpcsService
     return _npcsRepository.GetNpcsByCampaignId(campaignId);
   }
 
-  internal Npc CreateNpc(Npc npcData)
+  internal Npc CreateNpcByCampaignId(Npc npcData)
   {
-    _npcsRepository.CreateNpc(npcData);
+    _npcsRepository.CreateNpcByCampaignId(npcData);
     return GetNpcById(npcData.Id);
+  }
+
+  internal Npc RemoveNpcByCampaignId(string npcId)
+  {
+    Npc npcToRemove = GetNpcById(npcId);
+    _npcsRepository.RemoveNpcByCampaignId(npcId);
+    return npcToRemove;
   }
 }

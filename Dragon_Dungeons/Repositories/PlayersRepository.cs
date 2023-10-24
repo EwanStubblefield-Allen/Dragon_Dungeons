@@ -25,7 +25,13 @@ public class PlayersRepository
   {
     string sql = @"
       INSERT INTO players(id, name, picture, class, race, creatorId, characterId, campaignId)
-      VALUES(@Id, @Name, @Picture, @Class, @Race, @CreatorId, @CharacterId, @CampaignId);\";
+      VALUES(@Id, @Name, @Picture, @Class, @Race, @CreatorId, @CharacterId, @CampaignId);";
     _db.Execute(sql, playerData);
+  }
+
+  internal void RemovePlayer(string playerId)
+  {
+    string sql = "DELETE FROM players WHERE id = @playerId LIMIT 1;";
+    _db.Execute(sql, new { playerId });
   }
 }

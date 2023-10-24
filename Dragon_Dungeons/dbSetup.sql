@@ -115,6 +115,13 @@ CREATE TABLE npcs(
 
 DROP TABLE npcs;
 
+DELETE FROM
+  players
+WHERE
+  id = '21b5e38f-ef37-41bd-acdf-3223bd630d17'
+LIMIT
+  1;
+
 CREATE TABLE players(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
   createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',

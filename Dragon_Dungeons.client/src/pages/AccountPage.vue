@@ -9,7 +9,7 @@
         <p class="fs-2 fw-bold">My Characters:</p>
         <section class="row py-3">
           <div v-for="c in characters" :key="c.id" class="col-12 col-sm-6">
-            <CharacterCard :characterProp="c" />
+            <CharacterCard :characterProp="c" locationProp="account" />
           </div>
         </section>
       </div>

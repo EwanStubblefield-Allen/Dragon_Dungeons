@@ -30,4 +30,20 @@ public class PlayersController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+
+  [HttpDelete("{playerId}")]
+  [Authorize]
+  public async Task<ActionResult<Player>> RemovePlayer(string playerId)
+  {
+    try
+    {
+      Account userInfo = await _auth0provider.GetUserInfoAsync<Account>(HttpContext);
+      Player player = _playersService.RemovePlayer(playerId, userInfo.Id);
+      return Ok(player);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 }

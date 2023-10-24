@@ -23,6 +23,8 @@
 
 <script>
 import { charactersService } from '../services/CharactersService.js'
+import { npcsService } from '../services/NpcsService.js'
+import { playersService } from '../services/PlayersService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -30,6 +32,10 @@ export default {
     characterProp: {
       type: Object,
       requited: true
+    },
+    locationProp: {
+      type: String,
+      required: true
     }
   },
 
@@ -38,12 +44,29 @@ export default {
       async removeCharacter() {
         try {
           const character = props.characterProp
-          const res = await Pop.question('Delete Character?', `To delete the character: "${character.name}", type the name to confirm.`)
+          const location = props.locationProp
+          let characterToDelete
 
-          if (res != character.name) {
-            return Pop.toast('Character name does not match!')
+          if (location == 'npc') {
+            const isSure = await Pop.confirm(`Are you sure you want to remove ${character.name} from this campaign?`)
+
+            if (!isSure) {
+              return
+            }
+            characterToDelete = await npcsService.removeNpc(character)
+          } else {
+            const res = await Pop.question('Delete Character?', `To delete the character: "${character.name}", type the name to confirm.`)
+
+            if (res != character.name) {
+              return Pop.toast('Character name does not match!')
+            }
+
+            if (location == 'account') {
+              characterToDelete = await charactersService.removeCharacter(character)
+            } else {
+              characterToDelete = await playersService.removePlayer(character)
+            }
           }
-          const characterToDelete = await charactersService.removeCharacter(character)
           Pop.toast(`${characterToDelete.name} was deleted!`)
         } catch (error) {
           Pop.error(error.message, '[DELETING CHARACTER]')

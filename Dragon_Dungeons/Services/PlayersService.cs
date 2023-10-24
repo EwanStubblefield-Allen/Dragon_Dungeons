@@ -31,4 +31,15 @@ public class PlayersService
     _playersRepository.CreatePlayer(playerData);
     return GetPlayerById(playerData.Id);
   }
+
+  internal Player RemovePlayer(string playerId, string userId)
+  {
+    Player playerToDelete = GetPlayerById(playerId);
+    if (playerToDelete.CreatorId != userId)
+    {
+      throw new Exception($"[YOU ARE NOT THE CREATOR OF {playerToDelete.Name}]");
+    }
+    _playersRepository.RemovePlayer(playerId);
+    return playerToDelete;
+  }
 }

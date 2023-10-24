@@ -45,7 +45,7 @@ public class CampaignsService
       n.CharacterId = n.Id;
       n.CampaignId = campaignData.Id;
       n.Id = Guid.NewGuid().ToString();
-      campaignData.Npcs.Add(_npcsService.CreateNpc(n));
+      campaignData.Npcs.Add(_npcsService.CreateNpcByCampaignId(n));
     });
     Campaign campaign = GetCampaignById(campaignData.Id, campaignData.CreatorId);
     return campaign;
@@ -58,7 +58,7 @@ public class CampaignsService
     {
       throw new Exception($"[YOU ARE NOT THE CREATOR OF {campaign.Name}]");
     }
-    return _npcsService.CreateNpc(npcData);
+    return _npcsService.CreateNpcByCampaignId(npcData);
   }
 
   internal Campaign UpdateCampaign(Campaign campaignData)
@@ -73,9 +73,15 @@ public class CampaignsService
     return originalCampaign;
   }
 
+  internal Npc RemoveNpcByCampaignId(string campaignId, string npcId, string userId)
+  {
+    Campaign campaign = HandleData(campaignId, userId);
+    return _npcsService.RemoveNpcByCampaignId(npcId);
+  }
+
   private Campaign HandleData(string campaignId, string userId)
   {
-    Campaign campaignData = GetCampaignById(campaignId, userId);
+    Campaign campaignData = GetCampaignById(campaignId, null);
     if (campaignData.CreatorId != userId)
     {
       throw new Exception($"[YOU ARE NOT THE CREATOR OF {campaignData.Name}]");

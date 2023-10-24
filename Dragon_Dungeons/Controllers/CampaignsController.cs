@@ -48,7 +48,7 @@ public class CampaignsController : ControllerBase
 
   [HttpPost("{campaignId}/npcs")]
   [Authorize]
-  public async Task<ActionResult<Npc>> CreateNpc([FromBody] Npc npcData, string campaignId)
+  public async Task<ActionResult<Npc>> CreateNpcByCampaignId([FromBody] Npc npcData, string campaignId)
   {
     try
     {
@@ -75,6 +75,22 @@ public class CampaignsController : ControllerBase
       campaignData.Id = campaignId;
       Campaign campaign = _campaignsService.UpdateCampaign(campaignData);
       return Ok(campaign);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpDelete("{campaignId}/npcs/{npcId}")]
+  [Authorize]
+  public async Task<ActionResult<Npc>> RemoveNpcByCampaignId(string campaignId, string npcId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Npc npc = _campaignsService.RemoveNpcByCampaignId(campaignId, npcId, userInfo.Id);
+      return Ok(npc);
     }
     catch (Exception e)
     {
