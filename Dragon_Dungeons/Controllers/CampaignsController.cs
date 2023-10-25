@@ -55,8 +55,27 @@ public class CampaignsController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       npcData.Id = Guid.NewGuid().ToString();
       npcData.CampaignId = campaignId;
-      Npc npc = _campaignsService.CreateNpc(npcData, userInfo.Id);
+      Npc npc = _campaignsService.CreateNpcByCampaignId(npcData, userInfo.Id);
       return Ok(npc);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpPost("{campaignId}/players")]
+  [Authorize]
+  public async Task<ActionResult<Player>> CreatePlayerByCampaignId([FromBody] Player playerData, string campaignId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      playerData.CreatorId = userInfo.Id;
+      playerData.Id = Guid.NewGuid().ToString();
+      playerData.CampaignId = campaignId;
+      Player player = _campaignsService.CreatePlayerByCampaignId(playerData);
+      return Ok(player);
     }
     catch (Exception e)
     {
@@ -107,6 +126,22 @@ public class CampaignsController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       Npc npc = _campaignsService.RemoveNpcByCampaignId(campaignId, npcId, userInfo.Id);
       return Ok(npc);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpDelete("{campaignId}/{playerId}")]
+  [Authorize]
+  public async Task<ActionResult<Player>> RemovePlayerByCampaignId(string campaignId, string playerId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Player player = _campaignsService.RemovePlayerByCampaignId(campaignId, playerId, userInfo.Id);
+      return Ok(player);
     }
     catch (Exception e)
     {

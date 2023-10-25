@@ -53,7 +53,6 @@ import CharacterCard from '../components/CharacterCard.vue'
 import CampaignCard from '../components/CampaignCard.vue'
 import Loader from '../components/Loader.vue'
 import Pop from '../utils/Pop.js'
-import { logger } from '../utils/Logger.js'
 
 export default {
   setup() {
@@ -70,7 +69,6 @@ export default {
           await playersService.createPlayer(editable.value)
           Pop.success('You joined the campaign!')
         } catch (error) {
-          logger.log(error)
           Pop.error(error.response.data, '[CREATING CHARACTER]')
         } finally {
           editable.value = {}

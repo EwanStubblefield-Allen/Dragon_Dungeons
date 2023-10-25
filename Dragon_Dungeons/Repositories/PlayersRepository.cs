@@ -27,7 +27,7 @@ public class PlayersRepository
     return _db.Query<Player>(sql, new { campaignId, userId }).ToList();
   }
 
-  internal void CreatePlayer(Player playerData)
+  internal void CreatePlayerByCampaignId(Player playerData)
   {
     string sql = @"
       INSERT INTO players(id, name, picture, class, race, creatorId, characterId, campaignId)
@@ -35,7 +35,7 @@ public class PlayersRepository
     _db.Execute(sql, playerData);
   }
 
-  internal void RemovePlayer(string playerId)
+  internal void RemovePlayerByCampaignId(string playerId)
   {
     string sql = "DELETE FROM players WHERE id = @playerId LIMIT 1;";
     _db.Execute(sql, new { playerId });

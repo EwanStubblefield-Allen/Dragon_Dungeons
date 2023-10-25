@@ -26,9 +26,13 @@ public class NpcsService
     return GetNpcById(npcData.Id);
   }
 
-  internal Npc RemoveNpcByCampaignId(string npcId)
+  internal Npc RemoveNpcByCampaignId(string npcId, string userId, string campaignCreatorId)
   {
     Npc npcToRemove = GetNpcById(npcId);
+    if (campaignCreatorId != userId)
+    {
+      throw new Exception($"[YOU ARE NOT THE CREATOR OF {npcToRemove.Name}]");
+    }
     _npcsRepository.RemoveNpcByCampaignId(npcId);
     return npcToRemove;
   }

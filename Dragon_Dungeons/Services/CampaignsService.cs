@@ -52,7 +52,7 @@ public class CampaignsService
     return campaign;
   }
 
-  internal Npc CreateNpc(Npc npcData, string userId)
+  internal Npc CreateNpcByCampaignId(Npc npcData, string userId)
   {
     Campaign campaign = GetCampaignById(npcData.CampaignId, userId);
     if (campaign.CreatorId != userId)
@@ -60,6 +60,16 @@ public class CampaignsService
       throw new Exception($"[YOU ARE NOT THE CREATOR OF {campaign.Name}]");
     }
     return _npcsService.CreateNpcByCampaignId(npcData);
+  }
+
+  internal Player CreatePlayerByCampaignId(Player playerData)
+  {
+    Campaign campaign = GetCampaignById(playerData.CampaignId, playerData.CreatorId);
+    if (campaign.Players.Count > 0)
+    {
+      throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");
+    }
+    return _playersService.CreatePlayerByCampaignId(playerData);
   }
 
   internal Campaign UpdateCampaign(Campaign campaignData)
@@ -83,8 +93,14 @@ public class CampaignsService
 
   internal Npc RemoveNpcByCampaignId(string campaignId, string npcId, string userId)
   {
-    HandleData(campaignId, userId);
-    return _npcsService.RemoveNpcByCampaignId(npcId);
+    Campaign campaign = HandleData(campaignId, userId);
+    return _npcsService.RemoveNpcByCampaignId(npcId, userId, campaign.CreatorId);
+  }
+
+  internal Player RemovePlayerByCampaignId(string campaignId, string playerId, string userId)
+  {
+    Campaign campaign = HandleData(campaignId, userId);
+    return _playersService.RemovePlayerByCampaignId(playerId, userId, campaign.CreatorId);
   }
 
   private Campaign HandleData(string campaignId, string userId)
