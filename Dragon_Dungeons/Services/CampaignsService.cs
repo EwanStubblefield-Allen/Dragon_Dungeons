@@ -21,6 +21,7 @@ public class CampaignsService
       campaign.PrivateNote = null;
       campaign.Events = null;
       campaign.Monsters = null;
+      campaign.Players = _playersService.GetPlayerByCampaignIdAndUserId(campaignId, userId);
     }
     else
     {

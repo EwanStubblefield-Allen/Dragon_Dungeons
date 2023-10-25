@@ -6,12 +6,14 @@
       <div class="d-flex justify-content-end align-items-center">
         <router-link :to="{ name: 'Campaign', params: { campaignId: campaignProp.id } }" class="btn btn-primary elevation-5">Campaign Details</router-link>
       </div>
-      <i @click="removeCampaign()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+      <i v-if="campaignProp.id == account.id" @click="removeCampaign()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
+import { AppState } from '../AppState.js'
 import { Campaign } from '../models/Campaign.js'
 
 export default {
@@ -23,7 +25,9 @@ export default {
   },
 
   setup() {
-    return {}
+    return {
+      account: computed(() => AppState.account)
+    }
   }
 }
 </script>

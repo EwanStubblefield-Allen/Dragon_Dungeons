@@ -17,11 +17,13 @@
         </div>
       </div>
     </div>
-    <i @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+    <i v-if="characterProp.creatorId == account.id" @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
+import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import { npcsService } from '../services/NpcsService.js'
 import { playersService } from '../services/PlayersService.js'
@@ -41,6 +43,8 @@ export default {
 
   setup(props) {
     return {
+      account: computed(() => AppState.account),
+
       async removeCharacter() {
         try {
           const character = props.characterProp

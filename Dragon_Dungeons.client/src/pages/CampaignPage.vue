@@ -25,12 +25,12 @@
 
       <div v-if="selectable != 3" class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 pb-2">
         <div class="row mx-0 p-2">
-          <button @click="handleNote(selectable)" class="col-12 btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#categoryForm">Category +</button>
+          <button v-if="campaign.creatorId == account.id" @click="handleNote(selectable)" class="col-12 btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#categoryForm">Category +</button>
         </div>
         <div v-for="(p, index) in selectable == 1 ? campaign.publicNote : campaign.privateNote" :key="p" class="row mx-0 px-2">
           <div class="col-12 d-flex justify-content-between align-items-center">
             <p class="fs-3 fw-bold">{{ p.category }}</p>
-            <i type="button" class="rounded selectable no-select mdi mdi-dots-horizontal fs-5" data-bs-toggle="dropdown" aria-expanded="false" title="More Options"></i>
+            <i v-if="campaign.creatorId == account.id" type="button" class="rounded selectable no-select mdi mdi-dots-horizontal fs-5" data-bs-toggle="dropdown" aria-expanded="false" title="More Options"></i>
 
             <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="authDropdown">
               <div class="list-group text-center">
@@ -48,7 +48,7 @@
           <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 py-2">
             <div class="d-flex justify-content-between align-items-center">
               <p class="fs-5 fw-bold">{{ n.name }}</p>
-              <i @click="removeNote(index, i)" class="mdi mdi-delete text-danger selectable"></i>
+              <i v-if="campaign.creatorId == account.id" @click="removeNote(index, i)" class="mdi mdi-delete text-danger selectable"></i>
             </div>
             <hr class="my-2">
             <p class="px-2">{{ n.description }}</p>
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <div v-if="campaign.creatorId == account.id" class="col-12 col-md-6 h-md py-2">
+    <div class="col-12 col-md-6 py-2 h-md">
       <CampaignOwner :campaignProp="campaign" />
     </div>
   </section>

@@ -28,6 +28,7 @@ import Pop from "../utils/Pop.js"
 export default {
   setup() {
     const editable = ref({})
+
     watchEffect(() => {
       editable.value = { ...AppState.account }
     })

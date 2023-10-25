@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-md-50">
-    <div class="py-2">
+    <div v-if="campaignProp.creatorId == account.id" class="py-2">
       <div class="d-flex align-items-center">
         <p class="fs-3 fw-bold">Players:</p>
         <i @click="copyCode()" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
@@ -16,16 +16,25 @@
       </div>
     </div>
 
+    <div v-else class="py-2">
+      <p class="fs-3 fw-bold">My Player:</p>
+      <div class="row overflow-auto players">
+        <div class="col-12 col-sm-6 col-md-12">
+          <CharacterCard :characterProp="campaignProp.players" locationProp="player" />
+        </div>
+      </div>
+    </div>
+
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <p @click="selectable = 1" :class="{ 'active elevation-5': selectable == 1 }" class="nav-link selectable text-dark fw-bold">Chat</p>
       </li>
 
-      <li class="nav-item">
+      <li v-if="campaignProp.creatorId == account.id" class="nav-item">
         <p @click="selectable = 2" :class="{ 'active elevation-5': selectable == 2 }" class="nav-link selectable text-dark fw-bold">Npcs</p>
       </li>
 
-      <li class="nav-item">
+      <li v-if="campaignProp.creatorId == account.id" class="nav-item">
         <p @click="selectable = 3" :class="{ 'active elevation-5': selectable == 3 }" class="nav-link selectable text-dark fw-bold">Monsters</p>
       </li>
     </ul>
@@ -136,6 +145,7 @@ export default {
       editable,
       selectable,
       monsters,
+      account: computed(() => AppState.account),
       characters: computed(() => AppState.characters),
 
       async createNpc() {
