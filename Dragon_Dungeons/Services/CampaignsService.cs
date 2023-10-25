@@ -74,9 +74,16 @@ public class CampaignsService
     return originalCampaign;
   }
 
+  internal Campaign RemoveCampaign(string campaignId, string userId)
+  {
+    Campaign campaignToDelete = HandleData(campaignId, userId);
+    _campaignsRepository.RemoveCampaign(campaignId);
+    return campaignToDelete;
+  }
+
   internal Npc RemoveNpcByCampaignId(string campaignId, string npcId, string userId)
   {
-    Campaign campaign = HandleData(campaignId, userId);
+    HandleData(campaignId, userId);
     return _npcsService.RemoveNpcByCampaignId(npcId);
   }
 

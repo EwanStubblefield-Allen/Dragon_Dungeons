@@ -82,6 +82,22 @@ public class CampaignsController : ControllerBase
     }
   }
 
+  [HttpDelete("{campaignId}")]
+  [Authorize]
+  public async Task<ActionResult<Campaign>> RemoveCampaign(string campaignId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Campaign campaign = _campaignsService.RemoveCampaign(campaignId, userInfo.Id);
+      return Ok(campaign);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
   [HttpDelete("{campaignId}/npcs/{npcId}")]
   [Authorize]
   public async Task<ActionResult<Npc>> RemoveNpcByCampaignId(string campaignId, string npcId)

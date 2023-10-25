@@ -61,6 +61,10 @@ export default {
           } else {
             const res = await Pop.question('Delete Character?', `To delete the character: "${character.name}", type the name to confirm.`)
 
+            if (!res) {
+              return
+            }
+
             if (res != character.name) {
               return Pop.toast('Character name does not match!')
             }

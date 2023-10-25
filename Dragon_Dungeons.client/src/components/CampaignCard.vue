@@ -6,7 +6,7 @@
       <div class="d-flex justify-content-end align-items-center">
         <router-link :to="{ name: 'Campaign', params: { campaignId: campaignProp.id } }" class="btn btn-primary elevation-5">Campaign Details</router-link>
       </div>
-      <i v-if="campaignProp.id == account.id" @click="removeCampaign()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+      <i v-if="campaignProp.creatorId == account.id" @click="removeCampaign(campaignProp)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
     </div>
   </div>
 </template>
@@ -14,7 +14,9 @@
 <script>
 import { computed } from 'vue'
 import { AppState } from '../AppState.js'
+import { campaignsService } from '../services/CampaignsService.js'
 import { Campaign } from '../models/Campaign.js'
+import Pop from '../utils/Pop.js'
 
 export default {
   props: {
@@ -26,7 +28,25 @@ export default {
 
   setup() {
     return {
-      account: computed(() => AppState.account)
+      account: computed(() => AppState.account),
+
+      async removeCampaign(campaign) {
+        try {
+          const res = await Pop.question('Delete Campaign?', `To delete the campaign: "${campaign.name}", type the name to confirm.`)
+
+          if (!res) {
+            return
+          }
+
+          if (res != campaign.name) {
+            return Pop.toast('Campaign name does not match!')
+          }
+          const campaignToRemove = await campaignsService.removeCampaign(campaign.id)
+          Pop.toast(`${campaignToRemove.name} was deleted!`)
+        } catch (error) {
+          Pop.error(error.message, '[DELETING CAMPAIGN]')
+        }
+      }
     }
   }
 }

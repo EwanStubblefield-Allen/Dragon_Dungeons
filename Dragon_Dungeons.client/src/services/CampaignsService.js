@@ -59,6 +59,12 @@ class CampaignsService {
     AppState.activeCampaign = campaign
   }
 
+  async removeCampaign(campaignId) {
+    const res = await api.delete(`api/campaigns/${campaignId}`)
+    AppState.campaigns = AppState.campaigns.filter(c => c.id != campaignId)
+    return res.data
+  }
+
   converter(data) {
     for (let k in keys) {
       let d = data[keys[k]]

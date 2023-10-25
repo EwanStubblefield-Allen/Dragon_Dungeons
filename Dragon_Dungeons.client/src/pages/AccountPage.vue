@@ -14,7 +14,7 @@
         </section>
       </div>
 
-      <div class="col-10">
+      <div v-if="characters.length || campaigns.length" class="col-10">
         <div class="d-md-flex justify-content-between">
           <p class="fs-2 fw-bold">My Campaigns:</p>
           <form v-if="characters.length" @submit.prevent="createPlayer()">

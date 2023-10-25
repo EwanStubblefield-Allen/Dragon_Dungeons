@@ -69,4 +69,10 @@ public class CampaignsRepository
       WHERE id = @Id LIMIT 1;";
     _db.Execute(sql, campaignData);
   }
+
+  internal void RemoveCampaign(string campaignId)
+  {
+    string sql = "DELETE FROM campaigns WHERE id = @campaignId LIMIT 1;";
+    _db.Execute(sql, new { campaignId });
+  }
 }
