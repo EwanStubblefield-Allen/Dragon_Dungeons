@@ -12,12 +12,29 @@
       <AccountForm />
     </template>
   </ModalComponent>
+
+  <ModalComponent id="categoryForm">
+    <template #title>Add Category</template>
+    <template #body>
+      <CategoryForm />
+    </template>
+  </ModalComponent>
+
+  <ModalComponent id="notesForm">
+    <template #title>Add Note</template>
+    <template #body>
+      <NotesForm />
+    </template>
+  </ModalComponent>
 </template>
 
 <script>
 import { computed } from 'vue'
 import { AppState } from './AppState'
 import Navbar from './components/Navbar.vue'
+import AccountForm from './components/AccountForm.vue'
+import CategoryForm from './components/CategoryForm.vue'
+import NotesForm from './components/NotesForm.vue'
 
 export default {
   setup() {
@@ -25,7 +42,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm }
 }
 </script>
 <style lang="scss">

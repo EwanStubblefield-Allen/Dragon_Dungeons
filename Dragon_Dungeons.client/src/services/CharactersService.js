@@ -98,11 +98,10 @@ class CharactersService {
   async updateCharacter(characterData) {
     characterData = this.converter(characterData)
     const res = await api.put(`api/characters/${AppState.activeCharacter.id}`, characterData)
-    res.data = this.converter(res.data)
-    const formattedCharacter = new Character(res.data)
+    const character = new Character(this.converter(res.data))
     const foundIndex = AppState.characters.findIndex(c => c.id == res.data.id)
-    AppState.characters.splice(foundIndex, 1, formattedCharacter)
-    AppState.activeCharacter = formattedCharacter
+    AppState.characters.splice(foundIndex, 1, character)
+    AppState.activeCharacter = character
   }
 
   async removeCharacter(characterData) {

@@ -53,7 +53,10 @@ class CampaignsService {
   async updateCampaign(campaignData, campaignId) {
     campaignData = this.converter(campaignData)
     const res = await api.put(`api/campaigns/${campaignId}`, campaignData)
-    AppState.campaigns.push(new Campaign(this.converter(res.data)))
+    const campaign = new Campaign(this.converter(res.data))
+    const foundIndex = AppState.campaigns.findIndex(c => c.id == campaign.id)
+    AppState.campaigns.splice(foundIndex, 1, campaign)
+    AppState.activeCampaign = campaign
   }
 
   converter(data) {

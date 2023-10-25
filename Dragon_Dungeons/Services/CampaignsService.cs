@@ -81,7 +81,7 @@ public class CampaignsService
 
   private Campaign HandleData(string campaignId, string userId)
   {
-    Campaign campaignData = GetCampaignById(campaignId, null);
+    Campaign campaignData = GetCampaignById(campaignId, userId);
     if (campaignData.CreatorId != userId)
     {
       throw new Exception($"[YOU ARE NOT THE CREATOR OF {campaignData.Name}]");

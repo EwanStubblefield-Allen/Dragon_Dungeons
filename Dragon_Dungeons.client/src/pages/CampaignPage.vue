@@ -24,22 +24,49 @@
       </div>
 
       <div v-if="selectable != 3" class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 pb-2">
-        <div v-for="p in selectable == 1 ? campaign.publicNote : campaign.privateNote" :key="p" class="row mx-0 p-2">
-          <p class="fs-3 fw-bold col-12">{{ p[0] }}</p>
+        <div class="row mx-0 p-2">
+          <button @click="handleNote(selectable)" class="col-12 btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#categoryForm">Category +</button>
+        </div>
+        <div v-for="(p, index) in selectable == 1 ? campaign.publicNote : campaign.privateNote" :key="p" class="row mx-0 px-2">
+          <div class="col-12 d-flex justify-content-between align-items-center">
+            <p class="fs-3 fw-bold">{{ p.category }}</p>
+            <i type="button" class="rounded selectable no-select mdi mdi-dots-horizontal fs-5" data-bs-toggle="dropdown" aria-expanded="false" title="More Options"></i>
+
+            <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="authDropdown">
+              <div class="list-group text-center">
+                <div @click="handleNote([selectable, index])" class="list-group-item dropdown-item list-group-item-action selectable" data-bs-toggle="modal" data-bs-target="#notesForm">
+                  <p class="mdi mdi-plus"> Add Note</p>
+                </div>
+
+                <div @click="removeCategory(index)" class="list-group-item dropdown-item list-group-item-action text-danger selectable">
+                  <p class="mdi mdi-delete">Delete Category</p>
+                </div>
+              </div>
+            </div>
+          </div>
           <hr class="col-12 my-2">
-          <div v-for="n in p[1]" :key="n" class="col-12 col-md-6 py-2">
-            <p class="fs-5 fw-bold">{{ n.name }}</p>
+          <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 py-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="fs-5 fw-bold">{{ n.name }}</p>
+              <i @click="removeNote(index, i)" class="mdi mdi-delete text-danger selectable"></i>
+            </div>
             <hr class="my-2">
             <p class="px-2">{{ n.description }}</p>
           </div>
         </div>
       </div>
 
-      <div v-else class="row mx-0 bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 pb-2">
-        <div v-for="e in campaign.events" :key="e" class="col-12 col-md-6 p-2">
-          <p class="px-2 fs-3 fw-bold">{{ e.name }}</p>
-          <hr class="my-2">
-          <p class="px-2">{{ e.description }}</p>
+      <div v-else class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 pb-2">
+        <div class="row mx-0 p-2">
+          <button @click="handleNote()" class="col-12 btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#notesForm">Note +</button>
+          <div v-for="(e, index) in campaign.events" :key="e" class="col-12 col-md-6 p-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="px-2 fs-3 fw-bold">{{ e.name }}</p>
+              <i @click="removeNote(index)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+            </div>
+            <hr class="my-2">
+            <p class="px-2">{{ e.description }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -83,6 +110,16 @@ export default {
         router.push('/')
       }
     }
+
+    function getKey() {
+      if (selectable.value == 1) {
+        return 'publicNote'
+      } else if (selectable.value == 2) {
+        return 'privateNote'
+      }
+      return 'events'
+    }
+
     return {
       selectable,
       account: computed(() => AppState.account),
@@ -90,6 +127,51 @@ export default {
 
       copyCode() {
         navigator.clipboard.writeText(this.campaign.id)
+      },
+
+      handleNote(index = null) {
+        AppState.notes = index
+      },
+
+      async removeCategory(index) {
+        try {
+          const isSure = await Pop.confirm('Are you sure you want to delete this category?', 'This will delete its corresponding notes!')
+
+          if (!isSure) {
+            return
+          }
+          const campaignData = {}
+          const key = getKey()
+          campaignData[key] = [...AppState.activeCampaign[key]]
+          campaignData[key].splice(index, 1)
+          await campaignsService.updateCampaign(campaignData, this.campaign.id)
+          Pop.toast('Category was deleted!')
+        } catch (error) {
+          Pop.error(error.message, '[DELETING CATEGORY]')
+        }
+      },
+
+      async removeNote(index, i = null) {
+        try {
+          const isSure = await Pop.confirm('Are you sure you want to delete this note?')
+
+          if (!isSure) {
+            return
+          }
+          const campaignData = {}
+          const key = getKey()
+          campaignData[key] = [...AppState.activeCampaign[key]]
+
+          if (!i) {
+            campaignData[key].splice(index, 1)
+          } else {
+            campaignData[key][index].notes.splice(i, 1)
+          }
+          await campaignsService.updateCampaign(campaignData, this.campaign.id)
+          Pop.toast('Note was deleted!')
+        } catch (error) {
+          Pop.error(error.message, '[DELETING NOTE]')
+        }
       }
     }
   },

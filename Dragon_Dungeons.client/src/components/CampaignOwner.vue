@@ -44,7 +44,7 @@
     <div v-else-if="selectable == 2">
       <form @submit.prevent="createNpc()" class="d-flex justify-content-end pb-2">
         <div class="px-2 w-sm-50 input-group">
-          <select v-model="editable.npc" class="form-select" aria-label="Select Npc" required>
+          <select v-model="editable.npc" id="selectNpc" class="form-select" aria-label="Select Npc" required>
             <option disabled>Add Npc</option>
             <option v-for="c in characters" :key="c.id" :value="c">{{ c.name }}</option>
           </select>
@@ -66,7 +66,7 @@
     <div v-else>
       <form @submit.prevent="addMonster()" class="d-flex justify-content-end">
         <div class="px-2 w-sm-75 input-group">
-          <select v-model="editable.monster" class="form-select" aria-label="Select Monster" required>
+          <select v-model="editable.monster" id="selectMonster" class="form-select" aria-label="Select Monster" required>
             <option disabled>Add Monster</option>
             <option v-for="m in monsters" :key="m.index" :value="m">
               {{ m.name }}
