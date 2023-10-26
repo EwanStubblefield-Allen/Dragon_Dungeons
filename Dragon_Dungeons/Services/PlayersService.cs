@@ -20,6 +20,11 @@ public class PlayersService
     return _playersRepository.GetPlayersByCampaignId(campaignId);
   }
 
+  internal List<Player> GetPlayersByUserId(string userId)
+  {
+    return _playersRepository.GetPlayersByUserId(userId);
+  }
+
   internal List<Player> GetPlayerByCampaignIdAndUserId(string campaignId, string userId)
   {
     return _playersRepository.GetPlayerByCampaignIdAndUserId(campaignId, userId);

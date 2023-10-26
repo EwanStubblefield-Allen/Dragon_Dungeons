@@ -1,11 +1,13 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-md-50">
-    <div v-if="campaignProp.creatorId == account.id" class="py-2">
-      <div class="d-flex align-items-center">
+    <div class="py-2">
+      <div v-if="campaignProp.creatorId == account.id" class="d-flex align-items-center">
         <p class="fs-3 fw-bold">Players:</p>
-        <i @click="copyCode()" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
+        <i @click="copyCode(campaignProp.id)" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
         <a class="mdi mdi-share-variant px-1 fs-5 text-dark selectable" :href="`mailto:?subject=Dungeons and Dragons Campaign&body=Join my Dnd Campaign! Code: ${campaignProp.id}`" title="Share Campaign Code Via Email"></a>
       </div>
+      <p v-else class="fs-3 fw-bold">My Player:</p>
+
       <div v-if="campaignProp.players.length" class="row overflow-auto players">
         <div v-for="p in campaignProp.players" :key="p.id" class="col-12 col-sm-6 col-md-12">
           <CharacterCard :characterProp="p" locationProp="player" />
@@ -13,15 +15,6 @@
       </div>
       <div v-else class="d-flex justify-content-center">
         <p class="fs-3">No current players in this campaign!</p>
-      </div>
-    </div>
-
-    <div v-else class="py-2">
-      <p class="fs-3 fw-bold">My Player:</p>
-      <div class="row overflow-auto players">
-        <div class="col-12 col-sm-6 col-md-12">
-          <CharacterCard :characterProp="campaignProp.players" locationProp="player" />
-        </div>
       </div>
     </div>
 
@@ -147,6 +140,10 @@ export default {
       monsters,
       account: computed(() => AppState.account),
       characters: computed(() => AppState.characters),
+
+      copyCode(campaignId) {
+        navigator.clipboard.writeText(campaignId)
+      },
 
       async createNpc() {
         try {

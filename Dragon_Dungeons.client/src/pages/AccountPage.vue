@@ -19,7 +19,7 @@
           <p class="fs-2 fw-bold">My Campaigns:</p>
           <form v-if="characters.length" @submit.prevent="createPlayer()">
             <div class="d-md-flex">
-              <select v-model="editable.character" class="form-select m-1" aria-label="Default select example" required>
+              <select v-model="editable.character" id="characterSelect" class="form-select m-1" aria-label="Select Character" required>
                 <option disabled>Character For Campaign</option>
                 <option v-for="c in characters" :key="c.id" :value="c">{{ c.name }}</option>
               </select>

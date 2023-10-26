@@ -125,10 +125,6 @@ export default {
       account: computed(() => AppState.account),
       campaign: computed(() => AppState.activeCampaign),
 
-      copyCode() {
-        navigator.clipboard.writeText(this.campaign.id)
-      },
-
       handleNote(index = null) {
         AppState.notes = index
       },

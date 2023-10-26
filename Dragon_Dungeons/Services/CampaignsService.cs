@@ -16,25 +16,13 @@ public class CampaignsService
   internal Campaign GetCampaignById(string campaignId, string userId)
   {
     Campaign campaign = _campaignsRepository.GetCampaignById(campaignId) ?? throw new Exception($"[NO CAMPAIGN MATCHES THE ID {campaignId}]");
-    if (campaign.CreatorId != userId)
-    {
-      campaign.PrivateNote = null;
-      campaign.Events = null;
-      campaign.Monsters = null;
-      campaign.Players = _playersService.GetPlayerByCampaignIdAndUserId(campaignId, userId);
-    }
-    else
-    {
-      campaign.Npcs ??= _npcsService.GetNpcsByCampaignId(campaign.Id);
-      campaign.Players = _playersService.GetPlayersByCampaignId(campaign.Id);
-    }
-    return campaign;
+    return CheckUser(campaign, userId);
   }
 
   internal List<Campaign> GetCampaignsByUserId(string userId)
   {
     List<Campaign> campaigns = _campaignsRepository.GetCampaignsByUserId(userId);
-    campaigns.ForEach(c => c.Npcs = _npcsService.GetNpcsByCampaignId(c.Id));
+    campaigns.ConvertAll(c => CheckUser(c, userId));
     return campaigns;
   }
 
@@ -46,7 +34,7 @@ public class CampaignsService
       n.CharacterId = n.Id;
       n.CampaignId = campaignData.Id;
       n.Id = Guid.NewGuid().ToString();
-      campaignData.Npcs.Add(_npcsService.CreateNpcByCampaignId(n));
+      _npcsService.CreateNpcByCampaignId(n);
     });
     Campaign campaign = GetCampaignById(campaignData.Id, campaignData.CreatorId);
     return campaign;
@@ -101,6 +89,23 @@ public class CampaignsService
   {
     Campaign campaign = HandleData(campaignId, userId);
     return _playersService.RemovePlayerByCampaignId(playerId, userId, campaign.CreatorId);
+  }
+
+  private Campaign CheckUser(Campaign campaign, string userId)
+  {
+    if (campaign.CreatorId != userId)
+    {
+      campaign.PrivateNote = null;
+      campaign.Events = null;
+      campaign.Monsters = null;
+      campaign.Players = _playersService.GetPlayerByCampaignIdAndUserId(campaign.Id, userId);
+    }
+    else
+    {
+      campaign.Npcs ??= _npcsService.GetNpcsByCampaignId(campaign.Id);
+      campaign.Players = _playersService.GetPlayersByCampaignId(campaign.Id);
+    }
+    return campaign;
   }
 
   private Campaign HandleData(string campaignId, string userId)

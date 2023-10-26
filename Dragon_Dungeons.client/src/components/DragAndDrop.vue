@@ -5,7 +5,7 @@
     </div>
 
     <div class="col-12">
-      <draggable v-model="editable" class="row dragArea g-3" animation="300" easing="cubic-bezier(1, 0, 0, 1)">
+      <draggable v-model="editable" class="row dragArea g-3" :force-fallback="true" animation="300" easing="cubic-bezier(1, 0, 0, 1)">
         <div class="col-12 col-sm-6 col-md-3 col-lg-2 draggable" v-for="(a, i) in attributes" :key="a">
           <div class="d-flex justify-content-center align-items-center">
             <p class="fs-5 px-2">{{ a.toUpperCase() }}</p>

@@ -137,7 +137,7 @@ export default {
         if (!editable.value.npcs) {
           editable.value.npcs = []
         }
-        editable.value.npcs.push(character.value)
+        editable.value.npcs.push({ ...character.value })
         character.value = 'Select...'
       },
 

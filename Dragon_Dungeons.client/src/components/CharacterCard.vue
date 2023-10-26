@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <i v-if="characterProp.creatorId == account.id" @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+    <i v-if="characterProp.creatorId == account.id || !characterProp.creatorId" @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
   </div>
 </template>
 

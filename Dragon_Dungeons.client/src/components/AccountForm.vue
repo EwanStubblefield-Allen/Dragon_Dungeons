@@ -41,6 +41,7 @@ export default {
         try {
           await accountService.updateAccount(editable.value)
           Modal.getOrCreateInstance('#accountForm').hide()
+          Pop.success('Account was updated!')
         } catch (error) {
           Pop.error(error.message, '[UPDATING ACCOUNT]')
         }

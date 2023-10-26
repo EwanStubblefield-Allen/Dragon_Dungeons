@@ -10,7 +10,7 @@
       <div class="form-group d-md-flex align-items-center">
         <label for="search" class="fw-bold w-100">Search for activity:</label>
         <div class="input-group">
-          <input v-model="search" id="search" class="form-control" type="text" minlength="3" maxlength="30" placeholder="Monster...">
+          <input v-model="search" id="search" class="form-control" type="text" minlength="3" maxlength="30" placeholder="Search Monster...">
           <button type="submit" class="input-group-text" id="search" title="Search"><i class="mdi mdi-magnify"></i></button>
         </div>
       </div>
@@ -76,6 +76,9 @@ export default {
 
     async function getMonsters() {
       try {
+        if (!editable.value.monsters) {
+          editable.value.monsters = []
+        }
         monsters.value = await infosService.getInfoById('monsters', false)
         selectable.value = [...monsters.value]
       } catch (error) {
@@ -94,9 +97,6 @@ export default {
       },
 
       addMonster(monster) {
-        if (!editable.value.monsters) {
-          editable.value.monsters = []
-        }
         const foundIndex = editable.value.monsters.findIndex(s => s.index == monster.index)
 
         if (foundIndex != -1) {

@@ -7,13 +7,15 @@ public class AccountController : ControllerBase
   private readonly AccountService _accountService;
   private readonly CharactersService _charactersService;
   private readonly CampaignsService _campaignsService;
+  private readonly PlayersService _playersService;
   private readonly Auth0Provider _auth0Provider;
 
-  public AccountController(AccountService accountService, CharactersService charactersService, CampaignsService campaignsService, Auth0Provider auth0Provider)
+  public AccountController(AccountService accountService, CharactersService charactersService, CampaignsService campaignsService, PlayersService playersService, Auth0Provider auth0Provider)
   {
     _accountService = accountService;
     _charactersService = charactersService;
     _campaignsService = campaignsService;
+    _playersService = playersService;
     _auth0Provider = auth0Provider;
   }
 
@@ -56,6 +58,23 @@ public class AccountController : ControllerBase
     {
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       List<Campaign> campaigns = _campaignsService.GetCampaignsByUserId(userInfo.Id);
+      return Ok(campaigns);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpGet("players")]
+  [Authorize]
+  public async Task<ActionResult<List<Campaign>>> GetPlayersByUserId()
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      List<Player> players = _playersService.GetPlayersByUserId(userInfo.Id);
+      List<Campaign> campaigns = players.ConvertAll(p => _campaignsService.GetCampaignById(p.CampaignId, userInfo.Id));
       return Ok(campaigns);
     }
     catch (Exception e)
