@@ -30,22 +30,15 @@ public class PlayersService
     return _playersRepository.GetPlayerByCampaignIdAndUserId(campaignId, userId);
   }
 
-  internal Player CreatePlayerByCampaignId(Player playerData)
+  internal void CreatePlayerByCampaignId(Player playerData)
   {
-    List<Player> players = GetPlayersByCampaignId(playerData.CampaignId);
-    bool foundPlayer = players.Exists(p => p.CreatorId == playerData.CreatorId);
-    if (foundPlayer)
-    {
-      throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");
-    }
     _playersRepository.CreatePlayerByCampaignId(playerData);
-    return GetPlayerById(playerData.Id);
   }
 
   internal Player RemovePlayerByCampaignId(string playerId, string userId, string campaignCreatorId)
   {
     Player playerToDelete = GetPlayerById(playerId);
-    if (playerToDelete.CreatorId != userId || campaignCreatorId != userId)
+    if (playerToDelete.CreatorId != userId && campaignCreatorId != userId)
     {
       throw new Exception($"[YOU ARE NOT THE CREATOR OF {playerToDelete.Name}]");
     }

@@ -1,12 +1,15 @@
 <template>
   <div class="card elevation-5">
     <div class="card-body p-2">
+      <div v-if="campaignProp.creatorId == account.id" class="d-flex justify-content-between">
+        <i class="mdi mdi-crown fs-5 text-warning"></i>
+        <i @click="removeCampaign(campaignProp)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+      </div>
       <h5 class="card-title text-center text-uppercase fs-3">{{ campaignProp.name }}</h5>
       <p class="fs-5 pb-2">{{ campaignProp.description }}</p>
       <div class="d-flex justify-content-end align-items-center">
         <router-link :to="{ name: 'Campaign', params: { campaignId: campaignProp.id } }" class="btn btn-primary elevation-5">Campaign Details</router-link>
       </div>
-      <i v-if="campaignProp.creatorId == account.id" @click="removeCampaign(campaignProp)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
     </div>
   </div>
 </template>
@@ -53,7 +56,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  i {
+  .icon-position {
     position: absolute;
     top: 2px;
     right: 5px;

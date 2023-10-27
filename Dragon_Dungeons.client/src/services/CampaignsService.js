@@ -34,10 +34,11 @@ class CampaignsService {
   async getCampaignsByUserId() {
     try {
       const res = await api.get('account/campaigns')
-      AppState.campaigns = res.data.map(d => {
+      const campaigns = res.data.map(d => {
         d = this.converter(d)
         return new Campaign(d)
       })
+      AppState.campaigns = AppState.campaigns.concat(campaigns)
     } catch (error) {
       Pop.error(error.message, '[GETTING USERS CAMPAIGNS]')
     }

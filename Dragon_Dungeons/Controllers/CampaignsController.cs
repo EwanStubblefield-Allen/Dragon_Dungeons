@@ -66,7 +66,7 @@ public class CampaignsController : ControllerBase
 
   [HttpPost("{campaignId}/players")]
   [Authorize]
-  public async Task<ActionResult<Player>> CreatePlayerByCampaignId([FromBody] Player playerData, string campaignId)
+  public async Task<ActionResult<Campaign>> CreatePlayerByCampaignId([FromBody] Player playerData, string campaignId)
   {
     try
     {
@@ -74,8 +74,8 @@ public class CampaignsController : ControllerBase
       playerData.CreatorId = userInfo.Id;
       playerData.Id = Guid.NewGuid().ToString();
       playerData.CampaignId = campaignId;
-      Player player = _campaignsService.CreatePlayerByCampaignId(playerData);
-      return Ok(player);
+      Campaign campaign = _campaignsService.CreatePlayerByCampaignId(playerData);
+      return Ok(campaign);
     }
     catch (Exception e)
     {
@@ -133,7 +133,7 @@ public class CampaignsController : ControllerBase
     }
   }
 
-  [HttpDelete("{campaignId}/{playerId}")]
+  [HttpDelete("{campaignId}/players/{playerId}")]
   [Authorize]
   public async Task<ActionResult<Player>> RemovePlayerByCampaignId(string campaignId, string playerId)
   {

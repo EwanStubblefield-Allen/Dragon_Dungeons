@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-2">
+  <div class="card mb-2 elevation-5">
     <div class="row g-0">
       <div class="col-md-4">
         <img :src="characterProp.picture.url ?? characterProp.picture" class="vh-md-25 w-100 rounded" :alt="characterProp.name">
@@ -12,7 +12,7 @@
             <p v-if="characterProp.level" class="fs-5">Level: {{ characterProp.level }}</p>
           </div>
           <div class="d-flex justify-content-end align-items-center">
-            <router-link :to="{ name: 'Character', params: { characterId: characterProp.id } }" class="btn btn-primary elevation-5">Character Details</router-link>
+            <router-link :to="{ name: 'Character', params: { characterId: characterProp.characterId ?? characterProp.id } }" class="btn btn-primary elevation-5">Character Details</router-link>
           </div>
         </div>
       </div>
@@ -28,6 +28,7 @@ import { charactersService } from '../services/CharactersService.js'
 import { npcsService } from '../services/NpcsService.js'
 import { playersService } from '../services/PlayersService.js'
 import Pop from '../utils/Pop.js'
+import { useRouter } from 'vue-router'
 
 export default {
   props: {
@@ -42,6 +43,8 @@ export default {
   },
 
   setup(props) {
+    const router = useRouter()
+
     return {
       account: computed(() => AppState.account),
 
@@ -73,6 +76,10 @@ export default {
               characterToDelete = await charactersService.removeCharacter(character)
             } else {
               characterToDelete = await playersService.removePlayer(character)
+
+              if (characterToDelete.creatorId == this.account.id) {
+                router.push({ name: 'Account' })
+              }
             }
           }
           Pop.toast(`${characterToDelete.name} was deleted!`)

@@ -89,6 +89,7 @@ namespace Dragon_Dungeons
     {
       if (env.IsDevelopment())
       {
+        _ = app.UseWebSockets();
         _ = app.UseDeveloperExceptionPage();
         _ = app.UseSwagger();
         _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jot v1"));

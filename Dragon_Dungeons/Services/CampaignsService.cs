@@ -50,14 +50,15 @@ public class CampaignsService
     return _npcsService.CreateNpcByCampaignId(npcData);
   }
 
-  internal Player CreatePlayerByCampaignId(Player playerData)
+  internal Campaign CreatePlayerByCampaignId(Player playerData)
   {
     Campaign campaign = GetCampaignById(playerData.CampaignId, playerData.CreatorId);
     if (campaign.Players.Count > 0)
     {
       throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");
     }
-    return _playersService.CreatePlayerByCampaignId(playerData);
+    _playersService.CreatePlayerByCampaignId(playerData);
+    return campaign;
   }
 
   internal Campaign UpdateCampaign(Campaign campaignData)
@@ -87,7 +88,7 @@ public class CampaignsService
 
   internal Player RemovePlayerByCampaignId(string campaignId, string playerId, string userId)
   {
-    Campaign campaign = HandleData(campaignId, userId);
+    Campaign campaign = GetCampaignById(campaignId, userId);
     return _playersService.RemovePlayerByCampaignId(playerId, userId, campaign.CreatorId);
   }
 
