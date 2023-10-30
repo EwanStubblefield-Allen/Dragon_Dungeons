@@ -1,3 +1,5 @@
+using Dragon_Dungeons.Hubs;
+
 namespace Dragon_Dungeons.Controllers;
 
 [ApiController]
@@ -6,11 +8,13 @@ public class CampaignsController : ControllerBase
 {
   private readonly CampaignsService _campaignsService;
   private readonly Auth0Provider _auth0Provider;
+  private readonly IHubContext<CampaignHub> _hubContext;
 
-  public CampaignsController(CampaignsService campaignsService, Auth0Provider auth0Provider)
+  public CampaignsController(CampaignsService campaignsService, Auth0Provider auth0Provider, IHubContext<CampaignHub> hubContext)
   {
     _campaignsService = campaignsService;
     _auth0Provider = auth0Provider;
+    _hubContext = hubContext;
   }
 
   [HttpGet("{campaignId}")]

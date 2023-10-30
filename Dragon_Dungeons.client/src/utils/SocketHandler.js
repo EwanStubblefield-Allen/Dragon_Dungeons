@@ -79,7 +79,7 @@ export class SocketHandler {
   }
 
   enqueue(action, payload) {
-    logger.log('📼[ENQUEING_ACTION]', { action, payload })
+    logger.log('📼[ENQUEUING_ACTION]', { action, payload })
     this.queue.push({ action, payload })
   }
 

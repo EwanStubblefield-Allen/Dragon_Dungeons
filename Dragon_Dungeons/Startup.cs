@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,7 @@ namespace Dragon_Dungeons
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dragon_Dungeons", Version = "v1" });
       });
+      _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       _ = services.AddSingleton<Auth0Provider>();
       _ = services.AddScoped(x => CreateDbConnection());
 
@@ -89,7 +91,6 @@ namespace Dragon_Dungeons
     {
       if (env.IsDevelopment())
       {
-        _ = app.UseWebSockets();
         _ = app.UseDeveloperExceptionPage();
         _ = app.UseSwagger();
         _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Jot v1"));
@@ -110,6 +111,7 @@ namespace Dragon_Dungeons
       _ = app.UseEndpoints(endpoints =>
       {
         _ = endpoints.MapControllers();
+        _ = endpoints.MapHub<CampaignHub>("/campaign");
       });
     }
   }

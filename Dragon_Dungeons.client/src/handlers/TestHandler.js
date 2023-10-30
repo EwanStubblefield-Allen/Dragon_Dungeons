@@ -9,7 +9,7 @@ class TestHandler extends SocketHandler {
   }
 
   onTest(payload) {
-    console.log('Recieved IS_TESTED', payload)
+    console.log('Received IS_TESTED', payload)
   }
 
 }
