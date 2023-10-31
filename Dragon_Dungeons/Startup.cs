@@ -111,7 +111,7 @@ namespace Dragon_Dungeons
       _ = app.UseEndpoints(endpoints =>
       {
         _ = endpoints.MapControllers();
-        _ = endpoints.MapHub<CampaignHub>("/campaign");
+        _ = endpoints.MapHub<CampaignHub>("hubs/campaignHub");
       });
     }
   }

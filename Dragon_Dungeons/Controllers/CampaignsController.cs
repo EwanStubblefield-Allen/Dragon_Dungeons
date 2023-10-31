@@ -8,9 +8,9 @@ public class CampaignsController : ControllerBase
 {
   private readonly CampaignsService _campaignsService;
   private readonly Auth0Provider _auth0Provider;
-  private readonly IHubContext<CampaignHub> _hubContext;
+  private readonly IHubContext<CampaignHub, ICampaignHub> _hubContext;
 
-  public CampaignsController(CampaignsService campaignsService, Auth0Provider auth0Provider, IHubContext<CampaignHub> hubContext)
+  public CampaignsController(CampaignsService campaignsService, Auth0Provider auth0Provider, IHubContext<CampaignHub, ICampaignHub> hubContext)
   {
     _campaignsService = campaignsService;
     _auth0Provider = auth0Provider;
@@ -79,6 +79,7 @@ public class CampaignsController : ControllerBase
       playerData.Id = Guid.NewGuid().ToString();
       playerData.CampaignId = campaignId;
       Campaign campaign = _campaignsService.CreatePlayerByCampaignId(playerData);
+      await _hubContext.Clients.All.PlayerJoinedCampaign(playerData);
       return Ok(campaign);
     }
     catch (Exception e)

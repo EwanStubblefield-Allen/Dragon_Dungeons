@@ -82,10 +82,11 @@
 </template>
 
 <script>
-import { computed, ref, watchEffect } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
+import { campaignHub } from '../handlers/CampaignHub.js'
 import CampaignOwner from '../components/CampaignOwner.vue'
 import Pop from '../utils/Pop.js'
 
@@ -95,9 +96,24 @@ export default {
     const router = useRouter()
     const selectable = ref(1)
 
+    onMounted(() => {
+      campaignHub.client.on('PlayerJoinedCampaign', function(playerData) {
+        Pop.success(`${playerData.name} joined campaign!`)
+      })
+    })
+
+    onUnmounted(() => {
+      campaignHub.client.off('PlayerJoinedCampaign')
+    })
+
+    onBeforeRouteUpdate(() => {
+      campaignHub.leaveCampaign(route.params.campaignId)
+    })
+
     watchEffect(() => {
       if (route.params.campaignId) {
         getCampaignById()
+        campaignHub.enterCampaign(route.params.campaignId)
       }
     })
 

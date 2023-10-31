@@ -29,8 +29,9 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { AppState } from './AppState'
+import { campaignHub } from './handlers/CampaignHub.js'
 import Navbar from './components/Navbar.vue'
 import AccountForm from './components/AccountForm.vue'
 import CategoryForm from './components/CategoryForm.vue'
@@ -38,6 +39,10 @@ import NotesForm from './components/NotesForm.vue'
 
 export default {
   setup() {
+    onMounted(() => {
+      campaignHub.start()
+    })
+
     return {
       appState: computed(() => AppState)
     }
