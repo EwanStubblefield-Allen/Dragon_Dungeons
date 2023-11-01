@@ -21,16 +21,25 @@ public class PlayersRepository
     return _db.Query<Player>(sql, new { campaignId }).ToList();
   }
 
-  internal List<Player> GetPlayersByUserId(string userId)
+  internal List<Campaign> GetPlayersByUserId(string userId)
   {
-    string sql = "SELECT * FROM players WHERE creatorId = @userId;";
-    return _db.Query<Player>(sql, new { userId }).ToList();
-  }
-
-  internal List<Player> GetPlayerByCampaignIdAndUserId(string campaignId, string userId)
-  {
-    string sql = "SELECT * FROM players WHERE campaignId = @campaignId AND creatorId = @userId LIMIT 1;";
-    return _db.Query<Player>(sql, new { campaignId, userId }).ToList();
+    string sql = @"
+      SELECT
+        p.*,
+        c.*
+      FROM
+        players p
+        JOIN campaigns c ON c.id = p.campaignId
+      WHERE
+        p.creatorId = @userId;";
+    return _db.Query<Player, Campaign, Campaign>(
+      sql,
+      (player, campaigns) =>
+      {
+        campaigns.Players = new List<Player> { player };
+        return campaigns;
+      },
+      new { userId }).ToList();
   }
 
   internal void CreatePlayerByCampaignId(Player playerData)

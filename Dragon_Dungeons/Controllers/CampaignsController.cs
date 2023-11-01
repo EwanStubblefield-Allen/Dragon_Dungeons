@@ -1,5 +1,3 @@
-using Dragon_Dungeons.Hubs;
-
 namespace Dragon_Dungeons.Controllers;
 
 [ApiController]

@@ -73,8 +73,7 @@ public class AccountController : ControllerBase
     try
     {
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
-      List<Player> players = _playersService.GetPlayersByUserId(userInfo.Id);
-      List<Campaign> campaigns = players.ConvertAll(p => _campaignsService.GetCampaignById(p.CampaignId, userInfo.Id));
+      List<Campaign> campaigns = _playersService.GetPlayersByUserId(userInfo.Id);
       return Ok(campaigns);
     }
     catch (Exception e)

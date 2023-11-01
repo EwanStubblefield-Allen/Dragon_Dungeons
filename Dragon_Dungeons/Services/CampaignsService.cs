@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace Dragon_Dungeons.Services;
 
 public class CampaignsService
@@ -16,13 +18,24 @@ public class CampaignsService
   internal Campaign GetCampaignById(string campaignId, string userId)
   {
     Campaign campaign = _campaignsRepository.GetCampaignById(campaignId) ?? throw new Exception($"[NO CAMPAIGN MATCHES THE ID {campaignId}]");
-    return CheckUser(campaign, userId);
+    campaign.Players = _playersService.GetPlayersByCampaignId(campaignId);
+    if (campaign.CreatorId != userId)
+    {
+      campaign.PrivateNote = null;
+      campaign.Events = null;
+      campaign.Monsters = null;
+      campaign.Players = campaign.Players.Where(p => p.CreatorId == userId).ToList();
+    }
+    else
+    {
+      campaign.Npcs = _npcsService.GetNpcsByCampaignId(campaignId);
+    }
+    return campaign;
   }
 
   internal List<Campaign> GetCampaignsByUserId(string userId)
   {
     List<Campaign> campaigns = _campaignsRepository.GetCampaignsByUserId(userId);
-    campaigns.ConvertAll(c => CheckUser(c, userId));
     return campaigns;
   }
 
@@ -90,23 +103,6 @@ public class CampaignsService
   {
     Campaign campaign = GetCampaignById(campaignId, userId);
     return _playersService.RemovePlayerByCampaignId(playerId, userId, campaign.CreatorId);
-  }
-
-  private Campaign CheckUser(Campaign campaign, string userId)
-  {
-    if (campaign.CreatorId != userId)
-    {
-      campaign.PrivateNote = null;
-      campaign.Events = null;
-      campaign.Monsters = null;
-      campaign.Players = _playersService.GetPlayerByCampaignIdAndUserId(campaign.Id, userId);
-    }
-    else
-    {
-      campaign.Npcs ??= _npcsService.GetNpcsByCampaignId(campaign.Id);
-      campaign.Players = _playersService.GetPlayersByCampaignId(campaign.Id);
-    }
-    return campaign;
   }
 
   private Campaign HandleData(string campaignId, string userId)
