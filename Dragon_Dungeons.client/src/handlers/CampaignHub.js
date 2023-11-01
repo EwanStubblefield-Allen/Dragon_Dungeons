@@ -4,7 +4,7 @@ import Pop from "../utils/Pop.js"
 class CampaignHub {
   constructor() {
     this.client = new HubConnectionBuilder()
-      .withUrl('hub/campaignHub')
+      .withUrl('hubs/campaignHub')
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build()

@@ -22,6 +22,7 @@ namespace Dragon_Dungeons
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       ConfigureCors(services);
       ConfigureAuth(services);
       _ = services.AddControllers();
@@ -29,7 +30,6 @@ namespace Dragon_Dungeons
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dragon_Dungeons", Version = "v1" });
       });
-      _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       _ = services.AddSingleton<Auth0Provider>();
       _ = services.AddScoped(x => CreateDbConnection());
 
