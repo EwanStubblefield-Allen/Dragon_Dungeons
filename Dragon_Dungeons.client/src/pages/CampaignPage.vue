@@ -97,13 +97,11 @@ export default {
     const selectable = ref(1)
 
     onMounted(() => {
-      campaignHub.client.on('PlayerJoinedCampaign', function(playerData) {
-        Pop.success(`${playerData.name} joined campaign!`)
-      })
+      campaignHub.onCampaign()
     })
 
     onUnmounted(() => {
-      campaignHub.client.off('PlayerJoinedCampaign')
+      campaignHub.offCampaign()
     })
 
     onBeforeRouteUpdate(() => {

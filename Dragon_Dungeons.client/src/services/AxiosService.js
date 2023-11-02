@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import { baseURL } from '../env'
 import { logger } from '../utils/Logger.js'
-import { openAiAuth } from '../config.js'
+import { OPENAI_API_KEY } from '../config.js'
 
 export const api = Axios.create({
   baseURL,
@@ -15,7 +15,7 @@ export const dndApi = Axios.create({
 
 export const openApi = Axios.create({
   baseURL: 'https://api.openai.com/v1',
-  headers: { Authorization: openAiAuth },
+  headers: { Authorization: OPENAI_API_KEY },
   timeout: 60000
 })
 

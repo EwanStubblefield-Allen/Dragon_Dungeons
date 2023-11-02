@@ -14,6 +14,11 @@ public class CampaignHub : Hub<ICampaignHub>
 
   public async Task PlayerJoinedCampaign(Player playerData)
   {
-    await Clients.All.PlayerJoinedCampaign(playerData);
+    await Clients.Group(playerData.CampaignId).PlayerJoinedCampaign(playerData);
+  }
+
+  public async Task PlayerLeftCampaign(Player playerData)
+  {
+    await Clients.Group(playerData.CampaignId).PlayerLeftCampaign(playerData);
   }
 }

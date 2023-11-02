@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <i v-if="characterProp.creatorId == account.id || !characterProp.creatorId" @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
+    <i v-if="characterProp.creatorId == account.id || campaign?.creatorId == account.id || !characterProp.creatorId" @click="removeCharacter()" class="mdi mdi-delete fs-5 text-danger selectable"></i>
   </div>
 </template>
 
@@ -28,7 +28,6 @@ import { charactersService } from '../services/CharactersService.js'
 import { npcsService } from '../services/NpcsService.js'
 import { playersService } from '../services/PlayersService.js'
 import Pop from '../utils/Pop.js'
-import { useRouter } from 'vue-router'
 
 export default {
   props: {
@@ -43,10 +42,9 @@ export default {
   },
 
   setup(props) {
-    const router = useRouter()
-
     return {
       account: computed(() => AppState.account),
+      campaign: computed(() => AppState.activeCampaign),
 
       async removeCharacter() {
         try {
@@ -76,10 +74,6 @@ export default {
               characterToDelete = await charactersService.removeCharacter(character)
             } else {
               characterToDelete = await playersService.removePlayer(character)
-
-              if (characterToDelete.creatorId == this.account.id) {
-                router.push({ name: 'Account' })
-              }
             }
           }
           Pop.toast(`${characterToDelete.name} was deleted!`)
@@ -93,6 +87,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+
   i {
     position: absolute;
     top: 2px;

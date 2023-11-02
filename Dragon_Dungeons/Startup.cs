@@ -96,7 +96,7 @@ namespace Dragon_Dungeons
         _ = app.UseCors("CorsDevPolicy");
       }
 
-      _ = app.UseHttpsRedirection();
+      // _ = app.UseHttpsRedirection();
 
       _ = app.UseDefaultFiles();
       _ = app.UseStaticFiles();

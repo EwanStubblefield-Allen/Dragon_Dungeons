@@ -77,7 +77,7 @@ public class CampaignsController : ControllerBase
       playerData.Id = Guid.NewGuid().ToString();
       playerData.CampaignId = campaignId;
       Campaign campaign = _campaignsService.CreatePlayerByCampaignId(playerData);
-      await _hubContext.Clients.All.PlayerJoinedCampaign(playerData);
+      await _hubContext.Clients.Group(campaignId).PlayerJoinedCampaign(playerData);
       return Ok(campaign);
     }
     catch (Exception e)
@@ -144,6 +144,7 @@ public class CampaignsController : ControllerBase
     {
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       Player player = _campaignsService.RemovePlayerByCampaignId(campaignId, playerId, userInfo.Id);
+      await _hubContext.Clients.Group(campaignId).PlayerLeftCampaign(player);
       return Ok(player);
     }
     catch (Exception e)

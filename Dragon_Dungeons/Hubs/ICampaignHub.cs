@@ -5,4 +5,5 @@ public interface ICampaignHub
   Task EnterCampaign(string campaignId);
   Task LeaveCampaign(string campaignId);
   Task PlayerJoinedCampaign(Player playerData);
+  Task PlayerLeftCampaign(Player playerData);
 }
