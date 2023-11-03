@@ -21,4 +21,24 @@ public class CampaignHub : Hub<ICampaignHub>
   {
     await Clients.Group(playerData.CampaignId).PlayerLeftCampaign(playerData);
   }
+
+  public async Task CampaignNotes(string publicNotes, string campaignId)
+  {
+    await Clients.Group(campaignId).CampaignNotes(publicNotes, campaignId);
+  }
+
+  public async Task AddComment(Comment commentData)
+  {
+    await Clients.Group(commentData.CampaignId).AddComment(commentData);
+  }
+
+  public async Task UpdateComment(Comment commentData)
+  {
+    await Clients.Group(commentData.CampaignId).UpdateComment(commentData);
+  }
+
+  public async Task RemoveComment(Comment commentData)
+  {
+    await Clients.Group(commentData.CampaignId).RemoveComment(commentData.Id);
+  }
 }

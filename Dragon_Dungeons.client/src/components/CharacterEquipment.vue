@@ -4,7 +4,7 @@
       <p @click="selectable = 1" :class="{ 'active elevation-5': selectable == 1 }" class="nav-link selectable text-dark fw-bold">Equipment</p>
     </li>
 
-    <li v-if="characterProp.cantrips" class="nav-item">
+    <li v-if="character.cantrips" class="nav-item">
       <p @click="selectable = 2" :class="{ 'active elevation-5': selectable == 2 }" class="nav-link selectable text-dark fw-bold">Cantrips</p>
     </li>
 
@@ -81,10 +81,10 @@
 
 <script>
 import { computed, ref } from 'vue'
-import { Character } from '../models/Character.js'
-import { charactersService } from '../services/CharactersService.js'
 import { AppState } from '../AppState.js'
+import { Character } from '../models/Character.js'
 import { saveState } from '../utils/Store.js'
+import { charactersService } from '../services/CharactersService.js'
 import CharacterMagic from './CharacterMagic.vue'
 import CharacterSpells from './CharacterSpells.vue'
 import Pop from '../utils/Pop.js'

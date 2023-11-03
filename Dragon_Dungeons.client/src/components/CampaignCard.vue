@@ -17,8 +17,8 @@
 <script>
 import { computed } from 'vue'
 import { AppState } from '../AppState.js'
-import { campaignsService } from '../services/CampaignsService.js'
 import { Campaign } from '../models/Campaign.js'
+import { campaignsService } from '../services/CampaignsService.js'
 import Pop from '../utils/Pop.js'
 
 export default {

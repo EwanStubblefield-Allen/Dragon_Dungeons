@@ -52,8 +52,8 @@ public class CampaignsRepository
   internal void CreateCampaign(Campaign campaignData)
   {
     string sql = @"
-      INSERT INTO campaigns(id, name, description, privateNote, publicNote, events, monsters, creatorId)
-      VALUES(@Id, @Name, @Description, @PrivateNote, @PublicNote, @Events, @Monsters, @CreatorId);";
+      INSERT INTO campaigns(id, name, description, privateNotes, publicNotes, events, monsters, creatorId)
+      VALUES(@Id, @Name, @Description, @PrivateNotes, @PublicNotes, @Events, @Monsters, @CreatorId);";
     _db.Execute(sql, campaignData);
   }
 
@@ -62,8 +62,8 @@ public class CampaignsRepository
     string sql = @"
       UPDATE campaigns SET
         description = @Description,
-        privateNote = @PrivateNote,
-        publicNote = @PublicNote,
+        PrivateNotes = @PrivateNotes,
+        PublicNotes = @PublicNotes,
         events = @Events,
         monsters = @Monsters
       WHERE id = @Id LIMIT 1;";

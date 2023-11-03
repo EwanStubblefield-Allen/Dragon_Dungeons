@@ -5,12 +5,14 @@ namespace Dragon_Dungeons.Controllers;
 public class CampaignsController : ControllerBase
 {
   private readonly CampaignsService _campaignsService;
+  private readonly CommentsService _commentsService;
   private readonly Auth0Provider _auth0Provider;
   private readonly IHubContext<CampaignHub, ICampaignHub> _hubContext;
 
-  public CampaignsController(CampaignsService campaignsService, Auth0Provider auth0Provider, IHubContext<CampaignHub, ICampaignHub> hubContext)
+  public CampaignsController(CampaignsService campaignsService, CommentsService commentsService, Auth0Provider auth0Provider, IHubContext<CampaignHub, ICampaignHub> hubContext)
   {
     _campaignsService = campaignsService;
+    _commentsService = commentsService;
     _auth0Provider = auth0Provider;
     _hubContext = hubContext;
   }
@@ -86,6 +88,26 @@ public class CampaignsController : ControllerBase
     }
   }
 
+  [HttpPost("{campaignId}/comments")]
+  [Authorize]
+  public async Task<ActionResult<Comment>> CreateCommentByCampaignId([FromBody] Comment commentData, string campaignId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      commentData.CreatorId = userInfo.Id;
+      commentData.Id = Guid.NewGuid().ToString();
+      commentData.CampaignId = campaignId;
+      Comment comment = _commentsService.CreateCommentByCampaignId(commentData);
+      await _hubContext.Clients.Group(campaignId).AddComment(comment);
+      return Ok(comment);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
   [HttpPut("{campaignId}")]
   [Authorize]
   public async Task<ActionResult<Campaign>> UpdateCampaign([FromBody] Campaign campaignData, string campaignId)
@@ -96,7 +118,31 @@ public class CampaignsController : ControllerBase
       campaignData.CreatorId = userInfo.Id;
       campaignData.Id = campaignId;
       Campaign campaign = _campaignsService.UpdateCampaign(campaignData);
+      if (campaignData.PublicNotes != null)
+      {
+        await _hubContext.Clients.Group(campaignId).CampaignNotes(campaignData.PublicNotes, campaignId);
+      }
       return Ok(campaign);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpPut("{campaignId}/comments/{commentId}")]
+  [Authorize]
+  public async Task<ActionResult<Comment>> UpdateCommentByCampaignId([FromBody] Comment commentData, string campaignId, string commentId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      commentData.CreatorId = userInfo.Id;
+      commentData.Id = commentId;
+      commentData.CampaignId = campaignId;
+      Comment comment = _commentsService.UpdateCommentByCampaignId(commentData);
+      await _hubContext.Clients.Group(campaignId).UpdateComment(comment);
+      return Ok(comment);
     }
     catch (Exception e)
     {
@@ -146,6 +192,24 @@ public class CampaignsController : ControllerBase
       Player player = _campaignsService.RemovePlayerByCampaignId(campaignId, playerId, userInfo.Id);
       await _hubContext.Clients.Group(campaignId).PlayerLeftCampaign(player);
       return Ok(player);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
+
+  [HttpDelete("{campaignId}/comments/{commentId}")]
+  [Authorize]
+  public async Task<ActionResult<Comment>> RemoveCommentByCampaignId(string campaignId, string commentId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Comment comment =
+      _campaignsService.RemoveCommentByCampaignId(campaignId, commentId, userInfo.Id);
+      await _hubContext.Clients.Group(campaignId).RemoveComment(comment.Id);
+      return Ok(comment);
     }
     catch (Exception e)
     {
