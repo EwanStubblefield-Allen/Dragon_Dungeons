@@ -13,7 +13,7 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   ENV: ${{ secrets.ENV }}
   CONFIG: ${{ secrets.CONFIG }}
-  DOCKER_IMAGE_TAG: latest
+  DOCKER_IMAGE: dragon:latest
   ROOT: Dragon_Dungeons
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
           docker buildx create --use
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           cd ./$ROOT
-          docker buildx build --platform linux/amd64 -t $DOCKER_USERNAME/dragon:$DOCKER_IMAGE_TAG --push .
+          docker buildx build --platform linux/amd64 -t $DOCKER_USERNAME/$DOCKER_IMAGE --push .
 
       - name: SSH Deploy 📔
         run: |
@@ -53,4 +53,4 @@ jobs:
 
           # Replace "path/to/your/docker-compose.yml" with your actual Docker Compose file path
           scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no -r ./$ROOT/docker-compose.yml $EC2_USERNAME@$EC2_IP_ADDRESS:~/$ROOT/$ROOT/.
-          sudo ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_IP_ADDRESS "sudo docker pull $DOCKER_USERNAME/dragon:$DOCKER_IMAGE_TAG && sudo docker-compose -f ~/$ROOT/$ROOT/docker-compose.yml up -d"
+          sudo ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_IP_ADDRESS "sudo docker pull $DOCKER_USERNAME/$DOCKER_IMAGE && sudo docker-compose -f ~/$ROOT/$ROOT/docker-compose.yml up -d"

@@ -10,17 +10,17 @@
       <section v-for="(p, index) in editable.privateNote" :key="p" class="row">
         <div class="col-12 form-floating pt-3">
           <div class="input-group">
-            <input v-model="editable.privateNote[index][0]" type="text" class="form-control" :id="`privateCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
+            <input v-model="editable.privateNote[index].category" type="text" class="form-control" :id="`privateCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
             <button @click="addNote('privateNote', index)" type="button" class="mdi mdi-plus input-group-text"></button>
             <button @click="removeCategory('privateNote', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
         </div>
-        <div v-for="(n, i) in p[1]" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
+        <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
           <div class="input-group pb-2">
-            <input v-model="editable.privateNote[index][1][i].name" type="text" class="form-control" :id="`privateName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
+            <input v-model="editable.privateNote[index].notes[i].name" type="text" class="form-control" :id="`privateName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
             <button @click="removeNote('privateNote', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
-          <textarea v-model="editable.privateNote[index][1][i].description" :id="`privateDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
+          <textarea v-model="editable.privateNote[index].notes[i].description" :id="`privateDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
         </div>
       </section>
     </div>
@@ -33,17 +33,17 @@
       <section v-for="(p, index) in editable.publicNote" :key="p" class="row">
         <div class="col-12 form-floating pt-3">
           <div class="input-group">
-            <input v-model="editable.publicNote[index][0]" type="text" class="form-control" :id="`publicCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
+            <input v-model="editable.publicNote[index].category" type="text" class="form-control" :id="`publicCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
             <button @click="addNote('publicNote', index)" type="button" class="mdi mdi-plus input-group-text"></button>
             <button @click="removeCategory('publicNote', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
         </div>
-        <div v-for="(n, i) in p[1]" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
+        <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
           <div class="input-group pb-2">
-            <input v-model="editable.publicNote[index][1][i].name" type="text" class="form-control" :id="`publicName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
+            <input v-model="editable.publicNote[index].notes[i].name" type="text" class="form-control" :id="`publicName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
             <button @click="removeNote('publicNote', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
-          <textarea v-model="editable.publicNote[index][1][i].description" :id="`publicDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
+          <textarea v-model="editable.publicNote[index].notes[i].description" :id="`publicDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
         </div>
       </section>
     </div>
@@ -94,7 +94,7 @@ export default {
         if (!editable.value[type]) {
           editable.value[type] = []
         }
-        editable.value[type].push([])
+        editable.value[type].push({})
       },
 
       async removeCategory(type, index) {
@@ -107,10 +107,10 @@ export default {
       },
 
       addNote(type, index) {
-        if (!editable.value[type][index][1]) {
-          editable.value[type][index][1] = []
+        if (!editable.value[type][index].notes) {
+          editable.value[type][index].notes = []
         }
-        editable.value[type][index][1].push({})
+        editable.value[type][index].notes.push({})
       },
 
       async removeNote(type, index, i) {
@@ -119,7 +119,7 @@ export default {
         if (!isSure) {
           return
         }
-        editable.value[type][index][1].splice(i, 1)
+        editable.value[type][index].notes.splice(i, 1)
       },
 
       changeCamPage() {

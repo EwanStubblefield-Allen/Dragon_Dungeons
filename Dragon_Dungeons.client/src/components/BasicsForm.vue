@@ -67,7 +67,9 @@
 
     <div class="col-12">
       <div class="row align-items-end">
-        <i v-if="loading" class="col-12 col-md-6 text-center mdi mdi-loading mdi-spin fs-1"></i>
+        <div v-if="loading">
+          <Loader />
+        </div>
         <div v-else-if="editable.picture" class="col-12 col-md-6 position-relative">
           <div class="d-flex icon-position">
             <i @click="removeImg()" class="mdi mdi-delete text-danger px-1 fs-5 rounded selectable" type="button" title="Delete Image"></i>

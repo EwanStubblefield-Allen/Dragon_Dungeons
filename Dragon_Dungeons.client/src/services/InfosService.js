@@ -186,7 +186,7 @@ class InfosService {
         <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
     } else {
       template += /*HTML*/`
-        <p class="fs-${size + 3} ps-2">${a.replaceAll(/ \(.\)/g, '<br>-').replace(/\(.\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
+        <p class="fs-${size + 3} ps-2">${a.replaceAll(/ \([a-d]\)/g, '<br>-').replace(/\([a-d]\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
     }
     return template
   }

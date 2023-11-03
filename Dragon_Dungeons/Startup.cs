@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,7 @@ namespace Dragon_Dungeons
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dragon_Dungeons", Version = "v1" });
       });
+      _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       _ = services.AddSingleton<Auth0Provider>();
       _ = services.AddScoped(x => CreateDbConnection());
 
@@ -37,14 +39,14 @@ namespace Dragon_Dungeons
       _ = services.AddScoped<CharactersRepository>();
       _ = services.AddScoped<CharactersService>();
 
-      _ = services.AddScoped<BonusesRepository>();
-      _ = services.AddScoped<BonusesService>();
-
       _ = services.AddScoped<CampaignsRepository>();
       _ = services.AddScoped<CampaignsService>();
 
       _ = services.AddScoped<NpcsRepository>();
       _ = services.AddScoped<NpcsService>();
+
+      _ = services.AddScoped<PlayersRepository>();
+      _ = services.AddScoped<PlayersService>();
     }
 
     private static void ConfigureCors(IServiceCollection services)
@@ -75,7 +77,6 @@ namespace Dragon_Dungeons
         options.Authority = $"https://{Configuration["AUTH0_DOMAIN"]}/";
         options.Audience = Configuration["AUTH0_AUDIENCE"];
       });
-
     }
 
     private IDbConnection CreateDbConnection()
@@ -95,7 +96,7 @@ namespace Dragon_Dungeons
         _ = app.UseCors("CorsDevPolicy");
       }
 
-      _ = app.UseHttpsRedirection();
+      // _ = app.UseHttpsRedirection();
 
       _ = app.UseDefaultFiles();
       _ = app.UseStaticFiles();
@@ -109,6 +110,7 @@ namespace Dragon_Dungeons
       _ = app.UseEndpoints(endpoints =>
       {
         _ = endpoints.MapControllers();
+        _ = endpoints.MapHub<CampaignHub>("hubs/campaignHub");
       });
     }
   }

@@ -12,20 +12,42 @@
       <AccountForm />
     </template>
   </ModalComponent>
+
+  <ModalComponent id="categoryForm">
+    <template #title>Add Category</template>
+    <template #body>
+      <CategoryForm />
+    </template>
+  </ModalComponent>
+
+  <ModalComponent id="notesForm">
+    <template #title>Add Note</template>
+    <template #body>
+      <NotesForm />
+    </template>
+  </ModalComponent>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { AppState } from './AppState'
+import { campaignHub } from './handlers/CampaignHub.js'
 import Navbar from './components/Navbar.vue'
+import AccountForm from './components/AccountForm.vue'
+import CategoryForm from './components/CategoryForm.vue'
+import NotesForm from './components/NotesForm.vue'
 
 export default {
   setup() {
+    onMounted(() => {
+      campaignHub.start()
+    })
+
     return {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm }
 }
 </script>
 <style lang="scss">
@@ -69,5 +91,15 @@ export default {
 
   .text-russian {
     color: var(--russian);
+  }
+
+  @media screen and (min-width: 768px) {
+    .h-md-50 {
+      height: 50%;
+    }
+
+    .vh-md-25 {
+      height: 25vh;
+    }
   }
 </style>

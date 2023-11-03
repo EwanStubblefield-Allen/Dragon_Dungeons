@@ -5,6 +5,7 @@ global using System.IO;
 global using System.Linq;
 
 global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.AspNetCore.Mvc;
 global using System.Threading.Tasks;
 global using Dapper;
@@ -14,3 +15,4 @@ global using CodeWorks.Utils;
 global using Dragon_Dungeons.Repositories;
 global using Dragon_Dungeons.Services;
 global using Dragon_Dungeons.Models;
+global using Dragon_Dungeons.Hubs;

@@ -25,13 +25,20 @@ class CampaignsService {
     AppState.tempCampaign = {}
   }
 
+  async getCampaignById(campaignId) {
+    const res = await api.get(`api/campaigns/${campaignId}`)
+    AppState.activeCampaign = new Campaign(this.converter(res.data))
+    return AppState.activeCampaign
+  }
+
   async getCampaignsByUserId() {
     try {
       const res = await api.get('account/campaigns')
-      AppState.campaigns = res.data.map(d => {
+      const campaigns = res.data.map(d => {
         d = this.converter(d)
         return new Campaign(d)
       })
+      AppState.campaigns = AppState.campaigns.concat(campaigns)
     } catch (error) {
       Pop.error(error.message, '[GETTING USERS CAMPAIGNS]')
     }
@@ -42,6 +49,21 @@ class CampaignsService {
     const res = await api.post('api/campaigns', campaignData)
     AppState.campaigns.push(new Campaign(this.converter(res.data)))
     this.resetCampaign()
+  }
+
+  async updateCampaign(campaignData, campaignId) {
+    campaignData = this.converter(campaignData)
+    const res = await api.put(`api/campaigns/${campaignId}`, campaignData)
+    const campaign = new Campaign(this.converter(res.data))
+    const foundIndex = AppState.campaigns.findIndex(c => c.id == campaign.id)
+    AppState.campaigns.splice(foundIndex, 1, campaign)
+    AppState.activeCampaign = campaign
+  }
+
+  async removeCampaign(campaignId) {
+    const res = await api.delete(`api/campaigns/${campaignId}`)
+    AppState.campaigns = AppState.campaigns.filter(c => c.id != campaignId)
+    return res.data
   }
 
   converter(data) {

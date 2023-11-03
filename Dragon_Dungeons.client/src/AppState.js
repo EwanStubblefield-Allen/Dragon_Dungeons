@@ -20,11 +20,14 @@ export const AppState = reactive({
   tempCharacter: loadState('tempCharacter', Character),
   /** @type {import('./models/Campaign.js').Campaign[]} */
   campaigns: [],
+  /** @type {import('./models/Campaign.js').Campaign | null} */
+  activeCampaign: null,
   /** @type {import('./models/Campaign.js').Campaign} */
   tempCampaign: loadState('tempCampaign', Campaign),
   tempClass: loadState('tempClass', Object),
   charPage: loadState('charPage') ?? 0,
   camPage: loadState('camPage') ?? 0,
   equipment: loadState('equipment', Object),
-  attributes: ['str', 'dex', 'con', 'int', 'wis', 'cha']
+  attributes: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
+  notes: null
 })

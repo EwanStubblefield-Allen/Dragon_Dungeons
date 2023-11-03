@@ -50,8 +50,6 @@ public class CharactersController : ControllerBase
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       characterData.CreatorId = userInfo.Id;
       characterData.Id = Guid.NewGuid().ToString();
-      // characterData.Bonus.CharacterId = characterData.Id;
-      // characterData.Bonus.Id = Guid.NewGuid().ToString();
       Character character = _charactersService.CreateCharacter(characterData);
       return Ok(character);
     }

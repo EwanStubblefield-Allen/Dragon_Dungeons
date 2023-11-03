@@ -49,7 +49,7 @@
         </u>
         <p class="px-2">Category: {{ equipment.armor.armor_category }}</p>
         <p class="px-2">AC: {{ equipment.armor.armor_class.base }}</p>
-        <button @click="unEquipItem()" class="btn btn-danger my-2" type="button">Unequip</button>
+        <button v-if="account.id == characterProp.id" @click="unEquipItem()" class="btn btn-danger my-2" type="button">Unequip</button>
       </div>
       <p v-else>No Armor Equipped</p>
     </div>
@@ -73,7 +73,7 @@
         <CharacterSpells :level="level" />
       </div>
       <div class="text-end">
-        <button @click="updateSpells(characterProp.spells)" class="btn btn-primary" type="button">Save</button>
+        <button v-if="account.id == characterProp.creatorId" @click="updateSpells(characterProp)" class="btn btn-primary" type="button">Save</button>
       </div>
     </div>
   </div>
@@ -101,6 +101,7 @@ export default {
 
     return {
       selectable,
+      account: computed(() => AppState.account),
       equipment: computed(() => AppState.equipment),
 
       async unEquipItem(index = -1) {
@@ -113,10 +114,11 @@ export default {
         }
       },
 
-      async updateSpells(spells) {
+      async updateSpells(character) {
         try {
-          await charactersService.updateCharacter({ spells: spells })
+          await charactersService.updateCharacter({ spells: character.spells, casting: character.casting })
           saveState('equipment', AppState.equipment)
+          Pop.success('Spells were save!')
         } catch (error) {
           Pop.error(error.message, '[UPDATING SPELLS]')
         }

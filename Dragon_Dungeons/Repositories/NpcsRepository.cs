@@ -9,18 +9,29 @@ public class NpcsRepository
     _db = db;
   }
 
+  internal Npc GetNpcById(string npcId)
+  {
+    string sql = "SELECT * FROM npcs WHERE id = @npcId;";
+    return _db.QueryFirstOrDefault<Npc>(sql, new { npcId });
+  }
+
   internal List<Npc> GetNpcsByCampaignId(string campaignId)
   {
-    string sql = @"
-      SELECT * FROM npcs WHERE campaignId = @campaignId;";
+    string sql = "SELECT * FROM npcs WHERE campaignId = @campaignId;";
     return _db.Query<Npc>(sql, new { campaignId }).ToList();
   }
 
-  internal void CreateNpc(Npc npcData)
+  internal void CreateNpcByCampaignId(Npc npcData)
   {
     string sql = @"
-      INSERT INTO npcs(name, picture, characterId, campaignId)
-      VALUES(@Name, @Picture, @CharacterId, @CampaignId);";
+      INSERT INTO npcs(id, name, picture, class, race, characterId, campaignId)
+      VALUES(@Id, @Name, @Picture, @Class, @Race, @CharacterId, @CampaignId);";
     _db.Execute(sql, npcData);
+  }
+
+  internal void RemoveNpcByCampaignId(string npcId)
+  {
+    string sql = "DELETE FROM npcs WHERE id = @npcId LIMIT 1;";
+    _db.Execute(sql, new { npcId });
   }
 }

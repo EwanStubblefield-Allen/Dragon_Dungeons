@@ -28,6 +28,7 @@ import Pop from "../utils/Pop.js"
 export default {
   setup() {
     const editable = ref({})
+
     watchEffect(() => {
       editable.value = { ...AppState.account }
     })
@@ -40,6 +41,7 @@ export default {
         try {
           await accountService.updateAccount(editable.value)
           Modal.getOrCreateInstance('#accountForm').hide()
+          Pop.success('Account was updated!')
         } catch (error) {
           Pop.error(error.message, '[UPDATING ACCOUNT]')
         }
