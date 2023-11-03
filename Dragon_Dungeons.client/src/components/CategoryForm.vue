@@ -38,11 +38,11 @@ export default {
           const campaignData = {}
 
           if (AppState.notes == 1) {
-            campaignData.publicNote = [...campaign.publicNote]
-            campaignData.publicNote.push(editable.value)
+            campaignData.publicNotes = [...campaign.publicNotes]
+            campaignData.publicNotes.push(editable.value)
           } else {
-            campaignData.privateNote = [...campaign.privateNote]
-            campaignData.privateNote.push(editable.value)
+            campaignData.privateNotes = [...campaign.privateNotes]
+            campaignData.privateNotes.push(editable.value)
           }
           await campaignsService.updateCampaign(campaignData, campaign.id)
           Modal.getOrCreateInstance('#categoryForm').hide()

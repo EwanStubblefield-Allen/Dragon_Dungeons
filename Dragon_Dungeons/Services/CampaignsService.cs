@@ -7,21 +7,24 @@ public class CampaignsService
   private readonly CampaignsRepository _campaignsRepository;
   private readonly NpcsService _npcsService;
   private readonly PlayersService _playersService;
+  private readonly CommentsService _commentsService;
 
-  public CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService)
+  public CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService, CommentsService commentsService)
   {
     _campaignsRepository = campaignsRepository;
     _npcsService = npcsService;
     _playersService = playersService;
+    _commentsService = commentsService;
   }
 
   internal Campaign GetCampaignById(string campaignId, string userId)
   {
     Campaign campaign = _campaignsRepository.GetCampaignById(campaignId) ?? throw new Exception($"[NO CAMPAIGN MATCHES THE ID {campaignId}]");
     campaign.Players = _playersService.GetPlayersByCampaignId(campaignId);
+    campaign.Comments = _commentsService.GetCommentsByCampaignId(campaignId);
     if (campaign.CreatorId != userId)
     {
-      campaign.PrivateNote = null;
+      campaign.PrivateNotes = null;
       campaign.Events = null;
       campaign.Monsters = null;
       campaign.Players = campaign.Players.Where(p => p.CreatorId == userId).ToList();
@@ -78,8 +81,8 @@ public class CampaignsService
   {
     Campaign originalCampaign = HandleData(campaignData.Id, campaignData.CreatorId);
     originalCampaign.Description = campaignData.Description ?? originalCampaign.Description;
-    originalCampaign.PrivateNote = campaignData.PrivateNote ?? originalCampaign.PrivateNote;
-    originalCampaign.PublicNote = campaignData.PublicNote ?? originalCampaign.PublicNote;
+    originalCampaign.PrivateNotes = campaignData.PrivateNotes ?? originalCampaign.PrivateNotes;
+    originalCampaign.PublicNotes = campaignData.PublicNotes ?? originalCampaign.PublicNotes;
     originalCampaign.Events = campaignData.Events ?? originalCampaign.Events;
     originalCampaign.Monsters = campaignData.Monsters ?? originalCampaign.Monsters;
     _campaignsRepository.UpdateCampaign(originalCampaign);
@@ -103,6 +106,12 @@ public class CampaignsService
   {
     Campaign campaign = GetCampaignById(campaignId, userId);
     return _playersService.RemovePlayerByCampaignId(playerId, userId, campaign.CreatorId);
+  }
+
+  internal Comment RemoveCommentByCampaignId(string campaignId, string commentId, string userId)
+  {
+    Campaign campaign = GetCampaignById(campaignId, userId);
+    return _commentsService.RemoveCommentByCampaignId(commentId, userId, campaign.CreatorId);
   }
 
   private Campaign HandleData(string campaignId, string userId)

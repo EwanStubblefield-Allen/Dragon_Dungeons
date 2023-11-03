@@ -27,7 +27,7 @@
         <div class="row mx-0 p-2">
           <button v-if="campaign.creatorId == account.id" @click="handleNote(selectable)" class="col-12 btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#categoryForm">Category +</button>
         </div>
-        <div v-for="(p, index) in selectable == 1 ? campaign.publicNote : campaign.privateNote" :key="p" class="row mx-0 px-2">
+        <div v-for="(p, index) in selectable == 1 ? campaign.publicNotes : campaign.privateNotes" :key="p" class="row mx-0 px-2">
           <div class="col-12 d-flex justify-content-between align-items-center">
             <p class="fs-3 fw-bold">{{ p.category }}</p>
             <i v-if="campaign.creatorId == account.id" type="button" class="rounded selectable no-select mdi mdi-dots-horizontal fs-5" data-bs-toggle="dropdown" aria-expanded="false" title="More Options"></i>
@@ -53,6 +53,10 @@
             <hr class="my-2">
             <p class="px-2">{{ n.description }}</p>
           </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <p v-if="selectable == 1 ? !campaign.publicNotes.length : !campaign.privateNotes.length" class="fs-3">No Notes Are Available!</p>
         </div>
       </div>
 
@@ -127,9 +131,9 @@ export default {
 
     function getKey() {
       if (selectable.value == 1) {
-        return 'publicNote'
+        return 'publicNotes'
       } else if (selectable.value == 2) {
-        return 'privateNote'
+        return 'privateNotes'
       }
       return 'events'
     }

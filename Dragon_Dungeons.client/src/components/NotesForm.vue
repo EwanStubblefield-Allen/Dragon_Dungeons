@@ -51,9 +51,9 @@ export default {
           if (!notes) {
             campaignData.events = handleArray('events')
           } else if (notes[0] == 1) {
-            campaignData.publicNote = handleArray('publicNote')
+            campaignData.publicNotes = handleArray('publicNotes')
           } else {
-            campaignData.privateNote = handleArray('privateNote')
+            campaignData.privateNotes = handleArray('privateNotes')
           }
           await campaignsService.updateCampaign(campaignData, AppState.activeCampaign.id)
           Modal.getOrCreateInstance('#notesForm').hide()

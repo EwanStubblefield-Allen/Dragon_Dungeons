@@ -1,14 +1,14 @@
 import { AppState } from "../AppState.js"
 import { baseURL } from "../env.js"
+import { router } from "../router.js"
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr"
 import Pop from "../utils/Pop.js"
-import { router } from "../router.js"
 
 class CampaignHub {
   constructor() {
     this.client = new HubConnectionBuilder()
       .withUrl(baseURL + '/hubs/campaignHub')
-      .configureLogging(LogLevel.Trace)
+      .configureLogging(LogLevel.Error)
       .withAutomaticReconnect()
       .build()
   }
@@ -43,11 +43,27 @@ class CampaignHub {
       AppState.activeCampaign.players = AppState.activeCampaign.players.filter(p => p.id != playerData.id)
       Pop.toast(`${playerData.name} left the campaign!`)
     })
+    this.client.on('CampaignNotes', (publicNotes) => {
+      AppState.activeCampaign.publicNotes = JSON.parse(publicNotes)
+      Pop.success('New public notes added!')
+    })
+    this.client.on('AddComment', (commentData) => {
+      AppState.activeCampaign.comments.push(commentData)
+      Pop.success('New comment added!')
+    })
+    this.client.on('UpdateComment', (commentData) => {
+      const foundIndex = AppState.activeCampaign.comments.findIndex(c => c.id == commentData.id)
+      AppState.activeCampaign.comments.splice(foundIndex, 1, commentData)
+    })
+    this.client.on('RemoveComment', (commentId) => {
+      AppState.activeCampaign.comments = AppState.activeCampaign.comments.filter(c => c.id != commentId)
+    })
   }
 
   offCampaign() {
     this.client.off('PlayerJoinedCampaign')
     this.client.off('PlayerLeftCampaign')
+    this.client.off('CampaignNotes')
   }
 }
 

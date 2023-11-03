@@ -4,46 +4,46 @@
   <form @submit.prevent="changeCamPage()" class="row g-3 bg-dark text-light m-3 p-3 rounded elevation-5">
     <div class="col-12 d-flex justify-content-between">
       <p class="fs-3 fw-bold">Private Notes:</p>
-      <button @click="addCategory('privateNote')" type="button" class="btn btn-primary">Category +</button>
+      <button @click="addCategory('privateNotes')" type="button" class="btn btn-primary">Category +</button>
     </div>
-    <div v-if="editable?.privateNote" class="col-12">
-      <section v-for="(p, index) in editable.privateNote" :key="p" class="row">
+    <div v-if="editable?.privateNotes" class="col-12">
+      <section v-for="(p, index) in editable.privateNotes" :key="p" class="row">
         <div class="col-12 form-floating pt-3">
           <div class="input-group">
-            <input v-model="editable.privateNote[index].category" type="text" class="form-control" :id="`privateCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
-            <button @click="addNote('privateNote', index)" type="button" class="mdi mdi-plus input-group-text"></button>
-            <button @click="removeCategory('privateNote', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
+            <input v-model="editable.privateNotes[index].category" type="text" class="form-control" :id="`privateCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
+            <button @click="addNote('privateNotes', index)" type="button" class="mdi mdi-plus input-group-text"></button>
+            <button @click="removeCategory('privateNotes', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
         </div>
         <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
           <div class="input-group pb-2">
-            <input v-model="editable.privateNote[index].notes[i].name" type="text" class="form-control" :id="`privateName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
-            <button @click="removeNote('privateNote', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
+            <input v-model="editable.privateNotes[index].notes[i].name" type="text" class="form-control" :id="`privateName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
+            <button @click="removeNote('privateNotes', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
-          <textarea v-model="editable.privateNote[index].notes[i].description" :id="`privateDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
+          <textarea v-model="editable.privateNotes[index].notes[i].description" :id="`privateDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
         </div>
       </section>
     </div>
 
     <div class="col-12 d-flex justify-content-between">
       <p class="fs-3 fw-bold">Public Notes:</p>
-      <button @click="addCategory('publicNote')" type="button" class="btn btn-primary">Category +</button>
+      <button @click="addCategory('publicNotes')" type="button" class="btn btn-primary">Category +</button>
     </div>
-    <div v-if="editable?.publicNote" class="col-12">
-      <section v-for="(p, index) in editable.publicNote" :key="p" class="row">
+    <div v-if="editable?.publicNotes" class="col-12">
+      <section v-for="(p, index) in editable.publicNotes" :key="p" class="row">
         <div class="col-12 form-floating pt-3">
           <div class="input-group">
-            <input v-model="editable.publicNote[index].category" type="text" class="form-control" :id="`publicCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
-            <button @click="addNote('publicNote', index)" type="button" class="mdi mdi-plus input-group-text"></button>
-            <button @click="removeCategory('publicNote', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
+            <input v-model="editable.publicNotes[index].category" type="text" class="form-control" :id="`publicCategory${index}`" minlength="3" maxlength="100" placeholder="Category..." required>
+            <button @click="addNote('publicNotes', index)" type="button" class="mdi mdi-plus input-group-text"></button>
+            <button @click="removeCategory('publicNotes', index)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
         </div>
         <div v-for="(n, i) in p.notes" :key="n" class="col-12 col-md-6 col-lg-4 pt-2">
           <div class="input-group pb-2">
-            <input v-model="editable.publicNote[index].notes[i].name" type="text" class="form-control" :id="`publicName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
-            <button @click="removeNote('publicNote', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
+            <input v-model="editable.publicNotes[index].notes[i].name" type="text" class="form-control" :id="`publicName${index}${i}`" minlength="3" maxlength="100" placeholder="Note Title..." required>
+            <button @click="removeNote('publicNotes', index, i)" type="button" class="mdi mdi-delete input-group-text text-danger"></button>
           </div>
-          <textarea v-model="editable.publicNote[index].notes[i].description" :id="`publicDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
+          <textarea v-model="editable.publicNotes[index].notes[i].description" :id="`publicDescription${index}${i}`" class="form-control" rows="5" placeholder="Description..." required></textarea>
         </div>
       </section>
     </div>

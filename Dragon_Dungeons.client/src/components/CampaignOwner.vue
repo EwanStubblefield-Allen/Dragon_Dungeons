@@ -33,14 +33,9 @@
     </ul>
   </div>
 
-  <div class="bg-dark rounded-bottom elevation-5 overflow-auto h-md-50 py-2">
-    <div v-if="selectable == 1" class="d-flex align-items-end h-100">
-      <form @submit.prevent="createComment()" class="px-2 w-100">
-        <div class="input-group">
-          <input v-model="editable.comment" id="comment" class="form-control" type="text" minlength="2" maxlength="100" placeholder="Leave your comment...">
-          <button class="mdi mdi-plus input-group-text" type="submit" title="Post Comment"></button>
-        </div>
-      </form>
+  <div class="bg-dark rounded-bottom elevation-5 h-md-50 py-2">
+    <div v-if="selectable == 1" class="d-flex flex-column justify-content-end h-100">
+      <CampaignComment :campaignProp="campaignProp" />
     </div>
 
     <div v-else-if="selectable == 2">
@@ -103,11 +98,12 @@
 <script>
 import { computed, onMounted, ref } from 'vue'
 import { AppState } from '../AppState.js'
+import { Campaign } from '../models/Campaign.js'
 import { campaignsService } from '../services/CampaignsService.js'
 import { npcsService } from '../services/NpcsService.js'
 import { infosService } from '../services/InfosService.js'
-import { Campaign } from '../models/Campaign.js'
 import CharacterCard from './CharacterCard.vue'
+import CampaignComment from './CampaignComment.vue'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -117,7 +113,7 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  setup() {
     const editable = ref({})
     const selectable = ref(1)
     const monsters = ref([])
@@ -147,7 +143,7 @@ export default {
 
       async createNpc() {
         try {
-          await npcsService.createNpc({ ...editable.value.npc }, props.campaignProp.id)
+          await npcsService.createNpc({ ...editable.value.npc })
           Pop.success('Npc was added to this campaign!')
         } catch (error) {
           Pop.error(error.message, '[CREATING NPC]')
@@ -190,7 +186,7 @@ export default {
       }
     }
   },
-  components: { CharacterCard }
+  components: { CharacterCard, CampaignComment }
 }
 </script>
 
