@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Dragon_Dungeons.Hubs;
 
 public class CampaignHub : Hub<ICampaignHub>
@@ -10,6 +12,11 @@ public class CampaignHub : Hub<ICampaignHub>
   public async Task LeaveCampaign(string campaignId)
   {
     await Groups.RemoveFromGroupAsync(Context.ConnectionId, campaignId);
+  }
+
+  public async Task InitiateBattle(string initiative, string campaignId)
+  {
+    await Clients.Group(campaignId).InitiateBattle(initiative, campaignId);
   }
 
   public async Task PlayerJoinedCampaign(Player playerData)

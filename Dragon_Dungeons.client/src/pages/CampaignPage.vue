@@ -3,7 +3,10 @@
     <div class="col-12 col-md-6 h-md py-2">
       <div class="d-flex flex-column justify-content-between h-md-50">
         <div class="pb-2">
-          <p class="fs-2 fw-bold text-wrap text-truncate">{{ campaign.name }}</p>
+          <div class="d-flex justify-content-between">
+            <p class="fs-2 fw-bold text-wrap text-truncate">{{ campaign.name }}</p>
+            <button v-if="campaign.initiative.id" class="btn btn-danger elevation-5" type="button" data-bs-toggle="modal" data-bs-target="#initiative">Battle Details</button>
+          </div>
           <hr class="my-2">
           <p class="fs-5 px-2">{{ campaign.description }}</p>
         </div>
@@ -176,7 +179,7 @@ export default {
           const key = getKey()
           campaignData[key] = [...AppState.activeCampaign[key]]
 
-          if (!i) {
+          if (i == null) {
             campaignData[key].splice(index, 1)
           } else {
             campaignData[key][index].notes.splice(i, 1)

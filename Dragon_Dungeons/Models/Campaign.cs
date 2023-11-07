@@ -11,6 +11,7 @@ public class Campaign : RepoItem
   public string Monsters { get; set; }
   public List<Player> Players { get; set; }
   public List<Comment> Comments { get; set; }
+  public string Initiative { get; set; }
   public string CreatorId { get; set; }
   public Account Creator { get; set; }
 }

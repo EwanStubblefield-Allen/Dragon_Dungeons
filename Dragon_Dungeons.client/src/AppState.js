@@ -29,5 +29,6 @@ export const AppState = reactive({
   camPage: loadState('camPage') ?? 0,
   equipment: loadState('equipment', Object),
   attributes: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
-  notes: null
+  notes: null,
+  initiative: null
 })

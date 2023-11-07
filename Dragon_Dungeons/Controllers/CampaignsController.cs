@@ -122,6 +122,10 @@ public class CampaignsController : ControllerBase
       {
         await _hubContext.Clients.Group(campaignId).CampaignNotes(campaignData.PublicNotes, campaignId);
       }
+      if (campaignData.Initiative != null)
+      {
+        await _hubContext.Clients.Group(campaignId).InitiateBattle(campaignData.Initiative, campaignId);
+      }
       return Ok(campaign);
     }
     catch (Exception e)

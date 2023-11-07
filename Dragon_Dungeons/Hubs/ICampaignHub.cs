@@ -8,4 +8,5 @@ public interface ICampaignHub
   Task AddComment(Comment commentData);
   Task UpdateComment(Comment commentData);
   Task RemoveComment(string commentId);
+  Task InitiateBattle(string initiative, string campaignId);
 }

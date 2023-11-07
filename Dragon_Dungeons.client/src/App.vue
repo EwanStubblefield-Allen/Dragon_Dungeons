@@ -26,6 +26,13 @@
       <NotesForm />
     </template>
   </ModalComponent>
+
+  <ModalComponent id="initiative">
+    <template #title>Roll for Initiative</template>
+    <template #body>
+      <InitiativeForm />
+    </template>
+  </ModalComponent>
 </template>
 
 <script>
@@ -36,6 +43,7 @@ import Navbar from './components/Navbar.vue'
 import AccountForm from './components/AccountForm.vue'
 import CategoryForm from './components/CategoryForm.vue'
 import NotesForm from './components/NotesForm.vue'
+import InitiativeForm from './components/InitiativeForm.vue'
 
 export default {
   setup() {
@@ -47,7 +55,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar, AccountForm, NotesForm, CategoryForm }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm }
 }
 </script>
 <style lang="scss">

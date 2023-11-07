@@ -79,9 +79,9 @@ WHERE
   TABLE_NAME = 'characters';
 
 ALTER TABLE
-  characters
+  campaigns
 ADD
-  COLUMN casting JSON;
+  COLUMN initiative JSON;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',
@@ -93,6 +93,7 @@ CREATE TABLE campaigns(
   publicNotes JSON,
   EVENTS JSON,
   monsters JSON,
+  initiative JSON,
   creatorId VARCHAR(255) NOT NULL,
   FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
 ) DEFAULT CHARSET utf8 COMMENT '';
@@ -114,13 +115,6 @@ CREATE TABLE npcs(
 ) DEFAULT CHARSET utf8 COMMENT '';
 
 DROP TABLE npcs;
-
-DELETE FROM
-  players
-WHERE
-  id = '21b5e38f-ef37-41bd-acdf-3223bd630d17'
-LIMIT
-  1;
 
 CREATE TABLE players(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

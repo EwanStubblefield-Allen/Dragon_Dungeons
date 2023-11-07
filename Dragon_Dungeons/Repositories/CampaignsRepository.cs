@@ -65,7 +65,17 @@ public class CampaignsRepository
         PrivateNotes = @PrivateNotes,
         PublicNotes = @PublicNotes,
         events = @Events,
-        monsters = @Monsters
+        monsters = @Monsters,
+        initiative = @Initiative
+      WHERE id = @Id LIMIT 1;";
+    _db.Execute(sql, campaignData);
+  }
+
+  internal void NoAuthUpdateCampaign(Campaign campaignData)
+  {
+    string sql = @"
+      UPDATE campaigns SET
+        initiative = @Initiative
       WHERE id = @Id LIMIT 1;";
     _db.Execute(sql, campaignData);
   }

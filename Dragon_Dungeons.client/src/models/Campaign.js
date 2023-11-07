@@ -13,6 +13,7 @@ export class Campaign extends RepoItem {
     this.monsters = data.monsters
     this.players = data.players
     this.comments = data.comments
+    this.initiative = data.initiative
     this.creator = new Profile(data.creator)
     this.creatorId = data.creatorId
   }
