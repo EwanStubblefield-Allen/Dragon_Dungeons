@@ -71,6 +71,11 @@
               <p>Hp:</p>
               <p>{{ character.hp }} / {{ character.maxHp }}</p>
             </div>
+            <div class="d-flex align-items-center w-50">
+              <i @click="addHp('hp')" class="mdi mdi-menu-left fs-5 selectable"></i>
+              <input v-model="editable" type="number" class="form-control" id="hp" min="-2000" max="2000" required>
+              <i @click="addHp('tempHp')" class="mdi mdi-menu-right fs-5 selectable"></i>
+            </div>
             <div class="text-center">
               <p>Temp:</p>
               <p>{{ character.tempHp }}</p>
@@ -81,8 +86,9 @@
               <p class="col-7 px-0">{{ d }}</p>
               <div class="col-5 d-flex justify-content-center px-0">
                 <div v-for="i in 3" :key="i" class="d-flex align-items-center">
-                  <i :class="{ 'mdi-circle': deathSaves[d] >= i }" class="mdi mdi-circle-outline"></i>
-                  <p v-if="i < 3" class="pb-1">-</p>
+                  <i v-if="deathSaves[d] >= i" @click="updateDeathSaves(d, -1)" class="mdi mdi-circle selectable rounded"></i>
+                  <i v-else @click="updateDeathSaves(d, +1)" class="mdi mdi-circle-outline selectable rounded"></i>
+                  <p v-if="i < 3" class="pb-1 no-select">-</p>
                 </div>
               </div>
             </section>
@@ -131,6 +137,7 @@ export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const editable = ref(0)
     const savingThrows = ref([])
     const deathSaves = ref({ Success: 0, Failure: 0 })
 
@@ -197,10 +204,49 @@ export default {
     }
 
     return {
+      editable,
+      savingThrows,
+      deathSaves,
       character: computed(() => AppState.activeCharacter),
       attributes: computed(() => AppState.attributes),
-      savingThrows,
-      deathSaves
+
+      async addHp(option) {
+        try {
+          const temp = this.character[option]
+
+          if (this.character[option] + editable.value < 0) {
+            this.character[option] = 0
+          } else if (option == 'hp' && this.character[option] + editable.value > this.character.maxHp) {
+            this.character[option] = this.character.maxHp
+          }
+          else {
+            this.character[option] += editable.value
+          }
+
+          if (temp == this.character[option]) {
+            return editable.value = 0
+          }
+          await charactersService.updateCharacter({ hp: this.character.hp, tempHp: this.character.tempHp })
+          Pop.success('Hp updated!')
+          editable.value = 0
+        } catch (error) {
+          Pop.error(error.message, '[UPDATING HP]')
+        }
+      },
+
+      updateDeathSaves(type, num) {
+        deathSaves.value[type] += num
+
+        if (deathSaves.value[type] == 3) {
+          if (type == 'Success') {
+            editable.value = 1
+            this.addHp('hp')
+          } else {
+            Pop.toast('Your Character Died!')
+          }
+          deathSaves.value = { Success: 0, Failure: 0 }
+        }
+      }
     }
   },
   components: { CharacterInfo, CharacterSkills, CharacterEquipment, Loader }

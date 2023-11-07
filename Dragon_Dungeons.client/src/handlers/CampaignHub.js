@@ -18,7 +18,7 @@ class CampaignHub {
     try {
       await this.client.start()
     } catch (error) {
-      Pop.error(error.message, '[STARTING SIGNAL R]')
+      Pop.error(error.message, '[STARTING SIGNALR]')
       setTimeout(this.start, 5000)
     }
   }
