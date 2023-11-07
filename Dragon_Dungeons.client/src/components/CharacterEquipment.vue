@@ -4,7 +4,7 @@
       <p @click="selectable = 1" :class="{ 'active elevation-5': selectable == 1 }" class="nav-link selectable text-dark fw-bold">Equipment</p>
     </li>
 
-    <li v-if="character.cantrips" class="nav-item">
+    <li v-if="characterProp.cantrips" class="nav-item">
       <p @click="selectable = 2" :class="{ 'active elevation-5': selectable == 2 }" class="nav-link selectable text-dark fw-bold">Cantrips</p>
     </li>
 
@@ -49,7 +49,7 @@
         </u>
         <p class="px-2">Category: {{ equipment.armor.armor_category }}</p>
         <p class="px-2">AC: {{ equipment.armor.armor_class.base }}</p>
-        <button v-if="account.id == characterProp.id" @click="unEquipItem()" class="btn btn-danger my-2" type="button">Unequip</button>
+        <button v-if="account.id == characterProp.creatorId" @click="unEquipItem()" class="btn btn-danger my-2" type="button">Unequip</button>
       </div>
       <p v-else>No Armor Equipped</p>
     </div>

@@ -200,7 +200,7 @@ export default {
           const campaign = prop.campaignProp
 
           if (!isSure) {
-            if (campaign.initiative.id) {
+            if (campaign.initiative.entities) {
               campaignsService.updateCampaign({ initiative: {} }, campaign.id)
             }
             return prep.value = null
@@ -209,14 +209,13 @@ export default {
             .concat(prep.value)
             .map(p => {
               return {
-                id: p.id ?? p.url,
+                id: p.characterId ?? p.url,
                 name: p.name,
                 creatorId: p.creatorId ?? campaign.creatorId,
                 initiative: 0
               }
             })
           const initiative = {
-            id: campaign.id,
             entities,
             intTotal: 0,
             intCount: campaign.players.length + prep.value.length

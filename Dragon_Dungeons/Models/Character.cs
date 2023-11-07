@@ -7,6 +7,7 @@ namespace Dragon_Dungeons.Models
     public int? Hp { get; set; }
     public int MaxHp { get; set; }
     public int? TempHp { get; set; }
+    public int? ArmorClass { get; set; }
     public int Speed { get; set; }
     public int HitDie { get; set; }
     public int? Level { get; set; }

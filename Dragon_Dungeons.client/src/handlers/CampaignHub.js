@@ -10,7 +10,7 @@ class CampaignHub {
     this.client = new HubConnectionBuilder()
       .withUrl(baseURL + '/hubs/campaignHub')
       .configureLogging(LogLevel.Error)
-      .withAutomaticReconnect(2000)
+      .withAutomaticReconnect()
       .build()
   }
 
@@ -69,14 +69,14 @@ class CampaignHub {
       initiative = JSON.parse(initiative)
       AppState.activeCampaign.initiative = initiative
 
-      if (!initiative.id) {
+      if (!initiative.entities) {
         return Modal.getOrCreateInstance('#initiative').hide()
       }
-      AppState.activeCampaign.initiative.entities.sort(e => e.initiative)
 
       if (!initiative.intTotal) {
-        Modal.getOrCreateInstance('#initiative').show()
+        return Modal.getOrCreateInstance('#initiative').show()
       }
+      AppState.activeCampaign.initiative.entities.sort((a, b) => b.initiative - a.initiative)
     })
   }
 

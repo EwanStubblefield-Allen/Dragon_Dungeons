@@ -79,9 +79,9 @@ WHERE
   TABLE_NAME = 'characters';
 
 ALTER TABLE
-  campaigns
+  characters
 ADD
-  COLUMN initiative JSON;
+  COLUMN armorClass TINYINT;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

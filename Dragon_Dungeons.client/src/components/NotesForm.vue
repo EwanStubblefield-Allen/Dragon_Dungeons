@@ -5,8 +5,8 @@
       <input v-model="editable.name" type="text" class="form-control" id="title" minlength="3" maxlength="100" placeholder="Note Title..." required>
     </div>
     <div class="form-group py-2">
-      <label for="description">Description</label>
-      <textarea v-model="editable.description" id="description" class="form-control" rows="5" placeholder="Note Description..." required></textarea>
+      <label for="noteDescription">Description</label>
+      <textarea v-model="editable.description" id="noteDescription" class="form-control" rows="5" placeholder="Note Description..." required></textarea>
     </div>
     <div class="text-end">
       <button class="btn btn-success mt-2" type="submit">Add</button>

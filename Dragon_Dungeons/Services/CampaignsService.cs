@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 namespace Dragon_Dungeons.Services;
 
 public class CampaignsService
@@ -87,20 +85,14 @@ public class CampaignsService
       originalCampaign.PublicNotes = campaignData.PublicNotes ?? originalCampaign.PublicNotes;
       originalCampaign.Events = campaignData.Events ?? originalCampaign.Events;
       originalCampaign.Monsters = campaignData.Monsters ?? originalCampaign.Monsters;
+      originalCampaign.Initiative = campaignData.Initiative ?? originalCampaign.Initiative;
       _campaignsRepository.UpdateCampaign(originalCampaign);
     }
     else
     {
-      originalCampaign = NoAuthUpdateCampaign(campaignData);
+      originalCampaign.Initiative = campaignData.Initiative ?? originalCampaign.Initiative;
+      _campaignsRepository.NoAuthUpdateCampaign(originalCampaign);
     }
-    return originalCampaign;
-  }
-
-  internal Campaign NoAuthUpdateCampaign(Campaign campaignData)
-  {
-    Campaign originalCampaign = GetCampaignById(campaignData.Id, campaignData.CreatorId);
-    originalCampaign.Initiative = campaignData.Initiative ?? originalCampaign.Initiative;
-    _campaignsRepository.NoAuthUpdateCampaign(originalCampaign);
     return originalCampaign;
   }
 

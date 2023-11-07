@@ -28,7 +28,7 @@
   </ModalComponent>
 
   <ModalComponent id="initiative">
-    <template #title>Roll for Initiative</template>
+    <template #title>Battle!</template>
     <template #body>
       <InitiativeForm />
     </template>

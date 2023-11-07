@@ -1,17 +1,98 @@
 <template>
   <div v-if="initiative">
     <div v-if="initiative.intCount == initiative.intTotal">
+      <p class="fs-5 fw-bold">Turn Order:</p>
+      <ol>
+        <li v-for="e in initiative.entities" :key="e">{{ e.name }}</li>
+      </ol>
+      <div v-if="entities.length > 1" class="dropdown text-end">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Select Monster
+        </button>
+        <ul class="dropdown-menu">
+          <li v-for="(e, index) in entities" :key="e.name">
+            <p @click="selectable = index" class="dropdown-item selectable">{{ e.name }}</p>
+          </li>
+        </ul>
+      </div>
+
+      <div v-if="entities.length" class="row">
+        <div class="col-12 d-flex align-items-center">
+          <p class="fs-3 pe-2">{{ entities[selectable].name }}</p>
+          <router-link v-if="entities[selectable].url" :to="{ name: 'Info', params: { infoId: 'monsters', infoDetails: entities[selectable].index } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
+          <router-link v-else :to="{ name: 'Character', params: { characterId: entities[selectable].id } }" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
+        </div>
+
+        <div class="col-4 text-center">
+          <p>Hit Points</p>
+          <p>{{ entities[selectable].hit_points ?? entities[selectable].hp }}</p>
+        </div>
+        <div class="col-4 text-center">
+          <p>Armor Class</p>
+          <p>{{ entities[selectable].armorClass ?? entities[selectable].armor_class[0].value }}</p>
+        </div>
+        <div class="col-4 text-center">
+          <p>Hit Die</p>
+          <p>{{ entities[selectable].hit_dice ?? `1d${entities[selectable].hitDie}` }}</p>
+        </div>
+
+        <div class="col-2 text-center">
+          <p>Str</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].strength ?? entities[selectable].str }}</p>
+            <small>{{ Math.floor(((entities[selectable].strength ?? entities[selectable].str) - 10) / 2) }}</small>
+          </div>
+        </div>
+        <div class="col-2 text-center">
+          <p>Dex</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].dexterity ?? entities[selectable].dex }}</p>
+            <small>{{ Math.floor(((entities[selectable].dexterity ?? entities[selectable].dex) - 10) / 2) }}</small>
+          </div>
+        </div>
+        <div class="col-2 text-center">
+          <p>Con</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].constitution ?? entities[selectable].con }}</p>
+            <small>{{ Math.floor(((entities[selectable].constitution ?? entities[selectable].con) - 10) / 2) }}</small>
+          </div>
+        </div>
+        <div class="col-2 text-center">
+          <p>Int</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].intelligence ?? entities[selectable].int }}</p>
+            <small>{{ Math.floor(((entities[selectable].intelligence ?? entities[selectable].int) - 10) / 2) }}</small>
+          </div>
+        </div>
+        <div class="col-2 text-center">
+          <p>Wis</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].wisdom ?? entities[selectable].wis }}</p>
+            <small>{{ Math.floor(((entities[selectable].wisdom ?? entities[selectable].wis) - 10) / 2) }}</small>
+          </div>
+        </div>
+        <div class="col-2 text-center">
+          <p>Cha</p>
+          <div class="d-flex justify-content-center">
+            <p class="pe-2">{{ entities[selectable].charisma ?? entities[selectable].cha }}</p>
+            <small>{{ Math.floor(((entities[selectable].charisma ?? entities[selectable].cha) - 10) / 2) }}</small>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-else-if="!initiative.entities?.find(e => e.creatorId == account.id && !e.initiative)">
       <p class="fs-2 fw-bold text-center">Waiting on others to roll for initiative!</p>
     </div>
 
-    <form v-else @submit.prevent="updateInitiative()" class="text-wrap">
+    <form v-else @submit.prevent="updateInitiative()">
       <div v-for="(e, index) in initiative.entities" :key="e.id">
         <div v-if="e.creatorId == account.id" class="form-group py-2">
           <label :for="`initiative${index}`">{{ e.name }}'s Initiative</label>
-          <input v-model="editable[index]" type="number" class="form-control" :id="`initiative${index}`" min="1" max="20" required>
+          <input v-model="editable[index]" type="number" class="form-control" :id="`initiative${index}`" min="1" max="20" :aria-describedby="`initiativeHelpBlock${index}`" required>
+          <div :id="`initiativeHelpBlock${index}`" class="form-text">
+            Don't forget to include initiative bonuses!
+          </div>
         </div>
       </div>
       <div class="text-end">
@@ -22,17 +103,51 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
+import { charactersService } from '../services/CharactersService.js'
+import { infosService } from '../services/InfosService.js'
 import Pop from '../utils/Pop.js'
 
 export default {
   setup() {
     const editable = ref([])
+    const selectable = ref(0)
+    const entities = ref([])
+
+    onMounted(() => {
+      document.getElementById('initiative').addEventListener('show.bs.modal', () => {
+        if (!entities.value.length) {
+          getEntities()
+        }
+      })
+    })
+
+    async function getEntities() {
+      try {
+        // debugger
+        let ent = AppState.activeCampaign.initiative.entities
+        ent = ent.filter(e => e.creatorId == AppState.account.id)
+
+        if (ent[0].id.includes('api')) {
+          ent.forEach(async e => {
+            const monster = await infosService.getInfoDetails(e.id, false)
+            entities.value.push(monster)
+          })
+        } else {
+          await charactersService.getCharacterById(ent[0].id)
+          entities.value.push(AppState.activeCharacter)
+        }
+      } catch (error) {
+        Pop.error(error.message, '[GETTING ENTITIES]')
+      }
+    }
 
     return {
       editable,
+      selectable,
+      entities,
       account: computed(() => AppState.account),
       initiative: computed(() => AppState.activeCampaign?.initiative),
 
@@ -41,10 +156,14 @@ export default {
           this.initiative.entities = this.initiative.entities.map((m, index) => {
             if (editable.value[index]) {
               m.initiative = editable.value[index]
-              this.initiative.intTotal++
+
+              if (this.initiative.intTotal < this.initiative.intCount) {
+                this.initiative.intTotal++
+              }
             }
             return m
           })
+          this.initiative.entities.sort((a, b) => b.initiative - a.initiative)
           await campaignsService.updateCampaign({ initiative: this.initiative }, AppState.activeCampaign.id)
         } catch (error) {
           Pop.error(error.message, '[UPDATING INITIATIVE]')

@@ -36,6 +36,7 @@ public class CharactersService
     Character originalCharacter = HandleData(characterData.Id, characterData.CreatorId);
     originalCharacter.Hp = characterData.Hp ?? originalCharacter.Hp;
     originalCharacter.TempHp = characterData.TempHp ?? originalCharacter.TempHp;
+    originalCharacter.ArmorClass = characterData.ArmorClass ?? originalCharacter.ArmorClass;
     originalCharacter.Level = characterData.Level ?? originalCharacter.Level;
     originalCharacter.Alignment = characterData.Alignment ?? originalCharacter.Alignment;
     originalCharacter.Features = characterData.Features ?? originalCharacter.Features;

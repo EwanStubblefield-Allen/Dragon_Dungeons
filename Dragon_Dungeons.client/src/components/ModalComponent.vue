@@ -3,7 +3,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header pb-0">
-          <h1 class="modal-title fs-5 text-dark">
+          <h1 class="modal-title fs-3 text-dark">
             <slot name="title"></slot>
           </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

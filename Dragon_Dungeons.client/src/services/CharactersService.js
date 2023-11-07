@@ -1,10 +1,10 @@
 import { AppState } from "../AppState.js"
 import { Character } from "../models/Character.js"
 import { infosService } from "./InfosService.js"
+import { imagesService } from "./ImagesService.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
-import { imagesService } from "./ImagesService.js"
 
 const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
 
@@ -63,6 +63,7 @@ class CharactersService {
       }
     })
     characterData.bonus = characterData.bonus.bonus
+    characterData.armorClass = 10 + Math.floor((characterData.dex - 10) / 2)
 
     switch (characterData.class) {
       case 'Barbarian':
@@ -126,9 +127,15 @@ class CharactersService {
       case 'armor':
         temp.armor = equipment
         AppState.equipment.armor = item
+        temp.armorClass = 0
+
+        if (item.armor_class.dex_bonus) {
+          temp.armorClass += Math.floor((character.dex - 10) / 2)
+        }
+        temp.armorClass += item.armor_class.base
         break
       case 'weapon':
-        if (character.weapons.find(w => w.index == equipment.index)) {
+        if (character.weapons.find(w => w.index == item.index)) {
           throw new Error('[WEAPON ALREADY EQUIPPED]')
         }
 
@@ -204,6 +211,7 @@ class CharactersService {
     } else {
       AppState.equipment.armor = null
       temp.armor = {}
+      temp.armorClass = 10 + Math.floor((character.dex - 10) / 2)
       temp.equipment.push(character.armor)
     }
     saveState('equipment', AppState.equipment)

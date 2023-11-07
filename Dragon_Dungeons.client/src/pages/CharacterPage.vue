@@ -44,7 +44,7 @@
             <div class="col-6 col-lg-12 col-xl-6 p-1">
               <div class="bg-dark text-center rounded elevation-5 p-2">
                 <p>Armor</p>
-                <p>{{ armorClass }}</p>
+                <p>{{ character.armorClass }}</p>
                 <p>Class</p>
               </div>
             </div>
@@ -199,21 +199,6 @@ export default {
     return {
       character: computed(() => AppState.activeCharacter),
       attributes: computed(() => AppState.attributes),
-      armorClass: computed(() => {
-        const character = AppState.activeCharacter
-        const armor = AppState.equipment.armor
-        const dex = Math.floor((character.dex - 10) / 2)
-        let armorClass = 0
-
-        if (!armor?.index || armor.armor_class?.dex_bonus) {
-          armorClass += dex
-        }
-
-        if (!armor?.index) {
-          return armorClass += 10
-        }
-        return armorClass += armor.armor_class.base
-      }),
       savingThrows,
       deathSaves
     }

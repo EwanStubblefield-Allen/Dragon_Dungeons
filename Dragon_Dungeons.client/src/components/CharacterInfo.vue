@@ -34,7 +34,7 @@
                 <p class="px-2">{{ e.name }}</p>
                 <a :href="`#/info${e.url.replace('/api', '')}`" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></a>
               </div>
-              <button v-if="account.id == characterProp.id" @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
+              <button v-if="account.id == characterProp.creatorId" @click="equipItem(e, index)" class="btn btn-primary" type="button">Equip/Use</button>
             </div>
             <div v-if="e.contents" class="px-2">
               <div v-for="c in e.contents" :key="c.index" class="d-flex justify-content-between align-items-center">

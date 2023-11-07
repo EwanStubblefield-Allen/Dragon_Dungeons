@@ -9,6 +9,7 @@ export class Character extends RepoItem {
     this.hp = data.hp
     this.maxHp = data.maxHp
     this.tempHp = data.tempHp
+    this.armorClass = data.armorClass
     this.speed = data.speed
     this.hitDie = data.hitDie
     this.level = data.level
