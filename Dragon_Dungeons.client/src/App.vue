@@ -33,6 +33,8 @@
       <InitiativeForm />
     </template>
   </ModalComponent>
+
+  <FeedbackOffCanvas />
 </template>
 
 <script>
@@ -44,6 +46,7 @@ import AccountForm from './components/AccountForm.vue'
 import CategoryForm from './components/CategoryForm.vue'
 import NotesForm from './components/NotesForm.vue'
 import InitiativeForm from './components/InitiativeForm.vue'
+import FeedbackOffCanvas from './components/FeedbackOffCanvas.vue'
 
 export default {
   setup() {
@@ -55,7 +58,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas }
 }
 </script>
 <style lang="scss">
