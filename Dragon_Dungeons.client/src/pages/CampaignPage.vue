@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
+import { computed, onMounted, ref, watchEffect } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
@@ -105,10 +105,6 @@ export default {
 
     onMounted(() => {
       campaignHub.onCampaign()
-    })
-
-    onUnmounted(() => {
-      campaignHub.offCampaign()
     })
 
     onBeforeRouteUpdate(() => {

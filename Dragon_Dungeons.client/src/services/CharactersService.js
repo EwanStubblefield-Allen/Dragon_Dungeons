@@ -48,6 +48,7 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
+    characterData.manual = false
     characterData.equipment = characterData.equipment.flat(Infinity)
 
     if (characterData.proficiencies) {
@@ -216,6 +217,20 @@ class CharactersService {
     }
     saveState('equipment', AppState.equipment)
     await this.updateCharacter(temp)
+  }
+
+  async checkLevel(character, xp, leveledUp = false) {
+    character.xp += xp
+
+    if (character.xp >= AppState.xpLevels[character.level]) {
+      if (leveledUp) {
+        character.level++
+        character.manual = true
+      }
+    } else {
+      character.manual = false
+    }
+    await charactersService.updateCharacter({ level: character.level, xp: character.xp, manual: character.manual })
   }
 
   converter(data, input = false) {

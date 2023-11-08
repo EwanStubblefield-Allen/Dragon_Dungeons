@@ -34,6 +34,13 @@
     </template>
   </ModalComponent>
 
+  <ModalComponent id="level">
+    <template #title>Level Up Available!</template>
+    <template #body>
+      <LevelForm />
+    </template>
+  </ModalComponent>
+
   <FeedbackOffCanvas />
 </template>
 
@@ -47,6 +54,7 @@ import CategoryForm from './components/CategoryForm.vue'
 import NotesForm from './components/NotesForm.vue'
 import InitiativeForm from './components/InitiativeForm.vue'
 import FeedbackOffCanvas from './components/FeedbackOffCanvas.vue'
+import LevelForm from './components/LevelForm.vue'
 
 export default {
   setup() {
@@ -58,7 +66,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas, LevelForm }
 }
 </script>
 <style lang="scss">

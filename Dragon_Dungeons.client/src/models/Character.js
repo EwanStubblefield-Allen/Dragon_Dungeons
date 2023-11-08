@@ -13,6 +13,7 @@ export class Character extends RepoItem {
     this.speed = data.speed
     this.hitDie = data.hitDie
     this.level = data.level
+    this.xp = data.xp
     this.class = data.class
     this.race = data.race
     this.alignment = data.alignment

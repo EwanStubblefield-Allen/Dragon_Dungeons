@@ -83,6 +83,7 @@ public class CharactersRepository
         tempHp = @TempHp,
         armorClass = @ArmorClass,
         level = @Level,
+        xp = @Xp,
         alignment = @Alignment,
         features = @Features,
         personalityTraits = @PersonalityTraits,

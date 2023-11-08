@@ -11,6 +11,7 @@ namespace Dragon_Dungeons.Models
     public int Speed { get; set; }
     public int HitDie { get; set; }
     public int? Level { get; set; }
+    public int? Xp { get; set; }
     public string Class { get; set; }
     public string Race { get; set; }
     public string Alignment { get; set; }

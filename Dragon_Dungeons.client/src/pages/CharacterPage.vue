@@ -11,7 +11,10 @@
           <img class="img-fluid w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
         </div>
         <div class="col-12 col-sm-6 col-lg-4">
-          <p class="fs-5">Level: {{ character.level }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="fs-5">Level: {{ character.level }}</p>
+            <button v-if="character.creatorId == account.id && character.manual" type="button" class="btn btn-primary mdi mdi-plus px-1 py-0 fs-5" data-bs-toggle="modal" data-bs-target="#level"></button>
+          </div>
           <p class="fs-5">{{ character.race }} {{ character.class }}</p>
           <p class="fs-5">{{ character.alignment }}</p>
           <div class="d-flex justify-content-around align-items-center">
@@ -71,7 +74,7 @@
               <p>Hp:</p>
               <p>{{ character.hp }} / {{ character.maxHp }}</p>
             </div>
-            <div class="d-flex align-items-center w-50">
+            <div v-if="character.creatorId == account.id" class="d-flex align-items-center w-50">
               <i @click="addHp('hp')" class="mdi mdi-menu-left fs-5 selectable"></i>
               <input v-model="editable" type="number" class="form-control" id="hp" min="-2000" max="2000" required>
               <i @click="addHp('tempHp')" class="mdi mdi-menu-right fs-5 selectable"></i>
@@ -207,6 +210,7 @@ export default {
       editable,
       savingThrows,
       deathSaves,
+      account: computed(() => AppState.account),
       character: computed(() => AppState.activeCharacter),
       attributes: computed(() => AppState.attributes),
 

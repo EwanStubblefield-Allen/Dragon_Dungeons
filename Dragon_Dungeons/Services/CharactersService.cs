@@ -38,6 +38,7 @@ public class CharactersService
     originalCharacter.TempHp = characterData.TempHp ?? originalCharacter.TempHp;
     originalCharacter.ArmorClass = characterData.ArmorClass ?? originalCharacter.ArmorClass;
     originalCharacter.Level = characterData.Level ?? originalCharacter.Level;
+    originalCharacter.Xp = characterData.Xp ?? originalCharacter.Xp;
     originalCharacter.Alignment = characterData.Alignment ?? originalCharacter.Alignment;
     originalCharacter.Features = characterData.Features ?? originalCharacter.Features;
     originalCharacter.PersonalityTraits = characterData.PersonalityTraits ?? originalCharacter.PersonalityTraits;

@@ -1,7 +1,8 @@
-import { AppState } from "../AppState.js"
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr"
 import { baseURL } from "../env.js"
 import { router } from "../router.js"
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr"
+import { AppState } from "../AppState.js"
+import { charactersService } from "../services/CharactersService.js"
 import { Modal } from "bootstrap"
 import Pop from "../utils/Pop.js"
 
@@ -29,6 +30,10 @@ class CampaignHub {
 
   leaveCampaign(campaignId) {
     this.client.invoke('LeaveCampaign', campaignId)
+  }
+
+  awardXp(campaignId, xp) {
+    this.client.invoke('AwardXp', campaignId, xp)
   }
 
   onCampaign() {
@@ -78,12 +83,18 @@ class CampaignHub {
       }
       AppState.activeCampaign.initiative.entities.sort((a, b) => b.initiative - a.initiative)
     })
-  }
 
-  offCampaign() {
-    this.client.off('PlayerJoinedCampaign')
-    this.client.off('PlayerLeftCampaign')
-    this.client.off('CampaignNotes')
+    this.client.on('AwardXp', async (xp) => {
+      try {
+        if (!AppState.activeCharacter) {
+          await charactersService.getCharacterById(AppState.activeCampaign.players[0].characterId)
+        }
+        charactersService.checkLevel(AppState.activeCharacter, xp)
+        Pop.success(`You were awarded ${xp}xp`)
+      } catch (error) {
+        Pop.error(error.message, '[UPDATING XP]')
+      }
+    })
   }
 }
 

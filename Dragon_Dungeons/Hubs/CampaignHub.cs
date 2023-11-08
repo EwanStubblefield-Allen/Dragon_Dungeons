@@ -14,6 +14,11 @@ public class CampaignHub : Hub<ICampaignHub>
     await Groups.RemoveFromGroupAsync(Context.ConnectionId, campaignId);
   }
 
+  public async Task AwardXp(string campaignId, int xp)
+  {
+    await Clients.OthersInGroup(campaignId).AwardXp(xp);
+  }
+
   public async Task InitiateBattle(string initiative, string campaignId)
   {
     await Clients.Group(campaignId).InitiateBattle(initiative, campaignId);

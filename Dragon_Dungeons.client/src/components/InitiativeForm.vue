@@ -79,6 +79,10 @@
           </div>
         </div>
       </div>
+      <div v-if="campaign.creatorId == account.id" class="text-end pt-2">
+        <button @click="cancelBattle()" type="button" class="btn btn-secondary m-1">Cancel Battle</button>
+        <button @click="awardXp()" type="button" class="btn btn-primary m-1">Award Xp</button>
+      </div>
     </div>
 
     <div v-else-if="!initiative.entities?.find(e => e.creatorId == account.id && !e.initiative)">
@@ -95,8 +99,9 @@
           </div>
         </div>
       </div>
-      <div class="text-end">
-        <button class="btn btn-success mt-2" type="submit">Set Initiative</button>
+      <div class="text-end pt-2">
+        <button v-if="campaign.creatorId == account.id" @click="cancelBattle()" type="button" class="btn btn-secondary m-1">Cancel Battle</button>
+        <button class="btn btn-success" type="submit">Set Initiative</button>
       </div>
     </form>
   </div>
@@ -108,6 +113,7 @@ import { AppState } from '../AppState.js'
 import { campaignsService } from '../services/CampaignsService.js'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
+import { campaignHub } from '../handlers/CampaignHub.js'
 import Pop from '../utils/Pop.js'
 
 export default {
@@ -126,7 +132,6 @@ export default {
 
     async function getEntities() {
       try {
-        // debugger
         let ent = AppState.activeCampaign.initiative.entities
         ent = ent.filter(e => e.creatorId == AppState.account.id)
 
@@ -149,24 +154,62 @@ export default {
       selectable,
       entities,
       account: computed(() => AppState.account),
+      campaign: computed(() => AppState.activeCampaign),
       initiative: computed(() => AppState.activeCampaign?.initiative),
 
       async updateInitiative() {
         try {
-          this.initiative.entities = this.initiative.entities.map((m, index) => {
+          const initiative = AppState.activeCampaign.initiative
+          initiative.entities = initiative.entities.map((m, index) => {
             if (editable.value[index]) {
               m.initiative = editable.value[index]
 
-              if (this.initiative.intTotal < this.initiative.intCount) {
-                this.initiative.intTotal++
+              if (initiative.intTotal < initiative.intCount) {
+                initiative.intTotal++
               }
             }
             return m
           })
-          this.initiative.entities.sort((a, b) => b.initiative - a.initiative)
-          await campaignsService.updateCampaign({ initiative: this.initiative }, AppState.activeCampaign.id)
+          initiative.entities.sort((a, b) => b.initiative - a.initiative)
+          await campaignsService.updateCampaign({ initiative }, AppState.activeCampaign.id)
+          editable.value = []
         } catch (error) {
           Pop.error(error.message, '[UPDATING INITIATIVE]')
+        }
+      },
+
+      async awardXp() {
+        try {
+          let xp = 0
+          entities.value.forEach(e => {
+            xp += e.xp
+          })
+          const isSure = await Pop.confirm(`You will be awarding players with ${xp}xp`)
+
+          if (!isSure) {
+            return
+          }
+          campaignHub.awardXp(this.campaign.id, xp)
+          await this.cancelBattle(isSure)
+        } catch (error) {
+          Pop.error(error.message, '[AWARDING XP]')
+        }
+      },
+
+      async cancelBattle(confirmed = false) {
+        try {
+          if (!confirmed) {
+            const isSure = await Pop.confirm('Are you sure you want to cancel this battle?', 'Players will not be awarded xp!')
+
+            if (!isSure) {
+              return
+            }
+          }
+          await campaignsService.updateCampaign({ initiative: {} }, AppState.activeCampaign.id)
+          entities.value = []
+          selectable.value = 0
+        } catch (error) {
+          Pop.error(error.message, '[CANCELING BATTLE]')
         }
       }
     }

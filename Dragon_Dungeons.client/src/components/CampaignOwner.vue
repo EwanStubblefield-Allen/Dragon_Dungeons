@@ -196,13 +196,10 @@ export default {
           if (!prep.value.length) {
             return prep.value = null
           }
-          const isSure = await Pop.confirm('Initiate Battle?', 'You can end it at any time by clicking cancel!')
+          const isSure = await Pop.confirm('Initiate Battle?', 'You can end it at any time!')
           const campaign = prop.campaignProp
 
           if (!isSure) {
-            if (campaign.initiative.entities) {
-              campaignsService.updateCampaign({ initiative: {} }, campaign.id)
-            }
             return prep.value = null
           }
           const entities = campaign.players
