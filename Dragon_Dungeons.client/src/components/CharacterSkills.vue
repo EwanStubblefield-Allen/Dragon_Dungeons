@@ -17,7 +17,7 @@
         <section class="row align-items-center flex-grow-1">
           <p class="col-7 text-end">{{ s[0] }}</p>
           <p class="col-3 text-center text-uppercase">{{ s[1] }}</p>
-          <p v-if="characterProp.skills.includes(s[0])" title="Modifier" class="col-2 text-end no-select">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus }}</p>
+          <p v-if="characterProp.skills.includes(s[0])" title="Modifier" class="col-2 text-end no-select">{{ Math.floor((characterProp[s[1]] - 10) / 2) + characterProp.bonus.prof }}</p>
           <p v-else title="Modifier" class="col-2 text-end no-select">{{ Math.floor((characterProp[s[1]] - 10) / 2) }}</p>
         </section>
       </div>

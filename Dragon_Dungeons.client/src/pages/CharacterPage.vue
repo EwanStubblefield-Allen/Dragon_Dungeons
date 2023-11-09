@@ -37,8 +37,8 @@
                 <i v-if="savingThrows.includes(a)" class="mdi mdi-circle"></i>
                 <i v-else class="mdi mdi-circle-outline"></i>
                 <p class="text-center text-uppercase">{{ a }}</p>
-                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
-                <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus.prof }}</p>
+                <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) }}</p>
               </div>
             </div>
           </section>
@@ -101,7 +101,7 @@
         <div class="col-6 col-lg-3 p-1">
           <div class="bg-dark text-center rounded elevation-5 p-2">
             <p>Prof.</p>
-            <p>{{ character.bonus }}</p>
+            <p>{{ character.bonus.prof }}</p>
             <p>Bonus</p>
           </div>
         </div>

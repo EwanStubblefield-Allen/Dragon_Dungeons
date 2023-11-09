@@ -36,7 +36,7 @@ namespace Dragon_Dungeons.Models
     public int Intelligence { get; set; }
     public int Wis { get; set; }
     public int Cha { get; set; }
-    public int? Bonus { get; set; }
+    public string Bonus { get; set; }
     public string Skills { get; set; }
     public string Proficiencies { get; set; }
     public string Cantrips { get; set; }

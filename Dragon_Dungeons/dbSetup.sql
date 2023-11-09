@@ -57,7 +57,7 @@ CREATE TABLE characters(
   intelligence TINYINT NOT NULL,
   wis TINYINT NOT NULL,
   cha TINYINT NOT NULL,
-  bonus TINYINT NOT NULL,
+  bonus JSON NOT NULL,
   skills JSON,
   proficiencies JSON,
   cantrips JSON,
@@ -81,8 +81,8 @@ WHERE
 
 ALTER TABLE
   characters
-ADD
-  COLUMN xp MEDIUMINT DEFAULT 0;
+MODIFY
+  COLUMN bonus JSON NOT NULL;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

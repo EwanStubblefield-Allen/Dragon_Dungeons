@@ -6,7 +6,7 @@ import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
+const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
 
 class CharactersService {
   changeCharPage(current) {
@@ -63,7 +63,7 @@ class CharactersService {
         characterData[a] += characterData.bonus[a]
       }
     })
-    characterData.bonus = characterData.bonus.bonus
+    characterData.bonus = { prof: characterData.bonus.prof, ability: 0 }
     characterData.armorClass = 10 + Math.floor((characterData.dex - 10) / 2)
 
     switch (characterData.class) {
