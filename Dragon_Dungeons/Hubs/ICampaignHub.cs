@@ -3,6 +3,7 @@ namespace Dragon_Dungeons.Hubs;
 public interface ICampaignHub
 {
   Task AwardXp(int xp);
+  Task AwardPlayers(string award);
   Task PlayerJoinedCampaign(Player playerData);
   Task PlayerLeftCampaign(Player playerData);
   Task CampaignNotes(string publicNotes, string campaignId);

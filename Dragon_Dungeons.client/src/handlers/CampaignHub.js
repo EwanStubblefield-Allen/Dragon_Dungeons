@@ -18,22 +18,32 @@ class CampaignHub {
   async start() {
     try {
       await this.client.start()
+      this.client.onreconnected(() => {
+        if (AppState.activeCampaign.id) {
+          this.enterGroup(AppState.activeCampaign.id)
+        }
+        this.enterGroup(AppState.account.id)
+      })
     } catch (error) {
       Pop.error(error.message, '[STARTING SIGNALR]')
       setTimeout(this.start, 5000)
     }
   }
 
-  enterCampaign(campaignId) {
-    this.client.invoke('EnterCampaign', campaignId)
+  enterGroup(groupId) {
+    this.client.invoke('EnterGroup', groupId)
   }
 
-  leaveCampaign(campaignId) {
-    this.client.invoke('LeaveCampaign', campaignId)
+  leaveGroup(groupId) {
+    this.client.invoke('LeaveGroup', groupId)
   }
 
   awardXp(campaignId, xp) {
     this.client.invoke('AwardXp', campaignId, xp)
+  }
+
+  awardPlayers(campaignId, award) {
+    this.client.invoke('AwardPlayers', campaignId, JSON.stringify(award))
   }
 
   onCampaign() {
@@ -93,7 +103,49 @@ class CampaignHub {
         await charactersService.checkLevel({ level: character.level, xp: character.xp, manual: character.manual }, xp)
         Pop.success(`You were awarded ${xp}xp`)
       } catch (error) {
-        Pop.error(error.message, '[UPDATING XP]')
+        Pop.error(error.message, '[AWARDING XP]')
+      }
+    })
+
+    this.client.on('AwardPlayers', async (award) => {
+      try {
+        if (!AppState.activeCharacter) {
+          await charactersService.getCharacterById(AppState.activeCampaign.players[0].characterId)
+        }
+        const character = AppState.activeCharacter
+        award = JSON.parse(award)
+        const contents = {
+          xp: award.xp,
+          currency: award.currency.length
+        }
+
+        if (award.xp) {
+          award.xp += character.xp
+        }
+        award.currency = character.currency.map((c, index) => {
+          if (award.currency[index]) {
+            c[1] += award.currency[index]
+          }
+          return c
+        })
+        await charactersService.updateCharacter(award)
+        let string = ''
+
+        if (contents.xp) {
+          string += 'xp'
+
+          if (contents.currency) {
+            string += ' and currency'
+          }
+        } else if (contents.currency) {
+          string += 'currency'
+        } else {
+          return
+        }
+
+        Pop.success(`You were awarded ${string}!`)
+      } catch (error) {
+        Pop.error(error.message, '[AWARDING PLAYERS]')
       }
     })
   }

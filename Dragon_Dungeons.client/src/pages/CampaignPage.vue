@@ -108,13 +108,13 @@ export default {
     })
 
     onBeforeRouteUpdate(() => {
-      campaignHub.leaveCampaign(route.params.campaignId)
+      campaignHub.leaveGroup(route.params.campaignId)
     })
 
     watchEffect(() => {
       if (route.params.campaignId) {
         getCampaignById()
-        campaignHub.enterCampaign(route.params.campaignId)
+        campaignHub.enterGroup(route.params.campaignId)
       }
     })
 

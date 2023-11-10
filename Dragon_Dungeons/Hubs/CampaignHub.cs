@@ -1,22 +1,25 @@
-using System.Numerics;
-
 namespace Dragon_Dungeons.Hubs;
 
 public class CampaignHub : Hub<ICampaignHub>
 {
-  public async Task EnterCampaign(string campaignId)
+  public async Task EnterGroup(string groupId)
   {
-    await Groups.AddToGroupAsync(Context.ConnectionId, campaignId);
+    await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
   }
 
-  public async Task LeaveCampaign(string campaignId)
+  public async Task LeaveGroup(string groupId)
   {
-    await Groups.RemoveFromGroupAsync(Context.ConnectionId, campaignId);
+    await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId);
   }
 
   public async Task AwardXp(string campaignId, int xp)
   {
     await Clients.OthersInGroup(campaignId).AwardXp(xp);
+  }
+
+  public async Task AwardPlayers(string campaignId, string award)
+  {
+    await Clients.OthersInGroup(campaignId).AwardPlayers(award);
   }
 
   public async Task InitiateBattle(string initiative, string campaignId)

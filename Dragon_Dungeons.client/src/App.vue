@@ -41,6 +41,13 @@
     </template>
   </ModalComponent>
 
+  <ModalComponent id="award">
+    <template #title>Award Players!</template>
+    <template #body>
+      <AwardForm />
+    </template>
+  </ModalComponent>
+
   <FeedbackOffCanvas />
 </template>
 
@@ -53,8 +60,9 @@ import AccountForm from './components/AccountForm.vue'
 import CategoryForm from './components/CategoryForm.vue'
 import NotesForm from './components/NotesForm.vue'
 import InitiativeForm from './components/InitiativeForm.vue'
-import FeedbackOffCanvas from './components/FeedbackOffCanvas.vue'
 import LevelForm from './components/LevelForm.vue'
+import AwardForm from './components/AwardForm.vue'
+import FeedbackOffCanvas from './components/FeedbackOffCanvas.vue'
 
 export default {
   setup() {
@@ -66,7 +74,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas, LevelForm }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas, LevelForm, AwardForm }
 }
 </script>
 <style lang="scss">

@@ -1,12 +1,16 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-md-50">
     <div class="py-2">
-      <div v-if="campaignProp.creatorId == account.id" class="d-flex align-items-center">
-        <p class="fs-3 fw-bold">Players:</p>
-        <i @click="copyCode(campaignProp.id)" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
-        <a class="mdi mdi-share-variant px-1 fs-5 text-dark selectable" :href="`mailto:?subject=Dungeons and Dragons Campaign&body=Join my Dnd Campaign! Code: ${campaignProp.id}`" title="Share Campaign Code Via Email"></a>
+      <div class="d-flex justify-content-between align-items-center">
+        <div v-if="campaignProp.creatorId == account.id" class="d-flex align-items-center">
+          <p class="fs-3 fw-bold">Players:</p>
+          <i @click="copyCode(campaignProp.id)" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
+          <a class="mdi mdi-share-variant px-1 fs-5 text-dark selectable" :href="`mailto:?subject=Dungeons and Dragons Campaign&body=Join my Dnd Campaign! Code: ${campaignProp.id}`" title="Share Campaign Code Via Email"></a>
+        </div>
+        <p v-else class="fs-3 fw-bold">My Player:</p>
+
+        <button v-if="campaignProp.creatorId == account.id" type="button" class="btn btn-primary elevation-5" data-bs-toggle="modal" data-bs-target="#award">Award Players</button>
       </div>
-      <p v-else class="fs-3 fw-bold">My Player:</p>
 
       <div v-if="campaignProp.players.length" class="row overflow-auto players">
         <div v-for="p in campaignProp.players" :key="p.id" class="col-12 col-sm-6 col-md-12">

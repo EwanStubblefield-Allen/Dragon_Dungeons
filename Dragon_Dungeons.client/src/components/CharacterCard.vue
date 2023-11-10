@@ -11,7 +11,8 @@
             <p class="fs-5">{{ characterProp.race }} {{ characterProp.class }}</p>
             <p v-if="characterProp.level" class="fs-5">Level: {{ characterProp.level }}</p>
           </div>
-          <div class="d-flex justify-content-end align-items-center">
+          <div :class="{ 'justify-content-around': locationProp == 'player' }" class="d-flex justify-content-end align-items-center">
+            <button v-if="locationProp == 'player'" type="button" class="btn btn-warning elevation-5">Trade</button>
             <router-link :to="{ name: 'Character', params: { characterId: characterProp.characterId ?? characterProp.id } }" class="btn btn-primary elevation-5">Character Details</router-link>
           </div>
         </div>
