@@ -60,6 +60,7 @@ CREATE TABLE characters(
   bonus JSON NOT NULL,
   skills JSON,
   proficiencies JSON,
+  charFeatures JSON,
   cantrips JSON,
   spells JSON,
   casting JSON,
@@ -81,8 +82,8 @@ WHERE
 
 ALTER TABLE
   characters
-MODIFY
-  COLUMN bonus JSON NOT NULL;
+ADD
+  COLUMN charFeatures JSON;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

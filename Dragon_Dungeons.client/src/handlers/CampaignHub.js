@@ -89,7 +89,8 @@ class CampaignHub {
         if (!AppState.activeCharacter) {
           await charactersService.getCharacterById(AppState.activeCampaign.players[0].characterId)
         }
-        charactersService.checkLevel(AppState.activeCharacter, xp)
+        const character = AppState.activeCharacter
+        await charactersService.checkLevel({ level: character.level, xp: character.xp, manual: character.manual }, xp)
         Pop.success(`You were awarded ${xp}xp`)
       } catch (error) {
         Pop.error(error.message, '[UPDATING XP]')

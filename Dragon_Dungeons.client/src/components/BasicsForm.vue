@@ -52,13 +52,13 @@
       </div>
     </div>
 
-    <div v-if="imageType == 'generateImg' && editable.race && editable.class" class="col-12 col-md-6 form-group">
+    <form v-if="imageType == 'generateImg' && editable.race && editable.class" @submit.prevent="generateImg()" class="col-12 col-md-6 form-group">
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
         <input v-model="description.prompt" type="text" class="form-control" id="picture" minlength="3" maxlength="100" placeholder="Description..." required>
-        <button v-if="!loading" @click="generateImg()" type="button" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
+        <button v-if="!loading" type="submit" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
-    </div>
+    </form>
 
     <div v-else-if="imageType == 'importImg'" class="col-12 col-md-6 form-group">
       <label for="picture" class="text-dark">Character Picture:</label>

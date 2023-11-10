@@ -45,9 +45,17 @@ public class CharactersService
     originalCharacter.Ideals = characterData.Ideals ?? originalCharacter.Ideals;
     originalCharacter.Bonds = characterData.Bonds ?? originalCharacter.Bonds;
     originalCharacter.Flaws = characterData.Flaws ?? originalCharacter.Flaws;
+    originalCharacter.Manual = characterData.Manual ?? originalCharacter.Manual;
+    originalCharacter.Str = characterData.Str ?? originalCharacter.Str;
+    originalCharacter.Dex = characterData.Dex ?? originalCharacter.Dex;
+    originalCharacter.Con = characterData.Con ?? originalCharacter.Con;
+    originalCharacter.Intelligence = characterData.Intelligence ?? originalCharacter.Intelligence;
+    originalCharacter.Wis = characterData.Wis ?? originalCharacter.Wis;
+    originalCharacter.Cha = characterData.Cha ?? originalCharacter.Cha;
     originalCharacter.Bonus = characterData.Bonus ?? originalCharacter.Bonus;
     originalCharacter.Skills = characterData.Skills ?? originalCharacter.Skills;
     originalCharacter.Proficiencies = characterData.Proficiencies ?? originalCharacter.Proficiencies;
+    originalCharacter.CharFeatures = characterData.CharFeatures ?? originalCharacter.CharFeatures;
     originalCharacter.Cantrips = characterData.Cantrips ?? originalCharacter.Cantrips;
     originalCharacter.Spells = characterData.Spells ?? originalCharacter.Spells;
     originalCharacter.Casting = characterData.Casting ?? originalCharacter.Casting;

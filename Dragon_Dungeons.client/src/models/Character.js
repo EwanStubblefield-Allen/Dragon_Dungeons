@@ -41,6 +41,7 @@ export class Character extends RepoItem {
     this.bonus = data.bonus
     this.skills = data.skills
     this.proficiencies = data.proficiencies
+    this.charFeatures = data.charFeatures
     this.cantrips = data.cantrips
     this.spells = data.spells
     this.casting = data.casting

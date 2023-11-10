@@ -6,7 +6,7 @@ import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
+const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'charFeatures', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
 
 class CharactersService {
   changeCharPage(current) {
@@ -57,13 +57,13 @@ class CharactersService {
       characterData.proficiencies = AppState.tempClass.proficiencies
     }
     characterData.skills = characterData.skills.map(s => s.name.replace('Skill: ', ''))
-    characterData = this.converter(characterData, true)
     AppState.attributes.forEach(a => {
       if (characterData.bonus[a]) {
         characterData[a] += characterData.bonus[a]
       }
     })
     characterData.bonus = { prof: characterData.bonus.prof, ability: 0 }
+    characterData = this.converter(characterData, true)
     characterData.armorClass = 10 + Math.floor((characterData.dex - 10) / 2)
 
     switch (characterData.class) {
@@ -219,24 +219,23 @@ class CharactersService {
     await this.updateCharacter(temp)
   }
 
-  async checkLevel(character, xp, leveledUp = false) {
+  async checkLevel(character, xp = 0) {
     character.xp += xp
 
     if (character.xp >= AppState.xpLevels[character.level]) {
-      if (leveledUp) {
+      if (character.manual == false) {
         character.level++
         character.manual = true
       }
     } else {
       character.manual = false
     }
-    await charactersService.updateCharacter({ level: character.level, xp: character.xp, manual: character.manual })
+    await charactersService.updateCharacter(character)
   }
 
-  converter(data, input = false) {
-    if (input) {
+  converter(data) {
+    if (data.int) {
       data.intelligence = data.int
-      data.bonus.intelligence = data.bonus?.int
     }
 
     for (let k in keys) {

@@ -29,16 +29,17 @@ namespace Dragon_Dungeons.Models
     public string Ideals { get; set; }
     public string Bonds { get; set; }
     public string Flaws { get; set; }
-    public bool Manual { get; set; }
-    public int Str { get; set; }
-    public int Dex { get; set; }
-    public int Con { get; set; }
-    public int Intelligence { get; set; }
-    public int Wis { get; set; }
-    public int Cha { get; set; }
+    public bool? Manual { get; set; }
+    public int? Str { get; set; }
+    public int? Dex { get; set; }
+    public int? Con { get; set; }
+    public int? Intelligence { get; set; }
+    public int? Wis { get; set; }
+    public int? Cha { get; set; }
     public string Bonus { get; set; }
     public string Skills { get; set; }
     public string Proficiencies { get; set; }
+    public string CharFeatures { get; set; }
     public string Cantrips { get; set; }
     public string Spells { get; set; }
     public string Casting { get; set; }

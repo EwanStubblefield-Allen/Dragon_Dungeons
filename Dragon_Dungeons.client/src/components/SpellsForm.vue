@@ -83,6 +83,10 @@ export default {
         const selectedClass = AppState.tempCharacter.class.toLowerCase()
         const data = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)
         editable.value.bonus.prof = data.prof_bonus
+        editable.value.charFeatures = data.features.map(f => {
+          delete f.index
+          return f
+        })
         let casting = data.spellcasting
 
         if (!casting || !Object.values(casting).find(c => c > 0)) {

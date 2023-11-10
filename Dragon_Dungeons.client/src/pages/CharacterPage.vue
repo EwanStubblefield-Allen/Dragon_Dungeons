@@ -129,7 +129,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
-import { saveState } from '../utils/Store.js'
 import CharacterInfo from '../components/CharacterInfo.vue'
 import CharacterSkills from '../components/CharacterSkills.vue'
 import CharacterEquipment from '../components/CharacterEquipment.vue'
@@ -166,43 +165,11 @@ export default {
             savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
           }
         }
-        getEquipment()
+        infosService.getEquipment()
       }
       catch (error) {
         Pop.error(error.message, '[GETTING CHARACTER BY ID]')
         router.push('/')
-      }
-    }
-
-    async function getEquipment() {
-      try {
-        const character = AppState.activeCharacter
-
-        if (character.id == AppState.equipment.id) {
-          return
-        }
-        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: {} }
-
-        if (character.armor?.index) {
-          AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
-        }
-        AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
-          return await infosService.getInfoDetails(w.url, false)
-        }))
-        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
-          return await infosService.getInfoDetails(c.url, false)
-        }))
-        Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
-
-        for (let s of character.spells) {
-          const spell = await infosService.getInfoDetails(s.url, false)
-          spell.level = spell.level > s.level ? spell.level : s.level
-          AppState.equipment.spells[spell.level].push(spell)
-        }
-        saveState('equipment', AppState.equipment)
-      }
-      catch (error) {
-        Pop.error(error.message, '[GETTING EQUIPMENT]')
       }
     }
 
