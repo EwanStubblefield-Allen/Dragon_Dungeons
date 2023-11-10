@@ -46,6 +46,7 @@ export class Character extends RepoItem {
     this.spells = data.spells
     this.casting = data.casting
     this.equipment = data.equipment
+    this.currency = data.currency
     this.armor = data.armor
     this.weapons = data.weapons || []
     this.creator = new Profile(data.creator)

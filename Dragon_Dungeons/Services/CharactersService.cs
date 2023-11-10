@@ -60,6 +60,7 @@ public class CharactersService
     originalCharacter.Spells = characterData.Spells ?? originalCharacter.Spells;
     originalCharacter.Casting = characterData.Casting ?? originalCharacter.Casting;
     originalCharacter.Equipment = characterData.Equipment ?? originalCharacter.Equipment;
+    originalCharacter.Currency = characterData.Currency ?? originalCharacter.Currency;
     originalCharacter.Armor = characterData.Armor ?? originalCharacter.Armor;
     originalCharacter.Weapons = characterData.Weapons ?? originalCharacter.Weapons;
     _charactersRepository.UpdateCharacter(originalCharacter);

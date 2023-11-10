@@ -28,6 +28,11 @@
         </div>
       </div>
     </div>
+    <div>
+      <label for="currency" class="text-light">Starting Gold</label>
+      <input v-model="editable.currency" type="number" id="currency" class="form-control" min="0" max="5000" aria-describedby="suggestedGold" required>
+      <p id="suggestedGold" class="form-text text-light">Suggested: {{ suggested }}</p>
+    </div>
     <div class="col-12 text-end">
       <button type="submit" class="btn btn-primary">Save</button>
     </div>
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
@@ -189,6 +194,29 @@ export default {
       starting,
       list,
       checkOptions,
+      suggested: computed(() => {
+        switch (AppState.tempClass.name) {
+          case 'Barbarian':
+          case 'Druid':
+            return '2d4 x 10gp'
+          case 'Bard':
+          case 'Cleric':
+          case 'Fighter':
+          case 'Paladin':
+          case 'Ranger':
+            return '5d4 x 10gp'
+          case 'Monk':
+            return '5d4 gp'
+          case 'Rogue':
+          case 'Warlock':
+          case 'Wizard':
+            return '4d4 x 10gp'
+          case 'Sorcerer':
+            return '3d4 x 10gp'
+          default:
+            return 'No case for class!'
+        }
+      }),
 
       addEquipment(item, length, index) {
         if (!length) {

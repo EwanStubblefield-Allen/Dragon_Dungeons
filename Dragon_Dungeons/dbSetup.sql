@@ -65,6 +65,7 @@ CREATE TABLE characters(
   spells JSON,
   casting JSON,
   equipment JSON,
+  currency JSON NOT NULL,
   armor JSON,
   weapons JSON,
   creatorId VARCHAR(255) NOT NULL,
@@ -83,7 +84,7 @@ WHERE
 ALTER TABLE
   characters
 ADD
-  COLUMN charFeatures JSON;
+  COLUMN currency JSON NOT NULL;
 
 CREATE TABLE campaigns(
   id VARCHAR(128) NOT NULL PRIMARY KEY COMMENT 'primary key',

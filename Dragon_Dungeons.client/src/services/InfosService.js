@@ -206,14 +206,20 @@ class InfosService {
     AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
       return await infosService.getInfoDetails(w.url, false)
     }))
-    AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
-      return await infosService.getInfoDetails(c.url, false)
-    }))
-    Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
 
-    for (let s of character.spells) {
-      const spell = await infosService.getInfoDetails(s.url, false)
-      AppState.equipment.spells[s.level].push(spell)
+    if (character.cantrips) {
+      AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
+        return await infosService.getInfoDetails(c.url, false)
+      }))
+    }
+
+    if (character.spells) {
+      Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
+
+      for (let s of character.spells) {
+        const spell = await infosService.getInfoDetails(s.url, false)
+        AppState.equipment.spells[s.level].push(spell)
+      }
     }
     saveState('equipment', AppState.equipment)
   }

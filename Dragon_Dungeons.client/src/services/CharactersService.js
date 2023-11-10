@@ -6,7 +6,7 @@ import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'charFeatures', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
+const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'charFeatures', 'cantrips', 'spells', 'casting', 'equipment', 'currency', 'armor', 'weapons']
 
 class CharactersService {
   changeCharPage(current) {
@@ -48,6 +48,7 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
+    characterData.currency = [['cp', 0], ['sp', 0], ['ep', 0], ['gp', characterData.currency], ['pp', 0]]
     characterData.manual = false
     characterData.equipment = characterData.equipment.flat(Infinity)
 

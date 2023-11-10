@@ -25,7 +25,13 @@
     <div class="offcanvas-body">
 
       <div v-if="selectable == 'Inventory'">
-        <div class="bg-light mx-0 p-2 rounded elevation-5">
+        <div class="row justify-content-around bg-light mx-0 my-2 p-2 rounded elevation-5">
+          <div v-for="c in characterProp.currency" :key="c[0]" class="col-2 text-center">
+            <p class="text-uppercase">{{ c[0] }}</p>
+            <p>{{ c[1] }}</p>
+          </div>
+        </div>
+        <div class="bg-light mx-0 my-2 p-2 rounded elevation-5">
           <div v-for="(e, index) in characterProp.equipment" :key="e.index">
             <div class="d-flex justify-content-between align-items-center">
               <div class="d-flex">
@@ -89,6 +95,16 @@
         <div class="my-2 px-3 py-1 bg-light rounded elevation-5">
           <p class="fs-4">Traits:</p>
           <p class="px-2">{{ characterProp.personalityTraits }}</p>
+        </div>
+
+        <div class="my-2 px-3 py-1 bg-light rounded elevation-5">
+          <p class="fs-4">Character Features:</p>
+          <ul class="mb-0">
+            <li v-for="c in characterProp.charFeatures" :key="c.name">
+              {{ c.name }}
+              <router-link :to="c.url.replace('api', 'info')" target="_blank" class="mdi mdi-information text-primary selectable" title="Learn more"></router-link>
+            </li>
+          </ul>
         </div>
       </div>
 

@@ -94,9 +94,7 @@
         <div v-if="e.creatorId == account.id" class="form-group py-2">
           <label :for="`initiative${index}`">{{ e.name }}'s Initiative</label>
           <input v-model="editable[index]" type="number" class="form-control" :id="`initiative${index}`" min="1" max="20" :aria-describedby="`initiativeHelpBlock${index}`" required>
-          <div :id="`initiativeHelpBlock${index}`" class="form-text">
-            Don't forget to include initiative bonuses!
-          </div>
+          <p :id="`initiativeHelpBlock${index}`" class="form-text">Don't forget to include initiative bonuses!</p>
         </div>
       </div>
       <div class="text-end pt-2">

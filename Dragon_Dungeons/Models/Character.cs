@@ -44,6 +44,7 @@ namespace Dragon_Dungeons.Models
     public string Spells { get; set; }
     public string Casting { get; set; }
     public string Equipment { get; set; }
+    public string Currency { get; set; }
     public string Armor { get; set; }
     public string Weapons { get; set; }
     public string CreatorId { get; set; }
