@@ -27,7 +27,7 @@
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
-* [Roadmap](#roadmap)
+* [Issues](#issues)
 * [License](#license)
 * [Authors](#authors)
 
@@ -40,8 +40,6 @@ This application was built with Vue.js, .Net, Dapper, MySQL.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
 
 * npm
 
@@ -85,7 +83,7 @@ npm install
   "AllowedHosts": "*",
   "CONNECTION_STRING": "ENTER YOUR MYSQL CONNECTION STRING",
   "AUTH0_DOMAIN": "ENTER YOUR AUTH0 DOMAIN",
-  "AUTH0_AUDIENCE": "ENTER YOU AUTH) AUDIENCE"
+  "AUTH0_AUDIENCE": "ENTER YOU AUTH0 AUDIENCE"
 }
 ```
 
@@ -97,7 +95,7 @@ export const IMAGE_API_KEY = 'ENTER YOU API';
 export const IMAGE_API_SECRET = 'ENTER YOU API';
 ```
 
-## Roadmap
+## Issues
 
 See the [open issues](https://github.com/EwanStubblefield-Allen/Dragon_Dungeons/issues) for a list of proposed features (and known issues).
 
@@ -107,4 +105,4 @@ Distributed under the MIT License. See [LICENSE](https://github.com/EwanStubblef
 
 ## Authors
 
-* **Ewan Stubblefield-Allen** - *Full-Stack Developer* - [Ewan Stubblefield-Allen](https://github.com/EwanStubblefield-Allen/) - *Built ReadME Template*
+* **Ewan Stubblefield-Allen** - *Full-Stack Developer* - [Ewan Stubblefield-Allen](https://github.com/EwanStubblefield-Allen/)
