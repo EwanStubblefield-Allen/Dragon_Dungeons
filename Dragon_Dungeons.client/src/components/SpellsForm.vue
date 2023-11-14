@@ -82,7 +82,11 @@ export default {
       try {
         const selectedClass = AppState.tempCharacter.class.toLowerCase()
         const data = await infosService.getInfoDetails(`api/classes/${selectedClass}/levels/1`, false)
-        editable.value.bonus.bonus = data.prof_bonus
+        editable.value.bonus.prof = data.prof_bonus
+        editable.value.charFeatures = data.features.map(f => {
+          delete f.index
+          return f
+        })
         let casting = data.spellcasting
 
         if (!casting || !Object.values(casting).find(c => c > 0)) {
@@ -102,7 +106,6 @@ export default {
             case 'cleric':
             case 'druid':
               spells.value.count = Math.floor((AppState.tempCharacter.wis - 10) / 2) + 1
-
               break
             default:
               Pop.error(`No case for ${selectedClass} in spells`)

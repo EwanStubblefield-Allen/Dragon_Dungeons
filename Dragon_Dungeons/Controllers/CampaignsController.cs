@@ -120,7 +120,11 @@ public class CampaignsController : ControllerBase
       Campaign campaign = _campaignsService.UpdateCampaign(campaignData);
       if (campaignData.PublicNotes != null)
       {
-        await _hubContext.Clients.Group(campaignId).CampaignNotes(campaignData.PublicNotes, campaignId);
+        await _hubContext.Clients.Group(campaignId).CampaignNotes(campaignData.PublicNotes);
+      }
+      if (campaignData.Initiative != null)
+      {
+        await _hubContext.Clients.Group(campaignId).InitiateBattle(campaignData.Initiative);
       }
       return Ok(campaign);
     }

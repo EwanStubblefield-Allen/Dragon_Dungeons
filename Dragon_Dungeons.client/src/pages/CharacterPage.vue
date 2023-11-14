@@ -11,7 +11,13 @@
           <img class="img-fluid w-100 rounded elevation-5" :src="character.picture.url" :alt="character.name">
         </div>
         <div class="col-12 col-sm-6 col-lg-4">
-          <p class="fs-5">Level: {{ character.level }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="fs-5">Level: {{ character.level }}</p>
+            <button v-if="character.creatorId == account.id && character.manual" type="button" class="btn btn-primary mdi mdi-plus px-1 py-0 fs-5" data-bs-toggle="modal" data-bs-target="#level"></button>
+          </div>
+          <abbr class="progress" role="progressbar" aria-label="Animated striped example" :aria-valuenow="level" aria-valuemin="0" aria-valuemax="100" :title="level">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+          </abbr>
           <p class="fs-5">{{ character.race }} {{ character.class }}</p>
           <p class="fs-5">{{ character.alignment }}</p>
           <div class="d-flex justify-content-around align-items-center">
@@ -34,8 +40,8 @@
                 <i v-if="savingThrows.includes(a)" class="mdi mdi-circle"></i>
                 <i v-else class="mdi mdi-circle-outline"></i>
                 <p class="text-center text-uppercase">{{ a }}</p>
-                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
-                <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) + character.bonus }}</p>
+                <p v-if="savingThrows.includes(a)" title="Modifier" class="text-end no-select">{{ Math.floor((character[a] - 10) / 2) + character.bonus.prof }}</p>
+                <p v-else title="Modifier" class="text-end">{{ Math.floor((character[a] - 10) / 2) }}</p>
               </div>
             </div>
           </section>
@@ -44,7 +50,7 @@
             <div class="col-6 col-lg-12 col-xl-6 p-1">
               <div class="bg-dark text-center rounded elevation-5 p-2">
                 <p>Armor</p>
-                <p>{{ armorClass }}</p>
+                <p>{{ character.armorClass }}</p>
                 <p>Class</p>
               </div>
             </div>
@@ -71,6 +77,11 @@
               <p>Hp:</p>
               <p>{{ character.hp }} / {{ character.maxHp }}</p>
             </div>
+            <div v-if="character.creatorId == account.id" class="d-flex align-items-center w-50">
+              <i @click="addHp('hp')" class="mdi mdi-menu-left fs-5 selectable"></i>
+              <input v-model="editable" type="number" class="form-control" id="hp" min="-2000" max="2000" required>
+              <i @click="addHp('tempHp')" class="mdi mdi-menu-right fs-5 selectable"></i>
+            </div>
             <div class="text-center">
               <p>Temp:</p>
               <p>{{ character.tempHp }}</p>
@@ -81,8 +92,9 @@
               <p class="col-7 px-0">{{ d }}</p>
               <div class="col-5 d-flex justify-content-center px-0">
                 <div v-for="i in 3" :key="i" class="d-flex align-items-center">
-                  <i :class="{ 'mdi-circle': deathSaves[d] >= i }" class="mdi mdi-circle-outline"></i>
-                  <p v-if="i < 3" class="pb-1">-</p>
+                  <i v-if="deathSaves[d] >= i" @click="updateDeathSaves(d, -1)" class="mdi mdi-circle selectable rounded"></i>
+                  <i v-else @click="updateDeathSaves(d, +1)" class="mdi mdi-circle-outline selectable rounded"></i>
+                  <p v-if="i < 3" class="pb-1 no-select">-</p>
                 </div>
               </div>
             </section>
@@ -92,7 +104,7 @@
         <div class="col-6 col-lg-3 p-1">
           <div class="bg-dark text-center rounded elevation-5 p-2">
             <p>Prof.</p>
-            <p>{{ character.bonus }}</p>
+            <p>{{ character.bonus.prof }}</p>
             <p>Bonus</p>
           </div>
         </div>
@@ -120,7 +132,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { charactersService } from '../services/CharactersService.js'
 import { infosService } from '../services/InfosService.js'
-import { saveState } from '../utils/Store.js'
 import CharacterInfo from '../components/CharacterInfo.vue'
 import CharacterSkills from '../components/CharacterSkills.vue'
 import CharacterEquipment from '../components/CharacterEquipment.vue'
@@ -131,6 +142,7 @@ export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const editable = ref(0)
     const savingThrows = ref([])
     const deathSaves = ref({ Success: 0, Failure: 0 })
 
@@ -156,7 +168,7 @@ export default {
             savingThrows.value.push(p.replace('Saving Throw: ', '').toLowerCase())
           }
         }
-        getEquipment()
+        infosService.getEquipment()
       }
       catch (error) {
         Pop.error(error.message, '[GETTING CHARACTER BY ID]')
@@ -164,58 +176,55 @@ export default {
       }
     }
 
-    async function getEquipment() {
-      try {
-        const character = AppState.activeCharacter
-
-        if (character.id == AppState.equipment.id) {
-          return
-        }
-        AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: {} }
-
-        if (character.armor?.index) {
-          AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
-        }
-        AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
-          return await infosService.getInfoDetails(w.url, false)
-        }))
-        AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
-          return await infosService.getInfoDetails(c.url, false)
-        }))
-        Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
-
-        for (let s of character.spells) {
-          const spell = await infosService.getInfoDetails(s.url, false)
-          spell.level = spell.level > s.level ? spell.level : s.level
-          AppState.equipment.spells[spell.level].push(spell)
-        }
-        saveState('equipment', AppState.equipment)
-      }
-      catch (error) {
-        Pop.error(error.message, '[GETTING EQUIPMENT]')
-      }
-    }
-
     return {
-      character: computed(() => AppState.activeCharacter),
-      attributes: computed(() => AppState.attributes),
-      armorClass: computed(() => {
-        const character = AppState.activeCharacter
-        const armor = AppState.equipment.armor
-        const dex = Math.floor((character.dex - 10) / 2)
-        let armorClass = 0
-
-        if (!armor?.index || armor.armor_class?.dex_bonus) {
-          armorClass += dex
-        }
-
-        if (!armor?.index) {
-          return armorClass += 10
-        }
-        return armorClass += armor.armor_class.base
-      }),
+      editable,
       savingThrows,
-      deathSaves
+      deathSaves,
+      account: computed(() => AppState.account),
+      character: computed(() => AppState.activeCharacter),
+      level: computed(() => {
+        const character = AppState.activeCharacter
+        return Math.floor(character?.xp / AppState.xpLevels[character?.level] * 10000) / 100 + '%'
+      }),
+      attributes: computed(() => AppState.attributes),
+
+      async addHp(option) {
+        try {
+          const temp = this.character[option]
+
+          if (this.character[option] + editable.value < 0) {
+            this.character[option] = 0
+          } else if (option == 'hp' && this.character[option] + editable.value > this.character.maxHp) {
+            this.character[option] = this.character.maxHp
+          }
+          else {
+            this.character[option] += editable.value
+          }
+
+          if (temp == this.character[option]) {
+            return editable.value = 0
+          }
+          await charactersService.updateCharacter({ hp: this.character.hp, tempHp: this.character.tempHp })
+          Pop.success('Hp updated!')
+          editable.value = 0
+        } catch (error) {
+          Pop.error(error.message, '[UPDATING HP]')
+        }
+      },
+
+      updateDeathSaves(type, num) {
+        deathSaves.value[type] += num
+
+        if (deathSaves.value[type] == 3) {
+          if (type == 'Success') {
+            editable.value = 1
+            this.addHp('hp')
+          } else {
+            Pop.toast('Your Character Died!')
+          }
+          deathSaves.value = { Success: 0, Failure: 0 }
+        }
+      }
     }
   },
   components: { CharacterInfo, CharacterSkills, CharacterEquipment, Loader }
@@ -226,5 +235,9 @@ export default {
   img {
     object-fit: cover;
     object-position: top;
+  }
+
+  .progress-bar {
+    width: v-bind(level);
   }
 </style>

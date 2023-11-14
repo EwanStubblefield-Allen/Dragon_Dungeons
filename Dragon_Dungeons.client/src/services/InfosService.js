@@ -1,4 +1,5 @@
 import { AppState } from "../AppState.js"
+import { saveState } from "../utils/Store.js"
 import { dndApi } from "./AxiosService.js"
 
 class InfosService {
@@ -189,6 +190,38 @@ class InfosService {
         <p class="fs-${size + 3} ps-2">${a.replaceAll(/ \([a-d]\)/g, '<br>-').replace(/\([a-d]\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
     }
     return template
+  }
+
+  async getEquipment() {
+    const character = AppState.activeCharacter
+
+    if (character.id == AppState.equipment.id) {
+      return
+    }
+    AppState.equipment = { id: character.id, weapons: [], cantrips: [], spells: {} }
+
+    if (character.armor?.index) {
+      AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
+    }
+    AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
+      return await infosService.getInfoDetails(w.url, false)
+    }))
+
+    if (character.cantrips) {
+      AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
+        return await infosService.getInfoDetails(c.url, false)
+      }))
+    }
+
+    if (character.spells) {
+      Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
+
+      for (let s of character.spells) {
+        const spell = await infosService.getInfoDetails(s.url, false)
+        AppState.equipment.spells[s.level].push(spell)
+      }
+    }
+    saveState('equipment', AppState.equipment)
   }
 }
 

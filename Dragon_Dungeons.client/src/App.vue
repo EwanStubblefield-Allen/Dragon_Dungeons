@@ -26,6 +26,36 @@
       <NotesForm />
     </template>
   </ModalComponent>
+
+  <ModalComponent id="initiative">
+    <template #title>Battle!</template>
+    <template #body>
+      <InitiativeForm />
+    </template>
+  </ModalComponent>
+
+  <ModalComponent id="level">
+    <template #title>Level Up Available!</template>
+    <template #body>
+      <LevelForm />
+    </template>
+  </ModalComponent>
+
+  <ModalComponent id="award">
+    <template #title>Award Players!</template>
+    <template #body>
+      <AwardForm />
+    </template>
+  </ModalComponent>
+
+  <ModalComponent id="trade" class="modal-lg">
+    <template #title>Trading!</template>
+    <template #body>
+      <TradeForm />
+    </template>
+  </ModalComponent>
+
+  <FeedbackOffCanvas />
 </template>
 
 <script>
@@ -36,6 +66,11 @@ import Navbar from './components/Navbar.vue'
 import AccountForm from './components/AccountForm.vue'
 import CategoryForm from './components/CategoryForm.vue'
 import NotesForm from './components/NotesForm.vue'
+import InitiativeForm from './components/InitiativeForm.vue'
+import LevelForm from './components/LevelForm.vue'
+import AwardForm from './components/AwardForm.vue'
+import TradeForm from './components/TradeForm.vue'
+import FeedbackOffCanvas from './components/FeedbackOffCanvas.vue'
 
 export default {
   setup() {
@@ -47,7 +82,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar, AccountForm, NotesForm, CategoryForm }
+  components: { Navbar, AccountForm, NotesForm, CategoryForm, InitiativeForm, FeedbackOffCanvas, LevelForm, AwardForm, TradeForm }
 }
 </script>
 <style lang="scss">

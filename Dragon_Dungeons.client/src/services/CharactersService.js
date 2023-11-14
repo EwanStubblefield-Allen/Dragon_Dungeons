@@ -1,12 +1,12 @@
 import { AppState } from "../AppState.js"
 import { Character } from "../models/Character.js"
 import { infosService } from "./InfosService.js"
+import { imagesService } from "./ImagesService.js"
 import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
-import { imagesService } from "./ImagesService.js"
 
-const keys = ['picture', 'skills', 'proficiencies', 'cantrips', 'spells', 'casting', 'equipment', 'armor', 'weapons']
+const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'charFeatures', 'cantrips', 'spells', 'casting', 'equipment', 'currency', 'armor', 'weapons']
 
 class CharactersService {
   changeCharPage(current) {
@@ -48,6 +48,8 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
+    characterData.currency = [['cp', 0], ['sp', 0], ['ep', 0], ['gp', characterData.currency], ['pp', 0]]
+    characterData.manual = false
     characterData.equipment = characterData.equipment.flat(Infinity)
 
     if (characterData.proficiencies) {
@@ -56,13 +58,14 @@ class CharactersService {
       characterData.proficiencies = AppState.tempClass.proficiencies
     }
     characterData.skills = characterData.skills.map(s => s.name.replace('Skill: ', ''))
-    characterData = this.converter(characterData, true)
     AppState.attributes.forEach(a => {
       if (characterData.bonus[a]) {
         characterData[a] += characterData.bonus[a]
       }
     })
-    characterData.bonus = characterData.bonus.bonus
+    characterData.bonus = { prof: characterData.bonus.prof, ability: 0 }
+    characterData = this.converter(characterData, true)
+    characterData.armorClass = 10 + Math.floor((characterData.dex - 10) / 2)
 
     switch (characterData.class) {
       case 'Barbarian':
@@ -126,9 +129,15 @@ class CharactersService {
       case 'armor':
         temp.armor = equipment
         AppState.equipment.armor = item
+        temp.armorClass = 0
+
+        if (item.armor_class.dex_bonus) {
+          temp.armorClass += Math.floor((character.dex - 10) / 2)
+        }
+        temp.armorClass += item.armor_class.base
         break
       case 'weapon':
-        if (character.weapons.find(w => w.index == equipment.index)) {
+        if (character.weapons.find(w => w.index == item.index)) {
           throw new Error('[WEAPON ALREADY EQUIPPED]')
         }
 
@@ -204,16 +213,71 @@ class CharactersService {
     } else {
       AppState.equipment.armor = null
       temp.armor = {}
+      temp.armorClass = 10 + Math.floor((character.dex - 10) / 2)
       temp.equipment.push(character.armor)
     }
     saveState('equipment', AppState.equipment)
     await this.updateCharacter(temp)
   }
 
-  converter(data, input = false) {
-    if (input) {
+  async checkLevel(character, xp = 0) {
+    character.xp += xp
+
+    if (character.xp >= AppState.xpLevels[character.level]) {
+      if (character.manual == false) {
+        character.level++
+        character.manual = true
+      }
+    } else {
+      character.manual = false
+    }
+    await charactersService.updateCharacter(character)
+  }
+
+  async handleTrade(contents) {
+    const character = AppState.activeCharacter
+
+    if (AppState.account.id == character.creatorId) {
+      character.currency = character.currency.map((c, index) => {
+        if (contents.want.currency[index]) {
+          c[1] += contents.want.currency[index]
+        }
+
+        if (contents.offer.currency[index]) {
+          c[1] -= contents.offer.currency[index]
+        }
+        return c
+      })
+      contents.offer.equipment.forEach(equip => {
+        const foundIndex = character.equipment.findIndex(e => e.index == equip.index)
+
+        if (character.equipment[foundIndex].count > 1) {
+          character.equipment[foundIndex].count--
+        } else {
+          character.equipment.splice(foundIndex, 1)
+        }
+      })
+      contents.want.equipment.forEach(equip => {
+        const foundIndex = character.equipment.findIndex(e => equip.index == e.index)
+
+        if (foundIndex > -1) {
+          character.equipment[foundIndex].count++
+        } else {
+          character.equipment.push(equip)
+        }
+      })
+      await charactersService.updateCharacter({ currency: character.currency, equipment: character.equipment })
+    }
+    AppState.trade = {
+      offer: { equipment: [], currency: [] },
+      want: { equipment: [], currency: [] }
+    }
+    Pop.success('Trade successful!')
+  }
+
+  converter(data) {
+    if (data.int) {
       data.intelligence = data.int
-      data.bonus.intelligence = data.bonus?.int
     }
 
     for (let k in keys) {

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -99,7 +98,7 @@ namespace Dragon_Dungeons
         _ = app.UseCors("CorsDevPolicy");
       }
 
-      // _ = app.UseHttpsRedirection();
+      _ = app.UseHttpsRedirection();
 
       _ = app.UseDefaultFiles();
       _ = app.UseStaticFiles();

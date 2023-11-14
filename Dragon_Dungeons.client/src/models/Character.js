@@ -9,9 +9,11 @@ export class Character extends RepoItem {
     this.hp = data.hp
     this.maxHp = data.maxHp
     this.tempHp = data.tempHp
+    this.armorClass = data.armorClass
     this.speed = data.speed
     this.hitDie = data.hitDie
     this.level = data.level
+    this.xp = data.xp
     this.class = data.class
     this.race = data.race
     this.alignment = data.alignment
@@ -39,10 +41,12 @@ export class Character extends RepoItem {
     this.bonus = data.bonus
     this.skills = data.skills
     this.proficiencies = data.proficiencies
+    this.charFeatures = data.charFeatures
     this.cantrips = data.cantrips
     this.spells = data.spells
     this.casting = data.casting
     this.equipment = data.equipment
+    this.currency = data.currency
     this.armor = data.armor
     this.weapons = data.weapons || []
     this.creator = new Profile(data.creator)

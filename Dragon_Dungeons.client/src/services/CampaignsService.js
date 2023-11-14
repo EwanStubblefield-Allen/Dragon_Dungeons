@@ -4,7 +4,7 @@ import { saveState } from "../utils/Store.js"
 import { api } from "./AxiosService.js"
 import Pop from "../utils/Pop.js"
 
-const keys = ['privateNotes', 'publicNotes', 'events', 'monsters']
+const keys = ['privateNotes', 'publicNotes', 'events', 'monsters', 'initiative']
 
 class CampaignsService {
   changeCamPage(current) {

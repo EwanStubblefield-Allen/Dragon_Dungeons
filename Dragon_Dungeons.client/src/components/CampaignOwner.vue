@@ -1,12 +1,16 @@
 <template>
   <div class="d-flex flex-column justify-content-between h-md-50">
     <div class="py-2">
-      <div v-if="campaignProp.creatorId == account.id" class="d-flex align-items-center">
-        <p class="fs-3 fw-bold">Players:</p>
-        <i @click="copyCode(campaignProp.id)" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
-        <a class="mdi mdi-share-variant px-1 fs-5 text-dark selectable" :href="`mailto:?subject=Dungeons and Dragons Campaign&body=Join my Dnd Campaign! Code: ${campaignProp.id}`" title="Share Campaign Code Via Email"></a>
+      <div class="d-flex justify-content-between align-items-center">
+        <div v-if="campaignProp.creatorId == account.id" class="d-flex align-items-center">
+          <p class="fs-3 fw-bold">Players:</p>
+          <i @click="copyCode(campaignProp.id)" class="mdi mdi-content-copy px-1 fs-5 selectable" title="Copy Campaign Code"></i>
+          <a class="mdi mdi-share-variant px-1 fs-5 text-dark selectable" :href="`mailto:?subject=Dungeons and Dragons Campaign&body=Join my Dnd Campaign! Code: ${campaignProp.id}`" title="Share Campaign Code Via Email"></a>
+        </div>
+        <p v-else class="fs-3 fw-bold">My Player:</p>
+
+        <button v-if="campaignProp.creatorId == account.id" type="button" class="btn btn-primary elevation-5" data-bs-toggle="modal" data-bs-target="#award">Award Players</button>
       </div>
-      <p v-else class="fs-3 fw-bold">My Player:</p>
 
       <div v-if="campaignProp.players.length" class="row overflow-auto players">
         <div v-for="p in campaignProp.players" :key="p.id" class="col-12 col-sm-6 col-md-12">
@@ -61,28 +65,38 @@
     </div>
 
     <div v-else>
-      <form @submit.prevent="addMonster()" class="d-flex justify-content-end">
-        <div class="px-2 w-sm-75 input-group">
-          <select v-model="editable.monster" id="selectMonster" class="form-select" aria-label="Select Monster" required>
-            <option disabled>Add Monster</option>
-            <option v-for="m in monsters" :key="m.index" :value="m">
-              {{ m.name }}
-            </option>
-          </select>
-          <router-link :to="editable.monster.url.replace('api', 'info')" v-if="editable.monster" target="_blank" class="mdi mdi-information text-primary selectable input-group-text" title="Learn more"></router-link>
-          <button class="mdi mdi-plus input-group-text" type="submit" title="Add Monster"></button>
+      <div class="row justify-content-between align-items-center px-3">
+        <div class="col-2">
+          <i @click="prep ? initiateBattle() : prep = []" class="mdi mdi-sword-cross fs-5 selectable" title="Initiate Battle!"></i>
         </div>
-      </form>
 
-      <div v-if="campaignProp.monsters.length" class="row mx-0">
-        <div v-for="m in campaignProp.monsters" :key="m" class="col-12 col-md-6 p-2">
-          <div class="d-flex justify-content-between">
-            <router-link :to="m.url.replace('api', 'info')" class="fs-5 fw-bold text-light">
+        <form @submit.prevent="addMonster()" class="col-10 col-sm-6 col-md-10 col-lg-8 col-xl-6 d-flex justify-content-end">
+          <div class="input-group">
+            <select v-model="editable.monster" id="selectMonster" class="form-select" aria-label="Select Monster" required>
+              <option disabled>Add Monster</option>
+              <option v-for="m in monsters" :key="m.index" :value="m">
+                {{ m.name }}
+              </option>
+            </select>
+            <router-link :to="editable.monster.url.replace('api', 'info')" v-if="editable.monster" target="_blank" class="mdi mdi-information text-primary selectable input-group-text" title="Learn more"></router-link>
+            <button class="mdi mdi-plus input-group-text" type="submit" title="Add Monster"></button>
+          </div>
+        </form>
+      </div>
+
+      <div v-if="campaignProp.monsters.length" class="row align-items-end mx-0">
+        <div v-for="m in campaignProp.monsters" :key="m" class="col-12 col-sm-6 p-2">
+          <div v-if="!prep" class="d-flex justify-content-between align-items-end">
+            <router-link :to="m.url.replace('api', 'info')" target="_blank" class="fs-5 fw-bold text-light">
               <p class="px-2 text-decoration-underline">{{ m.name }}</p>
             </router-link>
             <div>
               <i @click="removeMonster(m)" class="mdi mdi-delete fs-5 text-danger selectable"></i>
             </div>
+          </div>
+
+          <div v-else>
+            <p @click="addPrep(m)" class="px-2 fs-5 fw-bold rounded selectable" :class="{ 'bg-light text-dark elevation-5': prep?.find(p => p.name == m.name) }">{{ m.name }}</p>
           </div>
           <hr class="my-2">
         </div>
@@ -113,10 +127,11 @@ export default {
       required: true
     }
   },
-  setup() {
+  setup(prop) {
     const editable = ref({})
     const selectable = ref(1)
     const monsters = ref([])
+    const prep = ref(null)
 
     onMounted(() => {
       getMonsters()
@@ -134,6 +149,7 @@ export default {
       editable,
       selectable,
       monsters,
+      prep,
       account: computed(() => AppState.account),
       characters: computed(() => AppState.characters),
 
@@ -169,6 +185,48 @@ export default {
         }
       },
 
+      addPrep(monster) {
+        const foundIndex = prep.value.findIndex(s => s.index == monster.index)
+
+        if (foundIndex != -1) {
+          prep.value.splice(foundIndex, 1)
+        } else {
+          prep.value.push(monster)
+        }
+      },
+
+      async initiateBattle() {
+        try {
+          if (!prep.value.length) {
+            return prep.value = null
+          }
+          const isSure = await Pop.confirm('Initiate Battle?', 'You can end it at any time!')
+          const campaign = prop.campaignProp
+
+          if (!isSure) {
+            return prep.value = null
+          }
+          const entities = campaign.players
+            .concat(prep.value)
+            .map(p => {
+              return {
+                id: p.characterId ?? p.url,
+                name: p.name,
+                creatorId: p.creatorId ?? campaign.creatorId,
+                initiative: 0
+              }
+            })
+          const initiative = {
+            entities,
+            intTotal: 0,
+            intCount: campaign.players.length + prep.value.length
+          }
+          campaignsService.updateCampaign({ initiative }, campaign.id)
+        } catch (error) {
+          Pop.error(error.message, '[INITIATING BATTLE]')
+        }
+      },
+
       async removeMonster(monster) {
         try {
           const isSure = await Pop.confirm(`Are you sure you want to remove ${monster.name} from this campaign?`)
@@ -198,10 +256,6 @@ export default {
   }
 
   @media screen and (min-width: 543px) {
-    .w-sm-75 {
-      width: 75%;
-    }
-
     .w-sm-50 {
       width: 50%;
     }

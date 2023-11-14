@@ -16,7 +16,7 @@
           <section class="row flex-grow-1 py-2">
             <div class="col-4 d-flex justify-content-center align-items-center">
               <router-link :to="{ name: 'Home' }" class="btn text-success lighten-30 selectable text-uppercase">
-                Home
+                <p class="border-0" data-bs-toggle="collapse" data-bs-target="#navbarText">Home</p>
               </router-link>
             </div>
 
@@ -25,9 +25,7 @@
             </div>
 
             <div class="col-4 d-flex justify-content-center align-items-center">
-              <router-link :to="{ name: 'Help' }" class="btn text-success lighten-30 selectable text-uppercase">
-                Help
-              </router-link>
+              <button type="button" role="button" class="btn text-success lighten-30" data-bs-toggle="offcanvas" data-bs-target="#feedbackOffcanvas" aria-expanded="false" aria-controls="infoCollapse">FEEDBACK</button>
             </div>
           </section>
         </li>
@@ -40,13 +38,13 @@
 
         <li class="col-6 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <router-link :to="{ name: 'CreateCharacter', params: { characterStep: 'basics' } }" :class="{ route: route.fullPath.includes('create-character') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Create Character
+            <p class="border-0" data-bs-toggle="collapse" data-bs-target="#navbarText">Create Character</p>
           </router-link>
         </li>
 
         <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <router-link :to="{ name: 'BuildCampaign', params: { campaignStep: 'basics' } }" :class="{ route: route.fullPath.includes('build-campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
-            Build Campaign
+            <p class="border-0" data-bs-toggle="collapse" data-bs-target="#navbarText">Build Campaign</p>
           </router-link>
         </li>
 
