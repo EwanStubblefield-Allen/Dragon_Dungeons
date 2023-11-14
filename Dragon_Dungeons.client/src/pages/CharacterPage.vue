@@ -15,6 +15,9 @@
             <p class="fs-5">Level: {{ character.level }}</p>
             <button v-if="character.creatorId == account.id && character.manual" type="button" class="btn btn-primary mdi mdi-plus px-1 py-0 fs-5" data-bs-toggle="modal" data-bs-target="#level"></button>
           </div>
+          <abbr class="progress" role="progressbar" aria-label="Animated striped example" :aria-valuenow="level" aria-valuemin="0" aria-valuemax="100" :title="level">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+          </abbr>
           <p class="fs-5">{{ character.race }} {{ character.class }}</p>
           <p class="fs-5">{{ character.alignment }}</p>
           <div class="d-flex justify-content-around align-items-center">
@@ -179,6 +182,10 @@ export default {
       deathSaves,
       account: computed(() => AppState.account),
       character: computed(() => AppState.activeCharacter),
+      level: computed(() => {
+        const character = AppState.activeCharacter
+        return Math.floor(character?.xp / AppState.xpLevels[character?.level] * 10000) / 100 + '%'
+      }),
       attributes: computed(() => AppState.attributes),
 
       async addHp(option) {
@@ -228,5 +235,9 @@ export default {
   img {
     object-fit: cover;
     object-position: top;
+  }
+
+  .progress-bar {
+    width: v-bind(level);
   }
 </style>

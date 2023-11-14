@@ -234,6 +234,47 @@ class CharactersService {
     await charactersService.updateCharacter(character)
   }
 
+  async handleTrade(contents) {
+    const character = AppState.activeCharacter
+
+    if (AppState.account.id == character.creatorId) {
+      character.currency = character.currency.map((c, index) => {
+        if (contents.want.currency[index]) {
+          c[1] += contents.want.currency[index]
+        }
+
+        if (contents.offer.currency[index]) {
+          c[1] -= contents.offer.currency[index]
+        }
+        return c
+      })
+      contents.offer.equipment.forEach(equip => {
+        const foundIndex = character.equipment.findIndex(e => e.index == equip.index)
+
+        if (character.equipment[foundIndex].count > 1) {
+          character.equipment[foundIndex].count--
+        } else {
+          character.equipment.splice(foundIndex, 1)
+        }
+      })
+      contents.want.equipment.forEach(equip => {
+        const foundIndex = character.equipment.findIndex(e => equip.index == e.index)
+
+        if (foundIndex > -1) {
+          character.equipment[foundIndex].count++
+        } else {
+          character.equipment.push(equip)
+        }
+      })
+      await charactersService.updateCharacter({ currency: character.currency, equipment: character.equipment })
+    }
+    AppState.trade = {
+      offer: { equipment: [], currency: [] },
+      want: { equipment: [], currency: [] }
+    }
+    Pop.success('Trade successful!')
+  }
+
   converter(data) {
     if (data.int) {
       data.intelligence = data.int

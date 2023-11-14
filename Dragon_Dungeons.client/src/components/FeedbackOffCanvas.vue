@@ -12,6 +12,7 @@
             <option disabled>Select One</option>
             <option>Bug</option>
             <option>Feature Request</option>
+            <option>Optimization</option>
             <option>Factual Error</option>
             <option>Other</option>
           </select>

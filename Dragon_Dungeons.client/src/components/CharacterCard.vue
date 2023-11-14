@@ -12,7 +12,7 @@
             <p v-if="characterProp.level" class="fs-5">Level: {{ characterProp.level }}</p>
           </div>
           <div :class="{ 'justify-content-around': locationProp == 'player' }" class="d-flex justify-content-end align-items-center">
-            <button v-if="locationProp == 'player'" type="button" class="btn btn-warning elevation-5">Trade</button>
+            <button v-if="locationProp == 'player' && (!trade.id || characterProp.characterId == trade.id)" @click="tradeWithPlayer()" type="button" class="btn btn-warning elevation-5" data-bs-toggle="modal" data-bs-target="#trade">Trade</button>
             <router-link :to="{ name: 'Character', params: { characterId: characterProp.characterId ?? characterProp.id } }" class="btn btn-primary elevation-5">Character Details</router-link>
           </div>
         </div>
@@ -46,6 +46,15 @@ export default {
     return {
       account: computed(() => AppState.account),
       campaign: computed(() => AppState.activeCampaign),
+      trade: computed(() => AppState.trade),
+
+      async tradeWithPlayer() {
+        try {
+          await charactersService.getCharacterById(props.characterProp.characterId)
+        } catch (error) {
+          Pop.error(error.message, '[TRADING WITH PLAYER]')
+        }
+      },
 
       async removeCharacter() {
         try {

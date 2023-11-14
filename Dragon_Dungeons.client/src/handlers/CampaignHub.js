@@ -46,6 +46,10 @@ class CampaignHub {
     this.client.invoke('AwardPlayers', campaignId, JSON.stringify(award))
   }
 
+  trade(location, contents) {
+    this.client.invoke('Trade', location, contents)
+  }
+
   onCampaign() {
     this.client.on('PlayerJoinedCampaign', (playerData) => {
       AppState.activeCampaign.players.push(playerData)
@@ -146,6 +150,22 @@ class CampaignHub {
         Pop.success(`You were awarded ${string}!`)
       } catch (error) {
         Pop.error(error.message, '[AWARDING PLAYERS]')
+      }
+    })
+
+    this.client.on('Trade', async (contents) => {
+      try {
+        [contents.offer, contents.want] = [contents.want, contents.offer]
+        await charactersService.getCharacterById(contents.id)
+
+        if (contents.dm && contents.player) {
+          return await charactersService.handleTrade(contents)
+        }
+        contents.equal = true
+        AppState.trade = contents
+        Modal.getOrCreateInstance('#trade').show()
+      } catch (error) {
+        Pop.error(error.message, '[TRADING]')
       }
     })
   }

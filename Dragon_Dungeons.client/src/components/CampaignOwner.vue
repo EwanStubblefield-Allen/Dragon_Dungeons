@@ -70,7 +70,7 @@
           <i @click="prep ? initiateBattle() : prep = []" class="mdi mdi-sword-cross fs-5 selectable" title="Initiate Battle!"></i>
         </div>
 
-        <form @submit.prevent="addMonster()" class="col-10 col-sm-6 col-md-8 col-lg-6 d-flex justify-content-end">
+        <form @submit.prevent="addMonster()" class="col-10 col-sm-6 col-md-10 col-lg-8 col-xl-6 d-flex justify-content-end">
           <div class="input-group">
             <select v-model="editable.monster" id="selectMonster" class="form-select" aria-label="Select Monster" required>
               <option disabled>Add Monster</option>
@@ -87,7 +87,7 @@
       <div v-if="campaignProp.monsters.length" class="row align-items-end mx-0">
         <div v-for="m in campaignProp.monsters" :key="m" class="col-12 col-sm-6 p-2">
           <div v-if="!prep" class="d-flex justify-content-between align-items-end">
-            <router-link :to="m.url.replace('api', 'info')" class="fs-5 fw-bold text-light">
+            <router-link :to="m.url.replace('api', 'info')" target="_blank" class="fs-5 fw-bold text-light">
               <p class="px-2 text-decoration-underline">{{ m.name }}</p>
             </router-link>
             <div>
