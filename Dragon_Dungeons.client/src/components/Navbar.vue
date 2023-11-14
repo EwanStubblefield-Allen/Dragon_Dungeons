@@ -10,8 +10,8 @@
       </button>
     </div>
 
-    <div class="col-12 collapse navbar-collapse" id="navbarText">
-      <ul class="row navbar-nav flex-row justify-content-between mx-0 w-100">
+    <div class="col-12 collapse navbar-collapse position-relative" id="navbarText">
+      <ul class="row navbar-nav flex-row mx-0 w-100">
         <li class="col-12 col-md-6 col-lg-5 d-flex align-items-center">
           <section class="row flex-grow-1 py-2">
             <div class="col-4 d-flex justify-content-center align-items-center">
@@ -42,15 +42,14 @@
           </router-link>
         </li>
 
-        <li class="col-5 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
+        <li class="col-6 col-md-3 col-lg-2 d-flex justify-content-center align-items-center">
           <router-link :to="{ name: 'BuildCampaign', params: { campaignStep: 'basics' } }" :class="{ route: route.fullPath.includes('build-campaign') }" class="btn text-success lighten-30 selectable text-uppercase">
             <p class="border-0" data-bs-toggle="collapse" data-bs-target="#navbarText">Build Campaign</p>
           </router-link>
         </li>
 
       </ul>
-      <div class="d-flex justify-content-lg-end align-items-center">
-        <!-- LOGIN COMPONENT HERE -->
+      <div class="d-flex position-md-absolute">
         <Login />
       </div>
     </div>
@@ -142,6 +141,11 @@ export default {
   @media screen and (min-width: 992px) {
     nav {
       height: 76px;
+    }
+
+    .position-md-absolute {
+      position: absolute;
+      right: 20px;
     }
   }
 
