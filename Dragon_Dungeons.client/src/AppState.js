@@ -10,7 +10,6 @@ export const AppState = reactive({
   account: {},
   info: {},
   infoArr: [],
-  infoDetails: {},
   infoHtml: '',
   /** @type {import('./models/Character.js').Character[]} */
   characters: [],

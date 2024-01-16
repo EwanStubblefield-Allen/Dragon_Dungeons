@@ -21,98 +21,50 @@ class InfosService {
 
   async getInfoDetails(i, arr = true) {
     let res = await dndApi.get(i)
+    let data = res.data
 
     if (!arr) {
-      return res.data
+      return data
     }
 
-    if (res.data.reference) {
-      res = await dndApi.get(res.data.reference.url)
-    }
-
-    if (Object.getPrototypeOf(res.data) == Object.prototype) {
-      delete res.data.url
-      delete res.data.index
-      res.data = Object.entries(res.data).map(d => {
-        if (typeof d[1] == 'string' && this.checkIfLink({ url: d[1] })) {
+    // If data is an object convert to array and remove unnecessary keys
+    if (Object.getPrototypeOf(data) == Object.prototype) {
+      delete data.url
+      delete data.index
+      data = Object.entries(data).map(d => {
+        if (typeof d[1] == 'string' && this.isLink({ url: d[1] })) {
           return { name: d[0], url: d[1] }
         }
         return d
       })
     }
-    AppState.infoDetails = this.handleObj(res.data).filter(i => i)
-    AppState.infoHtml = this.handleHtml(AppState.infoDetails)
+    AppState.infoHtml = this.convertToHtml(data)
   }
 
-  handleObj(arr) {
-    const newArr = arr.map(d => {
-      if (Object.getPrototypeOf(d) == Object.prototype) {
-        delete d.index
+  convertToHtml(arr, size = 0) {
+    let template = /*HTML*/`<div class="ps-2">`
+    arr.forEach((item, index) => {
+      if (typeof item == 'object') {
+        if (!Array.isArray(item)) {
+          delete item.index
 
-        if (!this.checkIfLink(d)) {
-          d = this.handleObj(Object.entries(d))
-        }
-      } else if (d[0] == 'from') {
-        if (d[1].options) {
-          if (d[1].options[0].choice) {
-            let template = []
-            d[1].options.forEach(option => {
-              template = template.concat(option.choice.from.options)
-            })
-            d = template
+          if (!this.isLink(item)) {
+            template += this.convertToHtml(Object.entries(item), size)
           } else {
-            d = d[1].options
+            template += this.objToHtml(arr, item, size + 1)
           }
         } else {
-          d = Object.entries(d[1])
+          template += this.handleArr(item, size)
         }
-        d = d.map(option => {
-          let goDeeper = true
-          let foundObj
-
-          while (goDeeper) {
-            foundObj = Object.values(option).find(o => typeof o == 'object')
-
-            if (!foundObj) {
-              goDeeper = false
-            } else {
-              option = foundObj
-            }
-          }
-
-          if (option.index) {
-            delete option.index
-            return option
-          }
-          return this.handleObj(Object.entries(option))
-        })
-      } else if (typeof d[1] == 'object') {
-        if (Array.isArray(d[1]) && !d[1].length) {
-          return
-        } else if (d[1].length == 1) {
-          delete d[1][0].index
-
-          if (!this.checkIfLink(d[1][0]) && typeof d[1][0] != 'string') {
-            d[1] = this.handleObj(Object.entries(d[1][0]))
-          } else {
-            d[1] = d[1][0]
-          }
-        } else if (Object.getPrototypeOf(d[1]) == Object.prototype) {
-          delete d[1].index
-
-          if (!this.checkIfLink(d[1])) {
-            d[1] = this.handleObj(Object.entries(d[1]))
-          }
-        } else {
-          d[1] = this.handleObj(d[1])
-        }
+      } else {
+        template += this.strToHtml(arr, item, index, size + 1)
       }
-      return d
     })
-    return newArr
+    template += '</div>'
+    return template
   }
 
-  checkIfLink(obj) {
+  isLink(obj) {
     if (typeof obj == 'string') {
       return false
     }
@@ -129,67 +81,104 @@ class InfosService {
     })
   }
 
-  handleHtml(arr, size = 0) {
-    let template = ''
-    template += `<div class="ps-2">`
-    arr.forEach((a, index) => {
-      if (typeof a == 'object') {
-        if (Array.isArray(a)) {
-          template += this.arrHtml(a, size)
+  handleArr(arr, size) {
+    // If 'from' is present indicates that arr needs to formatted into a multiple choice
+    if (arr[0] == 'from') {
+      // Checks to see how multiple choice is formatted
+      if (arr[1].options) {
+        if (arr[1].options[0].choice) {
+          let tempArr = []
+          arr[1].options.forEach(option => {
+            tempArr = tempArr.concat(option.choice.from.options)
+          })
+          arr = tempArr
         } else {
-          template += this.objHtml(arr, a, size + 1)
+          arr = arr[1].options
         }
-      } else if (a == null) {
-        return
       } else {
-        template += this.strHtml(arr, a, index, size + 1)
+        arr = Object.entries(arr[1])
       }
-    })
-    template += '</div>'
-    return template
-  }
 
-  arrHtml(a, size) {
-    let template = ''
+      // Finds the arr tail to the options of the multiple choice
+      arr = arr.map(option => {
+        let goDeeper = true
 
-    if (typeof a[0] == 'string' && a.length == 2 && 2 < a[0].length && a[0].length < 30) {
-      a[0] += ':'
+        while (goDeeper) {
+          let foundObj = Object.values(option).find(o => typeof o == 'object')
+
+          if (!foundObj) {
+            goDeeper = false
+          } else {
+            option = foundObj
+          }
+        }
+
+        if (!option.index) {
+          return ''
+        }
+        delete option.index
+        return option
+      })
+    } else if (Array.isArray(arr[1])) {
+      if (!arr[1].length) {
+        return ''
+      } else if (arr[1].length == 1) {
+        if (this.isLink(arr[1][0]) || typeof arr[1][0] == 'string') {
+          arr[1] = arr[1][0]
+        } else {
+          delete arr[1][0].index
+          arr[1] = this.convertToHtml(Object.entries(arr[1][0]))
+        }
+      }
+    } else if (Object.getPrototypeOf(arr[1]) == Object.prototype) {
+      delete arr[1].index
+
+      if (!this.isLink(arr[1])) {
+        arr[1] = this.convertToHtml(Object.entries(arr[1]))
+      }
     }
-
-    template += this.handleHtml(a, size)
-    return template
+    return this.convertToHtml(arr, size)
   }
 
-  objHtml(arr, a, size) {
-    let template = ''
-
+  objToHtml(arr, a, size) {
     if (a.name == 'image') {
-      template += /*HTML*/`
+      return /*HTML*/`
       <div class="text-center text-lg-start">
-        <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
+      <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
       </div>`
-    } else if (arr.find(n => n[0] == 'name:')) {
-      template += /*HTML*/`
-        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
+    } else if (arr.find(n => n[0] == 'name')) {
+      return /*HTML*/`
+      <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
     } else {
-      template += /*HTML*/`
+      return /*HTML*/`
         <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark ps-2"><u>${a.name}</u></a>`
     }
-    return template
   }
 
-  strHtml(arr, a, index, size) {
-    let template = ''
+  strToHtml(arr, a, index, size) {
     a = a.toString()
 
     if (index == 0 && arr.length == 2 && 2 < a.length && a.length < 30) {
-      template += /*HTML*/`
-        <p class="fs-${size} fw-bold text-capitalize">${a.replace(/desc(?!r)/g, 'Description').replaceAll(/[_\-$]/g, ' ')}</p>`
+      return /*HTML*/`
+        <p class="fs-${size} fw-bold text-capitalize">
+          ${
+            // Replaces desc with Description
+            a.replace(/desc(?!r)/g, 'Description')
+            // Replaces _, -, and $ with a space
+            .replaceAll(/[_\-$]/g, ' ')}:
+        </p>`
     } else {
-      template += /*HTML*/`
-        <p class="fs-${size + 3} ps-2">${a.replaceAll(/ \([a-d]\)/g, '<br>-').replace(/\([a-d]\)/g, '-').replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}</p>`
+      return /*HTML*/`
+        <p class="fs-${size + 3} ps-2">
+          ${
+            // Replace ' '(a through d) with <br>-
+            a.replaceAll(/ \([a-d]\)/g, '<br>-')
+            // Replace (a through d) with -
+            .replace(/\([a-d]\)/g, '-')
+            // Replace - var or \n var with an uppercase of var
+            .replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}
+        </p>`
     }
-    return template
   }
 
   async getEquipment() {

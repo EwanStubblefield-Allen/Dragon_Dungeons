@@ -76,7 +76,6 @@ export default {
     return {
       route,
       infoArr: computed(() => AppState.infoArr),
-      infoDetails: computed(() => AppState.infoDetails),
       infoHtml: computed(() => AppState.infoHtml)
     }
   }
