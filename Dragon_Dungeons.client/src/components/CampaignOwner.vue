@@ -9,7 +9,7 @@
         </div>
         <p v-else class="fs-3 fw-bold">My Player:</p>
 
-        <button v-if="campaignProp.creatorId == account.id" type="button" class="btn btn-primary elevation-5" data-bs-toggle="modal" data-bs-target="#award">Award Players</button>
+        <button v-if="campaignProp.creatorId == account.id && campaignProp.players.length" type="button" class="btn btn-primary elevation-5" data-bs-toggle="modal" data-bs-target="#award">Award Players</button>
       </div>
 
       <div v-if="campaignProp.players.length" class="row overflow-auto players">

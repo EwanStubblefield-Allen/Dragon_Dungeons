@@ -8,7 +8,6 @@ import { socketService } from './SocketService'
 import { charactersService } from './CharactersService.js'
 import { campaignsService } from './CampaignsService.js'
 import { playersService } from './PlayersService.js'
-import { campaignHub } from '../handlers/CampaignHub.js'
 
 export const AuthService = initialize({
   domain,
@@ -34,7 +33,6 @@ AuthService.on(AuthService.AUTH_EVENTS.AUTHENTICATED, async function() {
   charactersService.getCharactersByUserId()
   campaignsService.getCampaignsByUserId()
   playersService.getPlayersByUserId()
-  campaignHub.enterGroup(AppState.account.id)
 })
 
 async function refreshAuthToken(config) {
