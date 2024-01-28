@@ -70,14 +70,16 @@ class CampaignsService {
     for (let k in keys) {
       let d = data[keys[k]]
 
-      if (d) {
+      if (!d) {
+        d = []
+      } else {
         if (typeof d == 'object') {
           d = JSON.stringify(d)
         } else {
           d = JSON.parse(d)
         }
-        data[keys[k]] = d
       }
+      data[keys[k]] = d
     }
     return data
   }
