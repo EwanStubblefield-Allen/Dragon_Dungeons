@@ -18,18 +18,23 @@
   </p>
 </p>
 
-![Contributors](https://img.shields.io/github/contributors/EwanStubblefield-Allen/Dragon_Dungeons?color=dark-green) ![Issues](https://img.shields.io/github/issues/EwanStubblefield-Allen/Dragon_Dungeons) 
+![Contributors](https://img.shields.io/github/contributors/EwanStubblefield-Allen/Dragon_Dungeons?color=dark-green) ![Issues](https://img.shields.io/github/issues/EwanStubblefield-Allen/Dragon_Dungeons)
 
 ## Table Of Contents
 
-* [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Issues](#issues)
-* [License](#license)
-* [Authors](#authors)
+- [Description](#description)
+- [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Issues](#issues)
+- [License](#license)
+- [Authors](#authors)
+
+## Description
+
+This Dungeons and Dragons application allows you to craft unique characters, complete with customizable abilities, backstories, and the option to use AI to create custom images of your character. You can also use the campaign builder to host sessions. Dive into a vast compendium of spells, items, and creatures, and effortlessly integrate them into your campaigns. With all the information in DnD it can be quite overwhelming. Check out the Info section for an intuitive explanation of every subject.
 
 ## Built With
 
@@ -41,7 +46,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-* npm
+- npm
 
 ```sh
 npm install npm@latest -g
@@ -105,4 +110,4 @@ Distributed under the MIT License. See [LICENSE](https://github.com/EwanStubblef
 
 ## Authors
 
-* **Ewan Stubblefield-Allen** - *Full-Stack Developer* - [Ewan Stubblefield-Allen](https://github.com/EwanStubblefield-Allen/)
+- **Ewan Stubblefield-Allen** - _Full-Stack Developer_ - [Ewan Stubblefield-Allen](https://github.com/EwanStubblefield-Allen/)
