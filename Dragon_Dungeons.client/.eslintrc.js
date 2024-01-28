@@ -15,9 +15,8 @@ module.exports = {
     'block-spacing': 'warn',
     'comma-dangle': ['warn', 'never'],
     'comma-spacing': 'warn',
-    'eol-last': ['warn', 'never'],
-    'indent': ['warn', 2, { 'SwitchCase': 1 }],
-    'jsx-quotes': ['warn', 'prefer-single'],
+    'indent': ['warn', 2, { 'SwitchCase': 1, "ignoredNodes": ["TemplateLiteral *"] }],
+    'jsx-quotes': ['warn', 'prefer-double'],
     'key-spacing': 'warn',
     'keyword-spacing': 'warn',
     'no-multiple-empty-lines': ['warn', { 'max': 1 }],
@@ -37,8 +36,8 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'padding-line-between-statements': [
       'warn',
-      { blankLine: 'always', prev: '*', next: ['block-like', 'class', 'export'] },
-      { blankLine: 'any', prev: 'export', next: 'export' }
+      { 'blankLine': 'always', 'prev': '*', 'next': ['block-like', 'class', 'export'] },
+      { 'blankLine': 'any', 'prev': 'export', 'next': 'export' }
     ]
   }
 }

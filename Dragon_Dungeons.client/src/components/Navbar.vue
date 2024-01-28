@@ -101,6 +101,7 @@ export default {
       dismissInfo() {
         if (document.getElementById('infoCollapse').classList.contains('show')) {
           Collapse.getOrCreateInstance('#infoCollapse').hide()
+          Collapse.getOrCreateInstance('#navbarText').hide()
         }
       }
     }

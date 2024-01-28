@@ -32,7 +32,7 @@
     "eslint.lintTask.enable": true,
     "eslint.codeActionsOnSave.mode": "all",
     "editor.codeActionsOnSave": {
-      "source.fixAll": true
+      "source.fixAll": "explicit"
     },
     "workbench.colorCustomizations": {
       "activityBar.activeBackground": "#e3e05a",
