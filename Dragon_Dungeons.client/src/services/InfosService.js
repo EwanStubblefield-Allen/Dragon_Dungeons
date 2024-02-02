@@ -143,12 +143,12 @@ class InfosService {
   objToHtml(arr, a, size) {
     if (a.name == 'image') {
       return /*HTML*/`
-      <div class="text-center text-lg-start">
-      <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
-      </div>`
+        <div class="text-center text-lg-start">
+          <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
+        </div>`
     } else if (arr.find(n => n[0] == 'name')) {
       return /*HTML*/`
-      <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
+        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
     } else {
       return /*HTML*/`
         <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark ps-2"><u>${a.name}</u></a>`
