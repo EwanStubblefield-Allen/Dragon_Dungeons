@@ -1,13 +1,8 @@
 namespace Dragon_Dungeons.Services;
 
-public class CommentsService
+public class CommentsService(CommentsRepository commentsRepository)
 {
-  private readonly CommentsRepository _commentsRepository;
-
-  public CommentsService(CommentsRepository commentsRepository)
-  {
-    _commentsRepository = commentsRepository;
-  }
+  private readonly CommentsRepository _commentsRepository = commentsRepository;
 
   internal Comment GetCommentById(string commentId)
   {

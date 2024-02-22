@@ -93,6 +93,7 @@ import { charactersService } from '../services/CharactersService.js'
 import { openService } from '../services/OpenService.js'
 import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
+import { imagesService } from '../services/ImagesService.js'
 
 export default {
   setup() {
@@ -157,6 +158,7 @@ export default {
     }
 
     function saveCharacter() {
+      imagesService.createImg(editable.value.picture)
       editable.value.creator = AppState.account
       charactersService.saveCharacter(editable.value)
     }

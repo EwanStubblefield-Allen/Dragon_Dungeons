@@ -4,19 +4,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MySqlConnector;
 
 namespace Dragon_Dungeons
 {
-  public class Startup
+  public class Startup(IConfiguration configuration)
   {
-    public Startup(IConfiguration configuration)
-    {
-      Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -30,7 +26,7 @@ namespace Dragon_Dungeons
       });
       _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       _ = services.AddSingleton<Auth0Provider>();
-      _ = services.AddScoped(x => CreateDbConnection());
+      _ = services.AddScoped(x => CreateDbConnection);
 
       _ = services.AddScoped<AccountsRepository>();
       _ = services.AddScoped<AccountService>();
@@ -49,6 +45,11 @@ namespace Dragon_Dungeons
 
       _ = services.AddScoped<CommentsRepository>();
       _ = services.AddScoped<CommentsService>();
+
+      _ = services.AddScoped<ImagesService>();
+
+      _ = services.AddSingleton(Configuration.GetSection("Keys").Get<Config>());
+
     }
 
     private static void ConfigureCors(IServiceCollection services)
@@ -61,9 +62,9 @@ namespace Dragon_Dungeons
           .AllowAnyMethod()
           .AllowAnyHeader()
           .AllowCredentials()
-          .WithOrigins(new string[]{
+          .WithOrigins([
           "http://localhost:8080", "http://localhost:8081"
-          });
+          ]);
         });
       });
     }
@@ -81,10 +82,13 @@ namespace Dragon_Dungeons
       });
     }
 
-    private IDbConnection CreateDbConnection()
+    private IDbConnection CreateDbConnection
     {
-      string connectionString = Configuration["CONNECTION_STRING"];
-      return new MySqlConnection(connectionString);
+      get
+      {
+        string connectionString = Configuration["CONNECTION_STRING"];
+        return new MySqlConnection(connectionString);
+      }
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

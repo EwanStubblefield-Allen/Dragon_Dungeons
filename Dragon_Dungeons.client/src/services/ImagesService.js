@@ -1,14 +1,9 @@
-import { IMAGE_API_KEY, IMAGE_API_SECRET } from "../config.js"
-import { imgApi } from "./AxiosService.js"
+import { IMAGE_API_SECRET } from '../config.js'
+import { api } from './AxiosService.js'
 
 class ImagesService {
-  async createImg(image) {
-    const imageData = {
-      file: image,
-      upload_preset: 'ml_default',
-      api_key: IMAGE_API_KEY
-    }
-    const res = await imgApi.post('dtcatqouc/image/upload', imageData)
+  async createImg(imageData) {
+    const res = await api.post('api/images', { File: imageData })
     return { url: res.data.secure_url, id: res.data.public_id, sign: res.data.signature }
   }
 
@@ -18,10 +13,9 @@ class ImagesService {
     const imageData = {
       public_id: imageId,
       timestamp: timestamp,
-      signature: sign,
-      api_key: IMAGE_API_KEY
+      signature: sign
     }
-    await imgApi.post('dtcatqouc/image/destroy', imageData)
+    await api.post('api/images', imageData)
   }
 
   async sha256(message) {
