@@ -12,7 +12,6 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   ENV: ${{ secrets.ENV }}
-  CONFIG: ${{ secrets.CONFIG }}
   DOCKER_IMAGE: dragon:latest
   ROOT: Dragon_Dungeons
 
@@ -29,7 +28,7 @@ jobs:
 
       - name: Build Client 🏗️
         run: |
-          cd ./$ROOT.client && echo "$CONFIG" > src/config.js && npm ci && npm run build
+          cd ./$ROOT.client && npm ci && npm run build
 
       - name: Set up Docker Buildx 🤖
         uses: docker/setup-buildx-action@v2
