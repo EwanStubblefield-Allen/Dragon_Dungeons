@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class PlayersRepository(IDbConnection db)
+public class PlayersRepository
 {
-  private readonly IDbConnection _db = db;
+  private readonly IDbConnection _db;
+
+  public PlayersRepository(IDbConnection db)
+  {
+    _db = db;
+  }
 
   internal Player GetPlayerById(string playerId)
   {

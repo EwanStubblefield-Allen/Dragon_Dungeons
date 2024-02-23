@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class AccountsRepository(IDbConnection db)
+public class AccountsRepository
 {
-  private readonly IDbConnection _db = db;
+  private readonly IDbConnection _db;
+
+  public AccountsRepository(IDbConnection db)
+  {
+    _db = db;
+  }
 
   internal Account GetByEmail(string userEmail)
   {

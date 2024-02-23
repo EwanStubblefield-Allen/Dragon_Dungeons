@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class CampaignsRepository(IDbConnection db)
+public class CampaignsRepository
 {
-  private readonly IDbConnection _db = db;
+  private readonly IDbConnection _db;
+
+  public CampaignsRepository(IDbConnection db)
+  {
+    _db = db;
+  }
 
   internal Campaign GetCampaignById(string campaignId)
   {

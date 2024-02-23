@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class NpcsRepository(IDbConnection db)
+public class NpcsRepository
 {
-  private readonly IDbConnection _db = db;
+  private readonly IDbConnection _db;
+
+  public NpcsRepository(IDbConnection db)
+  {
+    _db = db;
+  }
 
   internal Npc GetNpcById(string npcId)
   {

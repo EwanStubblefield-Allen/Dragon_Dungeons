@@ -2,12 +2,20 @@ namespace Dragon_Dungeons.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CampaignsController(CampaignsService campaignsService, CommentsService commentsService, Auth0Provider auth0Provider, IHubContext<CampaignHub, ICampaignHub> hubContext) : ControllerBase
+public class CampaignsController : ControllerBase
 {
-  private readonly CampaignsService _campaignsService = campaignsService;
-  private readonly CommentsService _commentsService = commentsService;
-  private readonly Auth0Provider _auth0Provider = auth0Provider;
-  private readonly IHubContext<CampaignHub, ICampaignHub> _hubContext = hubContext;
+  private readonly CampaignsService _campaignsService;
+  private readonly CommentsService _commentsService;
+  private readonly Auth0Provider _auth0Provider;
+  private readonly IHubContext<CampaignHub, ICampaignHub> _hubContext;
+
+  public CampaignsController(CampaignsService campaignsService, CommentsService commentsService, Auth0Provider auth0Provider, IHubContext<CampaignHub, ICampaignHub> hubContext)
+  {
+    _campaignsService = campaignsService;
+    _commentsService = commentsService;
+    _auth0Provider = auth0Provider;
+    _hubContext = hubContext;
+  }
 
   [HttpGet("{campaignId}")]
   public async Task<ActionResult<Campaign>> GetCampaignById(string campaignId)

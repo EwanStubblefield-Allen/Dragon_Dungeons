@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MySqlConnector;
 
 namespace Dragon_Dungeons
 {
-  public class Startup(IConfiguration configuration)
+  public class Startup
   {
-    public IConfiguration Configuration { get; } = configuration;
+    public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -63,9 +62,9 @@ namespace Dragon_Dungeons
           .AllowAnyMethod()
           .AllowAnyHeader()
           .AllowCredentials()
-          .WithOrigins([
+          .WithOrigins(new string[]{
           "http://localhost:8080", "http://localhost:8081"
-          ]);
+          });
         });
       });
     }
@@ -90,6 +89,11 @@ namespace Dragon_Dungeons
         string connectionString = Configuration["CONNECTION_STRING"];
         return new MySqlConnection(connectionString);
       }
+    }
+
+    public Startup(IConfiguration configuration)
+    {
+      Configuration = configuration;
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

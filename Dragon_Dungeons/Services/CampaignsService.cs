@@ -1,11 +1,19 @@
 namespace Dragon_Dungeons.Services;
 
-public class CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService, CommentsService commentsService)
+public class CampaignsService
 {
-  private readonly CampaignsRepository _campaignsRepository = campaignsRepository;
-  private readonly NpcsService _npcsService = npcsService;
-  private readonly PlayersService _playersService = playersService;
-  private readonly CommentsService _commentsService = commentsService;
+  private readonly CampaignsRepository _campaignsRepository;
+  private readonly NpcsService _npcsService;
+  private readonly PlayersService _playersService;
+  private readonly CommentsService _commentsService;
+
+  public CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService, CommentsService commentsService)
+  {
+    _campaignsRepository = campaignsRepository;
+    _npcsService = npcsService;
+    _playersService = playersService;
+    _commentsService = commentsService;
+  }
 
   internal Campaign GetCampaignById(string campaignId, string userId)
   {

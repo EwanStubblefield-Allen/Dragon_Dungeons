@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Services;
 
-public class PlayersService(PlayersRepository playersRepository)
+public class PlayersService
 {
-  private readonly PlayersRepository _playersRepository = playersRepository;
+  private readonly PlayersRepository _playersRepository;
+
+  public PlayersService(PlayersRepository playersRepository)
+  {
+    _playersRepository = playersRepository;
+  }
 
   internal Player GetPlayerById(string playerId)
   {

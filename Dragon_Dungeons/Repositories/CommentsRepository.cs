@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class CommentsRepository(IDbConnection db)
+public class CommentsRepository
 {
-  private readonly IDbConnection _db = db;
+  private readonly IDbConnection _db;
+
+  public CommentsRepository(IDbConnection db)
+  {
+    _db = db;
+  }
 
   internal Comment GetCommentById(string commentId)
   {

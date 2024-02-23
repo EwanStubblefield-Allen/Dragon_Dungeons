@@ -1,8 +1,13 @@
 namespace Dragon_Dungeons.Services;
 
-public class NpcsService(NpcsRepository npcsRepository)
+public class NpcsService
 {
-  private readonly NpcsRepository _npcsRepository = npcsRepository;
+  private readonly NpcsRepository _npcsRepository;
+
+  public NpcsService(NpcsRepository npcsRepository)
+  {
+    _npcsRepository = npcsRepository;
+  }
 
   internal Npc GetNpcById(string npcId)
   {
