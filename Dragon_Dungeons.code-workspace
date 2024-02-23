@@ -54,10 +54,6 @@
       "titleBar.inactiveForeground": "#15202b99"
     },
     "peacock.color": "#dcd82e",
-    "cSpell.words": [
-      "npcs",
-      "signalr",
-      "spellcasting"
-    ]
+    "cSpell.words": ["Newtonsoft", "npcs", "signalr", "spellcasting"]
   }
 }

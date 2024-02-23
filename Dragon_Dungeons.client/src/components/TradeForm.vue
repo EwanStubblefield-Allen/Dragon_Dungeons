@@ -4,7 +4,7 @@
       <p class="fs-3 fw-bold">Offers</p>
       <form @submit.prevent="addEquipment('offer')" class="d-flex justify-content-end">
         <div class="input-group">
-          <select v-model="temp.offer" id="selectMonster" class="form-select" aria-label="Select Equipment" required>
+          <select v-model="temp.offer" id="offerSelectMonster" class="form-select" aria-label="Select Equipment" required>
             <option disabled>Add Equipment</option>
             <option v-for="e in account.id == character?.creatorId ? character?.equipment : equipment" :key="e.index" :value="e">
               {{ e.name }}
@@ -27,24 +27,24 @@
 
       <section class="row justify-content-around py-2">
         <div class="col-2 form-group text-center">
-          <label for="Cp">Cp</label>
-          <input v-model="editable.offer.currency[0]" type="number" class="form-control" id="Cp" min="0" max="5000">
+          <label for="offerCp">Cp</label>
+          <input v-model="editable.offer.currency[0]" type="number" class="form-control" id="offerCp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Sp">Sp</label>
-          <input v-model="editable.offer.currency[1]" type="number" class="form-control" id="Sp" min="0" max="5000">
+          <label for="offerSp">Sp</label>
+          <input v-model="editable.offer.currency[1]" type="number" class="form-control" id="offerSp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Ep">Ep</label>
-          <input v-model="editable.offer.currency[2]" type="number" class="form-control" id="Ep" min="0" max="5000">
+          <label for="offerEp">Ep</label>
+          <input v-model="editable.offer.currency[2]" type="number" class="form-control" id="offerEp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Gp">Gp</label>
-          <input v-model="editable.offer.currency[3]" type="number" class="form-control" id="Gp" min="0" max="5000">
+          <label for="offerGp">Gp</label>
+          <input v-model="editable.offer.currency[3]" type="number" class="form-control" id="offerGp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Pp">Pp</label>
-          <input v-model="editable.offer.currency[4]" type="number" class="form-control" id="Pp" min="0" max="5000">
+          <label for="offerPp">Pp</label>
+          <input v-model="editable.offer.currency[4]" type="number" class="form-control" id="offerPp" min="0" max="5000">
         </div>
       </section>
     </div>
@@ -53,7 +53,7 @@
       <p class="fs-3 fw-bold">Wants</p>
       <form @submit.prevent="addEquipment('want')" class="d-flex justify-content-end">
         <div class="input-group">
-          <select v-model="temp.want" id="selectMonster" class="form-select" aria-label="Select Equipment" required>
+          <select v-model="temp.want" id="wantSelectMonster" class="form-select" aria-label="Select Equipment" required>
             <option disabled>Add Equipment</option>
             <option v-for="e in account.id == character?.creatorId ? equipment : character?.equipment" :key="e.index" :value="e">
               {{ e.name }}
@@ -76,24 +76,24 @@
 
       <section class="row justify-content-around py-2">
         <div class="col-2 form-group text-center">
-          <label for="Cp">Cp</label>
-          <input v-model="editable.want.currency[0]" type="number" class="form-control" id="Cp" min="0" max="5000">
+          <label for="wantCp">Cp</label>
+          <input v-model="editable.want.currency[0]" type="number" class="form-control" id="wantCp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Sp">Sp</label>
-          <input v-model="editable.want.currency[1]" type="number" class="form-control" id="Sp" min="0" max="5000">
+          <label for="wantSp">Sp</label>
+          <input v-model="editable.want.currency[1]" type="number" class="form-control" id="wantSp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Ep">Ep</label>
-          <input v-model="editable.want.currency[2]" type="number" class="form-control" id="Ep" min="0" max="5000">
+          <label for="wantEp">Ep</label>
+          <input v-model="editable.want.currency[2]" type="number" class="form-control" id="wantEp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Gp">Gp</label>
-          <input v-model="editable.want.currency[3]" type="number" class="form-control" id="Gp" min="0" max="5000">
+          <label for="wantGp">Gp</label>
+          <input v-model="editable.want.currency[3]" type="number" class="form-control" id="wantGp" min="0" max="5000">
         </div>
         <div class="col-2 form-group text-center">
-          <label for="Pp">Pp</label>
-          <input v-model="editable.want.currency[4]" type="number" class="form-control" id="Pp" min="0" max="5000">
+          <label for="wantPp">Pp</label>
+          <input v-model="editable.want.currency[4]" type="number" class="form-control" id="wantPp" min="0" max="5000">
         </div>
       </section>
     </div>

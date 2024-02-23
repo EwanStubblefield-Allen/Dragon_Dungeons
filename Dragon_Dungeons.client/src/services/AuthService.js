@@ -15,15 +15,11 @@ export const AuthService = initialize({
   audience,
   useRefreshTokens: true,
   onRedirectCallback: appState => {
-    router.push(
-      appState && appState.targetUrl
-        ? appState.targetUrl
-        : window.location.pathname
-    )
+    router.push(appState && appState.targetUrl ? appState.targetUrl : window.location.pathname)
   }
 })
 
-AuthService.on(AuthService.AUTH_EVENTS.AUTHENTICATED, async function() {
+AuthService.on(AuthService.AUTH_EVENTS.AUTHENTICATED, async () => {
   api.defaults.headers.authorization = AuthService.bearer
   api.interceptors.request.use(refreshAuthToken)
   AppState.user = AuthService.user
@@ -36,10 +32,12 @@ AuthService.on(AuthService.AUTH_EVENTS.AUTHENTICATED, async function() {
 })
 
 async function refreshAuthToken(config) {
-  if (!AuthService.isAuthenticated) { return config }
+  if (!AuthService.isAuthenticated) {
+    return config
+  }
   const expires = AuthService.identity.exp * 1000
   const expired = expires < Date.now()
-  const needsRefresh = expires < Date.now() + (1000 * 60 * 60 * 12)
+  const needsRefresh = expires < Date.now() + 1000 * 60 * 60 * 12
 
   if (expired) {
     await AuthService.loginWithPopup()

@@ -2,22 +2,13 @@ namespace Dragon_Dungeons.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AccountController : ControllerBase
+public class AccountController(AccountService accountService, CharactersService charactersService, CampaignsService campaignsService, PlayersService playersService, Auth0Provider auth0Provider) : ControllerBase
 {
-  private readonly AccountService _accountService;
-  private readonly CharactersService _charactersService;
-  private readonly CampaignsService _campaignsService;
-  private readonly PlayersService _playersService;
-  private readonly Auth0Provider _auth0Provider;
-
-  public AccountController(AccountService accountService, CharactersService charactersService, CampaignsService campaignsService, PlayersService playersService, Auth0Provider auth0Provider)
-  {
-    _accountService = accountService;
-    _charactersService = charactersService;
-    _campaignsService = campaignsService;
-    _playersService = playersService;
-    _auth0Provider = auth0Provider;
-  }
+  private readonly AccountService _accountService = accountService;
+  private readonly CharactersService _charactersService = charactersService;
+  private readonly CampaignsService _campaignsService = campaignsService;
+  private readonly PlayersService _playersService = playersService;
+  private readonly Auth0Provider _auth0Provider = auth0Provider;
 
   [HttpGet]
   [Authorize]

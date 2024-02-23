@@ -3,9 +3,8 @@ export function registerGlobalComponents(root) {
   // @ts-ignore
   const components = import.meta.globEager('./components/*.vue')
   Object.entries(components).forEach(([fileName, component]) => {
-    const componentName = component.name || fileName
-      .substring(fileName.lastIndexOf('/') + 1)
-      .replace(/\.\w+$/, '')
+    const componentName =
+      component.name || fileName.substring(fileName.lastIndexOf('/') + 1).replace(/\.\w+$/, '')
     // Register component on this Vue instance
     root.component(componentName, component.default)
   })

@@ -1,26 +1,14 @@
 import Axios from 'axios'
 import { baseURL } from '../env'
 import { logger } from '../utils/Logger.js'
-import { OPENAI_API_KEY } from '../config.js'
 
 export const api = Axios.create({
   baseURL,
-  timeout: 8000
+  timeout: 30000
 })
 
 export const dndApi = Axios.create({
   baseURL: 'https://www.dnd5eapi.co',
-  timeout: 8000
-})
-
-export const openApi = Axios.create({
-  baseURL: 'https://api.openai.com/v1',
-  headers: { Authorization: OPENAI_API_KEY },
-  timeout: 60000
-})
-
-export const imgApi = Axios.create({
-  baseURL: 'https://api.cloudinary.com/v1_1',
   timeout: 8000
 })
 

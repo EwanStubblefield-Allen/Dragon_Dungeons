@@ -1,6 +1,6 @@
-import { AppState } from "../AppState.js"
-import { saveState } from "../utils/Store.js"
-import { dndApi } from "./AxiosService.js"
+import { AppState } from '../AppState.js'
+import { saveState } from '../utils/Store.js'
+import { dndApi } from './AxiosService.js'
 
 class InfosService {
   async getInfo() {
@@ -42,7 +42,7 @@ class InfosService {
   }
 
   convertToHtml(arr, size = 0) {
-    let template = /*HTML*/`<div class="ps-2">`
+    let template = /*HTML*/ `<div class="ps-2">`
     arr.forEach((item, index) => {
       if (typeof item == 'object') {
         if (!Array.isArray(item)) {
@@ -142,16 +142,24 @@ class InfosService {
 
   objToHtml(arr, a, size) {
     if (a.name == 'image') {
-      return /*HTML*/`
+      return /*HTML*/ `
         <div class="text-center text-lg-start">
           <img class="mt-2 img-fluid rounded elevation-5" src="http://www.dnd5eapi.co${a.url}" alt="${arr[0][1]}Image" style="max-height: 75vh;"/>
         </div>`
     } else if (arr.find(n => n[0] == 'name')) {
-      return /*HTML*/`
-        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(/[_\-$]/g, ' ')}</u></a>`
+      return /*HTML*/ `
+        <a href="#/info/${a.url.replace(
+          '/api/',
+          ''
+        )}" class="fs-${size} fw-bold text-decoration text-capitalize text-dark"><u>${a.name.replaceAll(
+        /[_\-$]/g,
+        ' '
+      )}</u></a>`
     } else {
-      return /*HTML*/`
-        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${size + 3} text-decoration text-dark ps-2"><u>${a.name}</u></a>`
+      return /*HTML*/ `
+        <a href="#/info/${a.url.replace('/api/', '')}" class="fs-${
+        size + 3
+      } text-decoration text-dark ps-2"><u>${a.name}</u></a>`
     }
   }
 
@@ -159,24 +167,28 @@ class InfosService {
     a = a.toString()
 
     if (index == 0 && arr.length == 2 && 2 < a.length && a.length < 30) {
-      return /*HTML*/`
+      return /*HTML*/ `
         <p class="fs-${size} fw-bold text-capitalize">
           ${
             // Replaces desc with Description
-            a.replace(/desc(?!r)/g, 'Description')
-            // Replaces _, -, and $ with a space
-            .replaceAll(/[_\-$]/g, ' ')}:
+            a
+              .replace(/desc(?!r)/g, 'Description')
+              // Replaces _, -, and $ with a space
+              .replaceAll(/[_\-$]/g, ' ')
+          }:
         </p>`
     } else {
-      return /*HTML*/`
+      return /*HTML*/ `
         <p class="fs-${size + 3} ps-2">
           ${
             // Replace ' '(a through d) with <br>-
-            a.replaceAll(/ \([a-d]\)/g, '<br>-')
-            // Replace (a through d) with -
-            .replace(/\([a-d]\)/g, '-')
-            // Replace - var or \n var with an uppercase of var
-            .replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))}
+            a
+              .replaceAll(/ \([a-d]\)/g, '<br>-')
+              // Replace (a through d) with -
+              .replace(/\([a-d]\)/g, '-')
+              // Replace - var or \n var with an uppercase of var
+              .replaceAll(/(?<=- ).|^./g, String.call.bind(a.toUpperCase))
+          }
         </p>`
     }
   }
@@ -192,18 +204,22 @@ class InfosService {
     if (character.armor?.index) {
       AppState.equipment.armor = await infosService.getInfoDetails(character.armor.url, false)
     }
-    AppState.equipment.weapons = await Promise.all(character.weapons.map(async (w) => {
-      return await infosService.getInfoDetails(w.url, false)
-    }))
+    AppState.equipment.weapons = await Promise.all(
+      character.weapons.map(async w => {
+        return await infosService.getInfoDetails(w.url, false)
+      })
+    )
 
     if (character.cantrips) {
-      AppState.equipment.cantrips = await Promise.all(character.cantrips.map(async (c) => {
-        return await infosService.getInfoDetails(c.url, false)
-      }))
+      AppState.equipment.cantrips = await Promise.all(
+        character.cantrips.map(async c => {
+          return await infosService.getInfoDetails(c.url, false)
+        })
+      )
     }
 
     if (character.spells) {
-      Object.keys(character.casting).forEach(c => AppState.equipment.spells[c] = [])
+      Object.keys(character.casting).forEach(c => (AppState.equipment.spells[c] = []))
 
       for (let s of character.spells) {
         const spell = await infosService.getInfoDetails(s.url, false)

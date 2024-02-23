@@ -1,4 +1,4 @@
-import { RepoItem } from "./RepoItem.js"
+import { RepoItem } from './RepoItem.js'
 
 export class Profile extends RepoItem {
   constructor(data) {

@@ -1,6 +1,6 @@
-import Pop from "./Pop.js"
+import Pop from './Pop.js'
 
-const APP_NAME = "Dragon_Dungeons.client"
+const APP_NAME = 'Dragon_Dungeons.client'
 
 export function saveState(key, value) {
   try {
@@ -40,7 +40,9 @@ export function loadState(key, instanceType) {
       return new instanceType(data)
     }
 
-    if (keyType == '{}' && !Object.keys(data).length) { return null }
+    if (keyType == '{}' && !Object.keys(data).length) {
+      return null
+    }
     return data
   } catch (error) {
     console.error('[ATTEMPTING_TO_LOAD_STATE]', { key, instanceType })

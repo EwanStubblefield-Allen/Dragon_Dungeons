@@ -1,6 +1,6 @@
-import { AppState } from "../AppState.js"
-import { Npc } from "../models/Npc.js"
-import { api } from "./AxiosService.js"
+import { AppState } from '../AppState.js'
+import { Npc } from '../models/Npc.js'
+import { api } from './AxiosService.js'
 
 class NpcsService {
   async createNpc(npcData) {

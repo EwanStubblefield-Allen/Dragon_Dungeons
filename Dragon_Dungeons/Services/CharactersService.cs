@@ -1,13 +1,8 @@
 namespace Dragon_Dungeons.Services;
 
-public class CharactersService
+public class CharactersService(CharactersRepository charactersRepository)
 {
-  private readonly CharactersRepository _charactersRepository;
-
-  public CharactersService(CharactersRepository charactersRepository)
-  {
-    _charactersRepository = charactersRepository;
-  }
+  private readonly CharactersRepository _charactersRepository = charactersRepository;
 
   internal List<Character> GetCharacters()
   {

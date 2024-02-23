@@ -95,10 +95,6 @@ export default {
     --wheat: #EFDBB5;
   }
 
-  // body {
-  //   font-family: 'Inknut Antiqua', serif;
-  // }
-
   header {
     z-index: 1000;
   }

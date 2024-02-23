@@ -1,13 +1,8 @@
 namespace Dragon_Dungeons.Services;
 
-public class AccountService
+public class AccountService(AccountsRepository repo)
 {
-  private readonly AccountsRepository _repo;
-
-  public AccountService(AccountsRepository repo)
-  {
-    _repo = repo;
-  }
+  private readonly AccountsRepository _repo = repo;
 
   internal Account GetProfileByEmail(string email)
   {

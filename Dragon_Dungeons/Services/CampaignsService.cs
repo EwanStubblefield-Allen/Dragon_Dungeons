@@ -1,19 +1,11 @@
 namespace Dragon_Dungeons.Services;
 
-public class CampaignsService
+public class CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService, CommentsService commentsService)
 {
-  private readonly CampaignsRepository _campaignsRepository;
-  private readonly NpcsService _npcsService;
-  private readonly PlayersService _playersService;
-  private readonly CommentsService _commentsService;
-
-  public CampaignsService(CampaignsRepository campaignsRepository, NpcsService npcsService, PlayersService playersService, CommentsService commentsService)
-  {
-    _campaignsRepository = campaignsRepository;
-    _npcsService = npcsService;
-    _playersService = playersService;
-    _commentsService = commentsService;
-  }
+  private readonly CampaignsRepository _campaignsRepository = campaignsRepository;
+  private readonly NpcsService _npcsService = npcsService;
+  private readonly PlayersService _playersService = playersService;
+  private readonly CommentsService _commentsService = commentsService;
 
   internal Campaign GetCampaignById(string campaignId, string userId)
   {
@@ -67,6 +59,10 @@ public class CampaignsService
   internal Campaign CreatePlayerByCampaignId(Player playerData)
   {
     Campaign campaign = GetCampaignById(playerData.CampaignId, playerData.CreatorId);
+    if (campaign.CreatorId == playerData.CreatorId)
+    {
+      throw new Exception("[YOU CANNOT JOIN A CAMPAIGN YOU OWN]");
+    }
     if (campaign.Players.Count > 0)
     {
       throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");

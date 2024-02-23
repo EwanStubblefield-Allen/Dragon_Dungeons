@@ -4,8 +4,7 @@ import { SocketHandler } from '../utils/SocketHandler'
 class SocketService extends SocketHandler {
   constructor() {
     super()
-    this
-      .on('error', this.onError)
+    this.on('error', this.onError)
   }
 
   onError(e) {

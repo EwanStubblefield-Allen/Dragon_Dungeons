@@ -1,5 +1,5 @@
-import { RepoItem } from "./RepoItem.js"
-import { Profile } from "./Account.js"
+import { RepoItem } from './RepoItem.js'
+import { Profile } from './Account.js'
 
 export class Campaign extends RepoItem {
   constructor(data) {
