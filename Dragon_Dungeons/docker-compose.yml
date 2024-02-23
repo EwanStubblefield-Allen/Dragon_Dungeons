@@ -3,5 +3,5 @@ services:
   web:
     image: ewanstubblefieldallen/dragon:latest
     ports:
-      - "7047:80"
+      - '7047:8080'
     restart: unless-stopped
