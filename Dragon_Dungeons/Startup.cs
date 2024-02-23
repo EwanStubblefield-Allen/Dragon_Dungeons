@@ -47,6 +47,7 @@ namespace Dragon_Dungeons
       _ = services.AddScoped<CommentsService>();
 
       _ = services.AddScoped<ImagesService>();
+      _ = services.AddScoped<JsonManager>();
 
       _ = services.AddSingleton(Configuration.GetSection("Keys").Get<Config>());
 

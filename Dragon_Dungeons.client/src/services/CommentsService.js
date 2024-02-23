@@ -1,5 +1,5 @@
-import { AppState } from "../AppState.js"
-import { api } from "./AxiosService.js"
+import { AppState } from '../AppState.js'
+import { api } from './AxiosService.js'
 
 class CommentsService {
   async createComment(commentData) {
@@ -7,7 +7,10 @@ class CommentsService {
   }
 
   async updateComment(commentData) {
-    await api.put(`api/campaigns/${AppState.activeCampaign.id}/comments/${commentData.id}`, commentData)
+    await api.put(
+      `api/campaigns/${AppState.activeCampaign.id}/comments/${commentData.id}`,
+      commentData
+    )
   }
 
   async removeComment(commentId) {

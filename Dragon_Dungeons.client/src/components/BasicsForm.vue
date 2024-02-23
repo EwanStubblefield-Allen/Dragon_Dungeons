@@ -55,14 +55,14 @@
     <form v-if="imageType == 'generateImg' && editable.race && editable.class" @submit.prevent="generateImg()" class="col-12 col-md-6 form-group">
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
-        <input v-model="description.prompt" type="text" class="form-control" id="picture" minlength="3" maxlength="100" placeholder="Description..." required>
+        <input v-model="description.prompt" type="text" class="form-control" id="generatedPicture" minlength="3" maxlength="100" placeholder="Description..." required>
         <button v-if="!loading" type="submit" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
     </form>
 
     <div v-else-if="imageType == 'importImg'" class="col-12 col-md-6 form-group">
       <label for="picture" class="text-dark">Character Picture:</label>
-      <input @change="handleFile" type="file" class="form-control" id="picture" accept=".jpg, .jpeg, .png" required>
+      <input @change="handleFile" type="file" class="form-control" id="importPicture" accept=".jpg, .jpeg, .png" required>
     </div>
 
     <div class="col-12">
@@ -93,7 +93,6 @@ import { charactersService } from '../services/CharactersService.js'
 import { openService } from '../services/OpenService.js'
 import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
-import { imagesService } from '../services/ImagesService.js'
 
 export default {
   setup() {
@@ -158,7 +157,6 @@ export default {
     }
 
     function saveCharacter() {
-      imagesService.createImg(editable.value.picture)
       editable.value.creator = AppState.account
       charactersService.saveCharacter(editable.value)
     }

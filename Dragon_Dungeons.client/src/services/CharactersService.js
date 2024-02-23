@@ -1,12 +1,25 @@
-import { AppState } from "../AppState.js"
-import { Character } from "../models/Character.js"
-import { infosService } from "./InfosService.js"
-import { imagesService } from "./ImagesService.js"
-import { saveState } from "../utils/Store.js"
-import { api } from "./AxiosService.js"
-import Pop from "../utils/Pop.js"
+import { AppState } from '../AppState.js'
+import { Character } from '../models/Character.js'
+import { infosService } from './InfosService.js'
+import { imagesService } from './ImagesService.js'
+import { saveState } from '../utils/Store.js'
+import { api } from './AxiosService.js'
+import Pop from '../utils/Pop.js'
 
-const keys = ['picture', 'skills', 'proficiencies', 'bonus', 'charFeatures', 'cantrips', 'spells', 'casting', 'equipment', 'currency', 'armor', 'weapons']
+const keys = [
+  'picture',
+  'skills',
+  'proficiencies',
+  'bonus',
+  'charFeatures',
+  'cantrips',
+  'spells',
+  'casting',
+  'equipment',
+  'currency',
+  'armor',
+  'weapons'
+]
 
 class CharactersService {
   changeCharPage(current) {
@@ -48,12 +61,20 @@ class CharactersService {
   }
 
   async createCharacter(characterData) {
-    characterData.currency = [['cp', 0], ['sp', 0], ['ep', 0], ['gp', characterData.currency], ['pp', 0]]
+    characterData.currency = [
+      ['cp', 0],
+      ['sp', 0],
+      ['ep', 0],
+      ['gp', characterData.currency],
+      ['pp', 0]
+    ]
     characterData.manual = false
     characterData.equipment = characterData.equipment.flat(Infinity)
 
     if (characterData.proficiencies) {
-      characterData.proficiencies = characterData.proficiencies.concat(AppState.tempClass.proficiencies)
+      characterData.proficiencies = characterData.proficiencies.concat(
+        AppState.tempClass.proficiencies
+      )
     } else {
       characterData.proficiencies = AppState.tempClass.proficiencies
     }
@@ -122,7 +143,9 @@ class CharactersService {
     let temp = {}
     let character = AppState.activeCharacter
     let item = await infosService.getInfoDetails(equipment.url, false)
-    item = Object.entries(item).filter(i => i[0] != 'contents' && Array.isArray(i[1]) ? i[1].length : i[1] != null)
+    item = Object.entries(item).filter(i =>
+      i[0] != 'contents' && Array.isArray(i[1]) ? i[1].length : i[1] != null
+    )
     item = Object.fromEntries(item)
 
     switch (item.equipment_category.index) {
@@ -167,7 +190,9 @@ class CharactersService {
             throw new Error('Figure out what ammunition goes to')
           }
           const charEquip = character.equipment
-          const foundIndex = charEquip.findIndex(e => e.name.includes(search) && e.name != item.name)
+          const foundIndex = charEquip.findIndex(
+            e => e.name.includes(search) && e.name != item.name
+          )
 
           if (foundIndex == -1) {
             if (character.weapons.find(w => w.name.includes(search))) {
@@ -266,7 +291,10 @@ class CharactersService {
           character.equipment.push(equip)
         }
       })
-      await charactersService.updateCharacter({ currency: character.currency, equipment: character.equipment })
+      await charactersService.updateCharacter({
+        currency: character.currency,
+        equipment: character.equipment
+      })
     }
     AppState.trade = {
       offer: { equipment: [], currency: [] },

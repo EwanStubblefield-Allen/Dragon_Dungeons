@@ -1,19 +1,19 @@
-import { AppState } from "../AppState.js"
-import { openApi } from "./AxiosService.js"
-import Compressor from "compressorjs"
+import { AppState } from '../AppState.js'
+import { api } from './AxiosService.js'
+import Compressor from 'compressorjs'
 
 class OpenService {
   async generateImg(prompt) {
-    const res = await openApi.post('images/generations', prompt)
+    const res = await api.post('images/generations', prompt)
     return res.data.data[0].url
   }
 
   async compress(file, compress) {
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       new Compressor(file, {
         quality: compress,
         success(result) {
-          resolve(AppState.tempCharacter.picture = result)
+          resolve((AppState.tempCharacter.picture = result))
         }
       })
     })

@@ -1,8 +1,8 @@
-import { AppState } from "../AppState.js"
-import { Player } from "../models/Npc.js"
-import { Campaign } from "../models/Campaign.js"
-import { api } from "./AxiosService.js"
-import Pop from "../utils/Pop.js"
+import { AppState } from '../AppState.js'
+import { Player } from '../models/Npc.js'
+import { Campaign } from '../models/Campaign.js'
+import { api } from './AxiosService.js'
+import Pop from '../utils/Pop.js'
 
 class PlayersService {
   async getPlayersByUserId() {

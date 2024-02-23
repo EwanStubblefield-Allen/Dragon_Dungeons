@@ -19,11 +19,6 @@ export const openApi = Axios.create({
   timeout: 60000
 })
 
-export const imgApi = Axios.create({
-  baseURL: 'https://api.cloudinary.com/v1_1',
-  timeout: 8000
-})
-
 api.interceptors.request.use(config => config, handleAxiosError)
 api.interceptors.response.use(response => response, handleAxiosError)
 
