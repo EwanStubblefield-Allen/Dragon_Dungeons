@@ -37,20 +37,23 @@ export class SocketHandler {
    * @param {String} url
    */
   constructor(requiresAuth = false, url = '') {
-    if (!useSockets) { return }
+    if (!useSockets) {
+      return
+    }
     getSocketConnection(url || baseURL)
     this.socket = socket
     this.requiresAuth = requiresAuth
     this.queue = []
     this.authenticated = false
-    this
-      .on(SOCKET_EVENTS.connected, this.onConnected)
-      .on(SOCKET_EVENTS.authenticated, this.onAuthenticated)
+    this.on(SOCKET_EVENTS.connected, this.onConnected).on(
+      SOCKET_EVENTS.authenticated,
+      this.onAuthenticated
+    )
   }
 
   on(event, fn) {
     const ctx = this
-    this.socket?.on(event, function() {
+    this.socket?.on(event, () => {
       try {
         fn.call(ctx, ...arguments)
       } catch (error) {
@@ -84,7 +87,9 @@ export class SocketHandler {
   }
 
   playback() {
-    if (!this.queue.length) { return }
+    if (!this.queue.length) {
+      return
+    }
     logger.log(`📽️[${this.constructor.name}]`)
     const playback = [...this.queue]
     this.queue = []

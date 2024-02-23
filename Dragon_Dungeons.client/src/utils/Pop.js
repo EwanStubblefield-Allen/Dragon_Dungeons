@@ -4,15 +4,20 @@ import { logger } from './Logger.js'
 
 export default class Pop {
   /**
- *
- * @param {string} title The title text.
- * @param {string} text The body text.
- * @param {string} confirmButtonText The text of your confirm button.
- * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon Pop icon
- *
- * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
- */
-  static async confirm(title = 'Are you sure?', text = "You won't be able to revert this!", confirmButtonText = 'Yes', icon = 'warning') {
+   *
+   * @param {string} title The title text.
+   * @param {string} text The body text.
+   * @param {string} confirmButtonText The text of your confirm button.
+   * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon Pop icon
+   *
+   * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
+   */
+  static async confirm(
+    title = 'Are you sure?',
+    text = "You won't be able to revert this!",
+    confirmButtonText = 'Yes',
+    icon = 'warning'
+  ) {
     try {
       const res = await Swal.fire({
         title,
@@ -35,16 +40,22 @@ export default class Pop {
   }
 
   /**
- *
- * @param {string} title The title text
- * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon
- * @param {'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'} position
- * @param {number} timer Time in milliseconds.
- * @param {boolean} progressBar Show progress bar or not respectively.
- * -----------------------------------
- * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
- */
-  static toast(title = 'Warning!', icon = 'warning', position = 'top-end', timer = 3000, progressBar = true) {
+   *
+   * @param {string} title The title text
+   * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon
+   * @param {'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'} position
+   * @param {number} timer Time in milliseconds.
+   * @param {boolean} progressBar Show progress bar or not respectively.
+   * -----------------------------------
+   * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
+   */
+  static toast(
+    title = 'Warning!',
+    icon = 'warning',
+    position = 'top-end',
+    timer = 3000,
+    progressBar = true
+  ) {
     Swal.fire({
       title,
       icon,
@@ -57,15 +68,15 @@ export default class Pop {
   }
 
   /**
- *
- * @param {string} title The title text
- * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon
- * @param {'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'} position
- * @param {number} timer Time in milliseconds.
- * @param {boolean} progressBar Show progress bar or not respectively.
- * -----------------------------------
- * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
- */
+   *
+   * @param {string} title The title text
+   * @param {'success' | 'error' | 'info' | 'warning' | 'question'} icon
+   * @param {'top' | 'top-start' | 'top-end' | 'center' | 'center-start' | 'center-end' | 'bottom' | 'bottom-start' | 'bottom-end'} position
+   * @param {number} timer Time in milliseconds.
+   * @param {boolean} progressBar Show progress bar or not respectively.
+   * -----------------------------------
+   * {@link https://sweetalert2.github.io/#configuration|Check out Sweet Alerts}
+   */
   static async question(title = 'Question!', text = 'This is a question?') {
     try {
       const res = await Swal.fire({
@@ -98,7 +109,9 @@ export default class Pop {
 
     if (error.isAxiosError) {
       const { response } = error
-      const errorObj = (response.data ? response.data.error : response.data) || { message: 'Invalid Request ' + response.status }
+      const errorObj = (response.data ? response.data.error : response.data) || {
+        message: 'Invalid Request ' + response.status
+      }
 
       if (!errorObj) {
         return this.toast(error.message)

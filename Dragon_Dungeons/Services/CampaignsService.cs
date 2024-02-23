@@ -59,6 +59,10 @@ public class CampaignsService(CampaignsRepository campaignsRepository, NpcsServi
   internal Campaign CreatePlayerByCampaignId(Player playerData)
   {
     Campaign campaign = GetCampaignById(playerData.CampaignId, playerData.CreatorId);
+    if (campaign.CreatorId == playerData.CreatorId)
+    {
+      throw new Exception("[YOU CANNOT JOIN A CAMPAIGN YOU OWN]");
+    }
     if (campaign.Players.Count > 0)
     {
       throw new Exception("[YOU ARE ALREADY IN THIS CAMPAIGN]");

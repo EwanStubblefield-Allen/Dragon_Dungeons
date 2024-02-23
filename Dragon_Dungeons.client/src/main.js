@@ -10,6 +10,4 @@ import './utils/SocketProvider.js'
 const root = createApp(App)
 registerGlobalComponents(root)
 
-root
-  .use(router)
-  .mount('#app')
+root.use(router).mount('#app')

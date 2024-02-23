@@ -82,7 +82,12 @@ export default {
 
             if (location == 'account') {
               characterToDelete = await charactersService.removeCharacter(character)
-              AppState.campaigns = AppState.campaigns.filter(c => c.players[0] != characterToDelete.id)
+              AppState.campaigns = AppState.campaigns.filter(c => {
+                if (!c.players) {
+                  return true
+                }
+                c.players[0] != characterToDelete.id
+              })
             } else {
               characterToDelete = await playersService.removePlayer(character)
             }

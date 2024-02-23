@@ -90,7 +90,7 @@ import { useRouter } from 'vue-router'
 import { AppState } from '../AppState.js'
 import { infosService } from '../services/InfosService.js'
 import { charactersService } from '../services/CharactersService.js'
-import { openService } from '../services/OpenService.js'
+import { imagesService } from '../services/ImagesService.js'
 import { saveState } from '../utils/Store.js'
 import Pop from '../utils/Pop.js'
 
@@ -114,7 +114,7 @@ export default {
     })
 
     watchEffect(() => {
-      description.value.prompt = `${editable.value.race} ${editable.value.class}`
+      description.value.prompt = `DnD ${editable.value.race} ${editable.value.class}`
     })
 
     async function handleSave() {
@@ -194,7 +194,7 @@ export default {
           if (!file) {
             return
           }
-          await openService.compress(file, compress)
+          await imagesService.compress(file, compress)
           const picture = AppState.tempCharacter.picture
           let reader = new FileReader()
 
@@ -219,7 +219,7 @@ export default {
         try {
           editable.value.picture = ''
           loading.value = true
-          editable.value.picture = await openService.generateImg(description.value)
+          editable.value.picture = await imagesService.generateImg(description.value)
         } catch (error) {
           Pop.error(error.message, '[GENERATING IMAGE]')
         } finally {

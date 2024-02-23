@@ -1,12 +1,8 @@
-using Microsoft.Extensions.Options;
-
 namespace Dragon_Dungeons.Models;
 
-public class Image
+public class GeneratedImage
 {
-  public string Public_id { get; set; }
-  public string Secure_url { get; set; }
-  public string Signature { get; set; }
+  public string Data { get; set; }
 }
 
 public class CreateImage
@@ -18,8 +14,8 @@ public class CreateImage
 
 public class RemoveImage
 {
-  public int IMAGE_API_KEY { get; set; }
-  public string Public_id { get; set; }
+  public string Api_Key { get; set; }
+  public string Public_Id { get; set; }
   public string Signature { get; set; }
-  public DateTime Timestamp { get { return DateTime.Now; } }
+  public long Timestamp { get; set; }
 }
