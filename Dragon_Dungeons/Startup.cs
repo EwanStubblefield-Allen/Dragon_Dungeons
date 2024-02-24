@@ -11,6 +11,11 @@ namespace Dragon_Dungeons
 {
   public class Startup
   {
+    public Startup(IConfiguration configuration)
+    {
+      Configuration = configuration;
+    }
+
     public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
@@ -44,12 +49,6 @@ namespace Dragon_Dungeons
 
       _ = services.AddScoped<CommentsRepository>();
       _ = services.AddScoped<CommentsService>();
-
-      _ = services.AddScoped<ImagesService>();
-      _ = services.AddScoped<JsonManager>();
-
-      // _ = services.AddSingleton(Configuration.GetSection("Keys").Get<Config>());
-
     }
 
     private static void ConfigureCors(IServiceCollection services)
@@ -84,15 +83,8 @@ namespace Dragon_Dungeons
 
     private IDbConnection CreateDbConnection()
     {
-      {
-        string connectionString = Configuration["CONNECTION_STRING"];
-        return new MySqlConnection(connectionString);
-      }
-    }
-
-    public Startup(IConfiguration configuration)
-    {
-      Configuration = configuration;
+      string connectionString = Configuration["CONNECTION_STRING"];
+      return new MySqlConnection(connectionString);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
