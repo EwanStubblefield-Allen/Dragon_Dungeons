@@ -5,16 +5,10 @@ using System.Text;
 
 namespace Dragon_Dungeons.Services;
 
-public class ImagesService
+public class ImagesService(JsonManager jsonManager, Config config)
 {
-  private readonly JsonManager _jsonManager;
-  private readonly Config _config;
-
-  public ImagesService(JsonManager jsonManager, Config config)
-  {
-    _jsonManager = jsonManager;
-    _config = config;
-  }
+  private readonly JsonManager _jsonManager = jsonManager;
+  private readonly Config _config = config;
 
   internal string ConvertToSha256(RemoveImage removeImage)
   {

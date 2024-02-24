@@ -1,13 +1,8 @@
 namespace Dragon_Dungeons.Repositories;
 
-public class CharactersRepository
+public class CharactersRepository(IDbConnection db)
 {
-  private readonly IDbConnection _db;
-
-  public CharactersRepository(IDbConnection db)
-  {
-    _db = db;
-  }
+  private readonly IDbConnection _db = db;
 
   internal List<Character> GetCharacters()
   {

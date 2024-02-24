@@ -2,16 +2,10 @@ namespace Dragon_Dungeons.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CharactersController : ControllerBase
+public class CharactersController(CharactersService charactersService, Auth0Provider auth0Provider) : ControllerBase
 {
-  private readonly CharactersService _charactersService;
-  private readonly Auth0Provider _auth0Provider;
-
-  public CharactersController(CharactersService charactersService, Auth0Provider auth0Provider)
-  {
-    _charactersService = charactersService;
-    _auth0Provider = auth0Provider;
-  }
+  private readonly CharactersService _charactersService = charactersService;
+  private readonly Auth0Provider _auth0Provider = auth0Provider;
 
   [HttpGet]
   public ActionResult<List<Character>> GetCharacters()

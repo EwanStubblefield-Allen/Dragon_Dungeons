@@ -2,16 +2,10 @@ namespace Dragon_Dungeons.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ImagesController : ControllerBase
+public class ImagesController(ImagesService imagesService, Config config) : ControllerBase
 {
-  private readonly ImagesService _imagesService;
-  private readonly Config _config;
-
-  public ImagesController(ImagesService imagesService, Config config)
-  {
-    _imagesService = imagesService;
-    _config = config;
-  }
+  private readonly ImagesService _imagesService = imagesService;
+  private readonly Config _config = config;
 
   [HttpPost("generations")]
   public ActionResult<string> GenerateImage([FromBody] object prompt)
