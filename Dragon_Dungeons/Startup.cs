@@ -25,7 +25,7 @@ namespace Dragon_Dungeons
       });
       _ = services.AddSignalR(cfg => cfg.EnableDetailedErrors = true);
       _ = services.AddSingleton<Auth0Provider>();
-      _ = services.AddScoped(x => CreateDbConnection);
+      _ = services.AddScoped(x => CreateDbConnection());
 
       _ = services.AddScoped<AccountsRepository>();
       _ = services.AddScoped<AccountService>();
@@ -48,7 +48,7 @@ namespace Dragon_Dungeons
       _ = services.AddScoped<ImagesService>();
       _ = services.AddScoped<JsonManager>();
 
-      _ = services.AddSingleton(Configuration.GetSection("Keys").Get<Config>());
+      // _ = services.AddSingleton(Configuration.GetSection("Keys").Get<Config>());
 
     }
 
@@ -82,9 +82,8 @@ namespace Dragon_Dungeons
       });
     }
 
-    private IDbConnection CreateDbConnection
+    private IDbConnection CreateDbConnection()
     {
-      get
       {
         string connectionString = Configuration["CONNECTION_STRING"];
         return new MySqlConnection(connectionString);
