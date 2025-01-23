@@ -5,6 +5,7 @@ import { dndApi } from './AxiosService.js'
 class InfosService {
   async getInfo() {
     const res = await dndApi.get('api')
+    delete res.data[2014]
     delete res.data.backgrounds
     AppState.info = res.data
   }
@@ -29,6 +30,7 @@ class InfosService {
 
     // If data is an object convert to array and remove unnecessary keys
     if (Object.getPrototypeOf(data) == Object.prototype) {
+      delete data.updated_at
       delete data.url
       delete data.index
       data = Object.entries(data).map(d => {

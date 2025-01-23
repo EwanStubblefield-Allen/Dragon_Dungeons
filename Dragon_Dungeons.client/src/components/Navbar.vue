@@ -111,49 +111,49 @@ export default {
 </script>
 
 <style scoped>
-  a:hover {
-    text-decoration: none;
+a:hover {
+  text-decoration: none;
+}
+
+a p {
+  border-radius: 0.375rem;
+}
+
+.navbar-nav .router-link-exact-active,
+.collapse .router-link-exact-active p,
+.route {
+  border-bottom: 2px solid var(--bs-success);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.nav-link {
+  text-transform: uppercase;
+}
+
+.navbar-brand {
+  background-color: #e9ecef;
+  height: 60px;
+  width: 60px;
+  border-bottom: none !important;
+  border-radius: 50% !important;
+}
+
+@media screen and (min-width: 992px) {
+  nav {
+    height: 76px;
   }
 
-  a p {
-    border-radius: 0.375rem;
+  .position-md-absolute {
+    position: absolute;
+    right: 20px;
   }
+}
 
-  .navbar-nav .router-link-exact-active,
-  .collapse .router-link-exact-active p,
-  .route {
-    border-bottom: 2px solid var(--bs-success);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+@media screen and (max-width: 667.99px) {
+  .collapse-container {
+    max-height: 50vh;
+    overflow-y: auto;
   }
-
-  .nav-link {
-    text-transform: uppercase;
-  }
-
-  .navbar-brand {
-    background-color: #e9ecef;
-    height: 60px;
-    width: 60px;
-    border-bottom: none !important;
-    border-radius: 50% !important;
-  }
-
-  @media screen and (min-width: 992px) {
-    nav {
-      height: 76px;
-    }
-
-    .position-md-absolute {
-      position: absolute;
-      right: 20px;
-    }
-  }
-
-  @media screen and (max-width: 667.99px) {
-    .collapse-container {
-      max-height: 50vh;
-      overflow-y: auto;
-    }
-  }
+}
 </style>

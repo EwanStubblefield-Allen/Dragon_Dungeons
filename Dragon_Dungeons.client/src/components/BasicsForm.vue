@@ -37,7 +37,7 @@
       </select>
     </div>
 
-    <div class="col-12 col-md-6">
+    <!-- <div class="col-12 col-md-6">
       <div class="form-check">
         <input v-model="imageType" class="form-check-input" type="radio" name="generateImg" id="generateImg" value="generateImg">
         <label class="form-check-label" for="generateImg">
@@ -50,17 +50,18 @@
           Import Image
         </label>
       </div>
-    </div>
+    </div> -->
 
-    <form v-if="imageType == 'generateImg' && editable.race && editable.class" @submit.prevent="generateImg()" class="col-12 col-md-6 form-group">
+    <!-- <form v-if="imageType == 'generateImg' && editable.race && editable.class" @submit.prevent="generateImg()" class="col-12 col-md-6 form-group">
       <label for="picture">Generate Character Picture:</label>
       <div class="input-group">
         <input v-model="description.prompt" type="text" class="form-control" id="generatedPicture" minlength="3" maxlength="100" placeholder="Description..." required>
         <button v-if="!loading" type="submit" class="mdi mdi-plus input-group-text" title="Generate Image"></button>
       </div>
-    </form>
+    </form> -->
 
-    <div v-else-if="imageType == 'importImg'" class="col-12 col-md-6 form-group">
+    <!-- <div v-else-if="imageType == 'importImg'" class="col-12 col-md-6 form-group"> -->
+    <div class="col-12 col-md-6 form-group">
       <label for="picture" class="text-dark">Character Picture:</label>
       <input @change="handleFile" type="file" class="form-control" id="importPicture" accept=".jpg, .jpeg, .png" required>
     </div>
@@ -246,15 +247,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  img {
-    object-fit: cover;
-    object-position: center;
-  }
+img {
+  object-fit: cover;
+  object-position: center;
+}
 
-  .icon-position {
-    position: absolute;
-    top: 5px;
-    right: 20px;
-    text-shadow: 0px 3px 5px var(--russian);
-  }
+.icon-position {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  text-shadow: 0px 3px 5px var(--russian);
+}
 </style>
